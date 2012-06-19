@@ -5,12 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.GroupAdapter.GroupHolder;
 
 public class GroupsActivity extends ListActivity {
@@ -36,6 +33,7 @@ public class GroupsActivity extends ListActivity {
 
         // Add a listener to each item to catch mouse clicks
         lv.setOnItemClickListener(new OnItemClickListener() {
+        	
           public void onItemClick(AdapterView<?> parent, View view,
               int position, long id) {
             // When clicked, show a toast with the TextView text
