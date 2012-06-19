@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="popular">This is the Popular tab.</string>
+    <string name="camera">This is the Popular tab.</string>
+    <string name="button_camera">Take picture</string>
+    <string name="app_name">Smart Photosharing</string>
+    <string name="icon_unknown">Unknown Icon</string>
+    <string-array name="countries_array">
+        <item>Bahrain</item>
+        <item>Bangladesh</item>
+        <item>Barbados</item>
+        <item>Belarus</item>
+        <item>Belgium</item>
+        <item>Belize</item>
+        <item>Benin</item>
+    </string-array>
+    
+</resources>
