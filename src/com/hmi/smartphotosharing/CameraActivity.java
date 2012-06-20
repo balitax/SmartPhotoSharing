@@ -17,6 +17,7 @@ public class CameraActivity extends Activity {
         super.onCreate(savedInstanceState);
         
         // Use the camera.xml layout.
+		// Example
         setContentView(R.layout.camera);
 
     }
