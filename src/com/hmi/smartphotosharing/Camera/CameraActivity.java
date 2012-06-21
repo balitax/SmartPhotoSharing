@@ -22,26 +22,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.VideoView;
 
 import com.hmi.smartphotosharing.R;
 
 
 public class CameraActivity extends Activity {
 
-	private static final int ACTION_TAKE_PHOTO_B = 1;
-	private static final int ACTION_TAKE_PHOTO_S = 2;
-	private static final int ACTION_TAKE_VIDEO = 3;
+	private static final int ACTION_TAKE_PHOTO = 1;
 
 	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
 	private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
 	private ImageView mImageView;
 	private Bitmap mImageBitmap;
-
-	private static final String VIDEO_STORAGE_KEY = "viewvideo";
-	private static final String VIDEOVIEW_VISIBILITY_STORAGE_KEY = "videoviewvisibility";
-	private VideoView mVideoView;
-	private Uri mVideoUri;
 
 	private String mCurrentPhotoPath;
 
@@ -57,29 +49,13 @@ public class CameraActivity extends Activity {
 		setContentView(R.layout.camera);
 
 		mImageView = (ImageView) findViewById(R.id.imageView1);
-		mVideoView = (VideoView) findViewById(R.id.videoView1);
 		mImageBitmap = null;
-		mVideoUri = null;
 
 		Button picBtn = (Button) findViewById(R.id.btnIntend);
 		setBtnListenerOrDisable( 
 				picBtn, 
 				mTakePicOnClickListener,
 				MediaStore.ACTION_IMAGE_CAPTURE
-		);
-
-		Button picSBtn = (Button) findViewById(R.id.btnIntendS);
-		setBtnListenerOrDisable( 
-				picSBtn, 
-				mTakePicSOnClickListener,
-				MediaStore.ACTION_IMAGE_CAPTURE
-		);
-
-		Button vidBtn = (Button) findViewById(R.id.btnIntendV);
-		setBtnListenerOrDisable( 
-				vidBtn, 
-				mTakeVidOnClickListener,
-				MediaStore.ACTION_VIDEO_CAPTURE
 		);
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
@@ -88,40 +64,26 @@ public class CameraActivity extends Activity {
 			mAlbumStorageDirFactory = new BaseAlbumDirFactory();
 		}
 	}
-
+	
+	/**
+	 * Method that handles the result of the Intent.
+	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch (requestCode) {
-		case ACTION_TAKE_PHOTO_B: {
-			if (resultCode == RESULT_OK) {
-				handleBigCameraPhoto();
-			}
-			break;
-		} // ACTION_TAKE_PHOTO_B
+		
+		if (requestCode == ACTION_TAKE_PHOTO && resultCode == RESULT_OK) {
+			handleCameraPhoto();
+		}
 
-		case ACTION_TAKE_PHOTO_S: {
-			if (resultCode == RESULT_OK) {
-				handleSmallCameraPhoto(data);
-			}
-			break;
-		} // ACTION_TAKE_PHOTO_S
-
-		case ACTION_TAKE_VIDEO: {
-			if (resultCode == RESULT_OK) {
-				handleCameraVideo(data);
-			}
-			break;
-		} // ACTION_TAKE_VIDEO
-		} // switch
 	}
 
-	// Some lifecycle callbacks so that the image can survive orientation change
+	/**
+	 * Some lifecycle callbacks so that the image can survive orientation change
+	 */
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putParcelable(BITMAP_STORAGE_KEY, mImageBitmap);
-		outState.putParcelable(VIDEO_STORAGE_KEY, mVideoUri);
 		outState.putBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY, (mImageBitmap != null) );
-		outState.putBoolean(VIDEOVIEW_VISIBILITY_STORAGE_KEY, (mVideoUri != null) );
 		super.onSaveInstanceState(outState);
 	}
 
@@ -129,24 +91,24 @@ public class CameraActivity extends Activity {
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		mImageBitmap = savedInstanceState.getParcelable(BITMAP_STORAGE_KEY);
-		mVideoUri = savedInstanceState.getParcelable(VIDEO_STORAGE_KEY);
 		mImageView.setImageBitmap(mImageBitmap);
 		mImageView.setVisibility(
 				savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ? 
 						ImageView.VISIBLE : ImageView.INVISIBLE
 		);
-		mVideoView.setVideoURI(mVideoUri);
-		mVideoView.setVisibility(
-				savedInstanceState.getBoolean(VIDEOVIEW_VISIBILITY_STORAGE_KEY) ? 
-						ImageView.VISIBLE : ImageView.INVISIBLE
-		);
 	}
 	
-	/* Photo album for this application */
+	/**
+	 *  Photo album for this application 
+	 */
 	private String getAlbumName() {
 		return getString(R.string.album_name);
 	}
 	
+	/**
+	 * Tries to create the album directory
+	 * @return The created directory or null when it cannot create the directory.
+	 */
 	private File getAlbumDir() {
 		File storageDir = null;
 
@@ -170,6 +132,11 @@ public class CameraActivity extends Activity {
 		return storageDir;
 	}
 
+	/**
+	 * Sets the filename and actually creates the file.
+	 * @return
+	 * @throws IOException
+	 */
 	private File createImageFile() throws IOException {
 		// Create an image file name
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -179,6 +146,11 @@ public class CameraActivity extends Activity {
 		return imageF;
 	}
 
+	/**
+	 * Creates the file and sets the path for the photo
+	 * @return The File where the image is stored.
+	 * @throws IOException Thrown when writing is not possible.
+	 */
 	private File setUpPhotoFile() throws IOException {
 		
 		File f = createImageFile();
@@ -187,6 +159,9 @@ public class CameraActivity extends Activity {
 		return f;
 	}
 
+	/**
+	 * Prescales the image to fit the view.
+	 */
 	private void setPic() {
 
 		/* There isn't enough memory to open up more than a couple camera photos */
@@ -219,11 +194,13 @@ public class CameraActivity extends Activity {
 		
 		/* Associate the Bitmap to the ImageView */
 		mImageView.setImageBitmap(bitmap);
-		mVideoUri = null;
 		mImageView.setVisibility(View.VISIBLE);
-		mVideoView.setVisibility(View.INVISIBLE);
 	}
 
+	/**
+	 * Method for adding the current photo to the gallery.
+	 * Creates an Intent to rescan the media gallery.
+	 */
 	private void galleryAddPic() {
 		    Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
 			File f = new File(mCurrentPhotoPath);
@@ -232,47 +209,45 @@ public class CameraActivity extends Activity {
 		    this.sendBroadcast(mediaScanIntent);
 	}
 
+	/**
+	 * This method handles the actual taking of a picture.
+	 * It creates an Intent to capture an image, sets up the resulting file path
+	 * and calls the method for handling the Intent result.
+	 * @param actionCode
+	 */
 	private void dispatchTakePictureIntent(int actionCode) {
 
+		// Create a new intent to let another app capture a picture
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
+		// Prepare the file path
 		switch(actionCode) {
-		case ACTION_TAKE_PHOTO_B:
-			File f = null;
-			
-			try {
-				f = setUpPhotoFile();
-				mCurrentPhotoPath = f.getAbsolutePath();
-				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-			} catch (IOException e) {
-				e.printStackTrace();
-				f = null;
-				mCurrentPhotoPath = null;
-			}
-			break;
+			case ACTION_TAKE_PHOTO:
+				File f = null;
+				
+				try {
+					f = setUpPhotoFile();
+					mCurrentPhotoPath = f.getAbsolutePath();
+					takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+				} catch (IOException e) {
+					e.printStackTrace();
+					f = null;
+					mCurrentPhotoPath = null;
+				}
+				break;
+	
+			default:
+				break;			
+		}
 
-		default:
-			break;			
-		} // switch
-
+		// Handle the result of the Intent
 		startActivityForResult(takePictureIntent, actionCode);
 	}
 
-	private void dispatchTakeVideoIntent() {
-		Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-		startActivityForResult(takeVideoIntent, ACTION_TAKE_VIDEO);
-	}
-
-	private void handleSmallCameraPhoto(Intent intent) {
-		Bundle extras = intent.getExtras();
-		mImageBitmap = (Bitmap) extras.get("data");
-		mImageView.setImageBitmap(mImageBitmap);
-		mVideoUri = null;
-		mImageView.setVisibility(View.VISIBLE);
-		mVideoView.setVisibility(View.INVISIBLE);
-	}
-
-	private void handleBigCameraPhoto() {
+	/**
+	 * Binds the bitmap image to the View and adds it to the gallery.
+	 */
+	private void handleCameraPhoto() {
 
 		if (mCurrentPhotoPath != null) {
 			setPic();
@@ -282,39 +257,17 @@ public class CameraActivity extends Activity {
 
 	}
 
-	private void handleCameraVideo(Intent intent) {
-		mVideoUri = intent.getData();
-		mVideoView.setVideoURI(mVideoUri);
-		mImageBitmap = null;
-		mVideoView.setVisibility(View.VISIBLE);
-		mImageView.setVisibility(View.INVISIBLE);
-	}
-
+	/**
+	 * OnClickListener that responds to the Take Photo button being clicked.
+	 * Dispatches the capturing of the photo to another app.
+	 */
 	Button.OnClickListener mTakePicOnClickListener = 
 		new Button.OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			dispatchTakePictureIntent(ACTION_TAKE_PHOTO_B);
-		}
+			@Override
+			public void onClick(View v) {
+				dispatchTakePictureIntent(ACTION_TAKE_PHOTO);
+			}
 	};
-
-	Button.OnClickListener mTakePicSOnClickListener = 
-		new Button.OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			dispatchTakePictureIntent(ACTION_TAKE_PHOTO_S);
-		}
-	};
-
-	Button.OnClickListener mTakeVidOnClickListener = 
-		new Button.OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			dispatchTakeVideoIntent();
-		}
-	};
-
-
 
 	/**
 	 * Indicates whether the specified action can be used as an intent. This
@@ -338,11 +291,16 @@ public class CameraActivity extends Activity {
 		return list.size() > 0;
 	}
 
+	/**
+	 * Disables the button when the Intent for taking a picture is not available (no camera on the device).
+	 * @param btn The button that was clicked
+	 * @param onClickListener The listener that handles the button click
+	 * @param intentName Name of the intent
+	 */
 	private void setBtnListenerOrDisable( 
 			Button btn, 
 			Button.OnClickListener onClickListener,
-			String intentName
-	) {
+			String intentName) {
 		if (isIntentAvailable(this, intentName)) {
 			btn.setOnClickListener(onClickListener);        	
 		} else {

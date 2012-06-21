@@ -14,10 +14,7 @@
     </string-array>
     
     <!-- Camera -->
-    <string name="camera">This is the Camera tab.</string>
-    <string name="btnIntend">Take (big) Picture</string>
-    <string name="btnIntendS">Take (small) Picture</string>
-    <string name="btnIntendV">Take Video</string>
+    <string name="btnIntend">Take Picture</string>
     <string name="cannot">Cannot</string>
     <string name="album_name">SPS</string>
     
