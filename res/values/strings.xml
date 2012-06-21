@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="popular">This is the Popular tab.</string>
-    <string name="camera">This is the Popular tab.</string>
-    <string name="button_camera">Take picture</string>
     <string name="app_name">Smart Photosharing</string>
     <string name="icon_unknown">Unknown Icon</string>
     <string-array name="countries_array">
@@ -14,5 +12,13 @@
         <item>Belize</item>
         <item>Benin</item>
     </string-array>
+    
+    <!-- Camera -->
+    <string name="camera">This is the Camera tab.</string>
+    <string name="btnIntend">Take (big) Picture</string>
+    <string name="btnIntendS">Take (small) Picture</string>
+    <string name="btnIntendV">Take Video</string>
+    <string name="cannot">Cannot</string>
+    <string name="album_name">SPS</string>
     
 </resources>
