@@ -15,6 +15,9 @@
     
     <!-- Camera -->
     <string name="btnIntend">Take Picture</string>
+    <string name="btnGallery">Gallery</string>
+    <string name="btnShare">Share</string>
+    <string name="btnDelete">Delete</string>
     <string name="cannot">Cannot</string>
     <string name="album_name">SPS</string>
     

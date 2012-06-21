@@ -22,10 +22,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.hmi.smartphotosharing.R;
 
-
+/**
+ * This class handles the Camera page.
+ * It creates an intent to let a different app handle the photo capturing.
+ * The resulting picture can be stored in the gallery, shared with friends or deleted.
+ * @author Edwin
+ *
+ */
 public class CameraActivity extends Activity {
 
 	private static final int ACTION_TAKE_PHOTO = 1;
@@ -48,16 +55,19 @@ public class CameraActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.camera);
 
+		// Find the ImageView from the xml file
 		mImageView = (ImageView) findViewById(R.id.imageView1);
 		mImageBitmap = null;
 
+		// Disable the button if the Intent is not available
 		Button picBtn = (Button) findViewById(R.id.btnIntend);
 		setBtnListenerOrDisable( 
 				picBtn, 
 				mTakePicOnClickListener,
 				MediaStore.ACTION_IMAGE_CAPTURE
 		);
-		
+				
+		// Check the Android version and decide which album path settings to use
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
 			mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
 		} else {
@@ -250,6 +260,9 @@ public class CameraActivity extends Activity {
 	private void handleCameraPhoto() {
 
 		if (mCurrentPhotoPath != null) {
+
+			LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.buttonLayout1);
+			buttonLayout.setVisibility(View.VISIBLE);
 			setPic();
 			galleryAddPic();
 			mCurrentPhotoPath = null;
@@ -295,7 +308,7 @@ public class CameraActivity extends Activity {
 	 * Disables the button when the Intent for taking a picture is not available (no camera on the device).
 	 * @param btn The button that was clicked
 	 * @param onClickListener The listener that handles the button click
-	 * @param intentName Name of the intent
+	 * @param intentName Name of the Intent
 	 */
 	private void setBtnListenerOrDisable( 
 			Button btn, 

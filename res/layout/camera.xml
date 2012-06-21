@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
     
     <Button
         android:id="@+id/btnIntend"
@@ -16,4 +15,29 @@
       android:layout_height="wrap_content" 
       android:layout_width="wrap_content" 
       android:visibility="visible" />
+  	
+  	<LinearLayout 
+  	android:id="@+id/buttonLayout1"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+	android:visibility="gone">
+	    
+	    <Button
+	        android:id="@+id/btnGallery"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/btnGallery" />
+	    <Button
+	        android:id="@+id/btnShare"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/btnShare" />
+	    <Button
+	        android:id="@+id/btnDelete"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/btnDelete" />
+    </LinearLayout>
 </LinearLayout>
