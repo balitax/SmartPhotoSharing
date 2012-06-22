@@ -1,7 +1,7 @@
 package com.hmi.smartphotosharing;
 
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.Camera.CameraActivity;
+import com.hmi.smartphotosharing.camera.CameraActivity;
 
 import android.app.TabActivity;
 import android.content.Intent;

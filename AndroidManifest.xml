@@ -23,11 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.hmi.smartphotosharing.GroupsActivity" android:label="Groups" />
-        <activity android:name="com.hmi.smartphotosharing.PopularActivity" android:label="Popular" />
-        <activity android:name="com.hmi.smartphotosharing.ProfileActivity" android:label="Profile" />
-        <activity android:name=".Camera.CameraActivity" android:label="Camera" />
-        <activity android:name="com.hmi.smartphotosharing.SettingsActivity" android:label="Settings" />
+        <activity android:name=".GroupsActivity" android:label="Groups" />
+        <activity android:name=".PopularActivity" android:label="Popular" />
+        <activity android:name=".ProfileActivity" android:label="Profile" />
+        <activity android:name=".camera.CameraActivity" android:label="Camera" />
+        <activity android:name=".SettingsActivity" android:label="Settings" />
     </application>
 
 </manifest>

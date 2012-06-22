@@ -12,7 +12,55 @@
         <item>Belize</item>
         <item>Benin</item>
     </string-array>
+    <string name="chooser_title">Share this photo via</string>
     
+    <!-- Preferences -->
+    <string name="inline_preferences">Inline Preferences</string>
+    <string name="title_checkbox_preference">Inline Title</string>
+    <string name="summary_checkbox_preference">Inline Summary</string>
+    
+    <string name="dialog_based_preferences">Diaglog preferences</string>
+    <string name="title_edittext_preference">Edit Text Title</string>
+    <string name="summary_edittext_preference">Edit Text Preference</string>
+    <string name="dialog_title_edittext_preference">Edit Text Dialog</string>
+    
+    <string name="title_list_preference">List Preferences</string>
+    <string name="summary_list_preference">list summary</string>
+    <string name="dialog_title_list_preference">list dialog</string>
+    
+    <string name="launch_preferences">Launch preferences</string>
+    <string name="title_screen_preference">Screen preference</string>
+    <string name="summary_screen_preference">Screen summary</string>
+    
+    <string name="title_next_screen_toggle_preference">next screen pref</string>
+    <string name="summary_next_screen_toggle_preference">next screen dialog</string>
+    
+    <string name="title_intent_preference">intent preference</string>
+    <string name="summary_intent_preference">intent summary</string>
+    
+    <string name="preference_attributes">Attribute preferences</string>
+    <string name="title_parent_preference">Parent prefs</string>
+    <string name="summary_parent_preference">Parent summary</string>
+    
+    <string name="title_child_preference">Child prefs</string>
+    <string name="summary_child_preference">Child summary</string>
+    
+	<string-array
+	    name="entries_list_preference">
+	   <item>item 1</item> 
+	   <item>item 2</item> 
+	   <item>item 3</item> 
+	   <item>item 4</item> 
+	</string-array>
+	
+	<string-array
+	    name="entryvalues_list_preference">
+	   <item>value 1</item> 
+	   <item>value 2</item> 
+	   <item>value 3</item> 
+	   <item>value 4</item> 
+	</string-array>	
+	
     <!-- Camera -->
     <string name="btnIntend">Take Picture</string>
     <string name="btnGallery">Gallery</string>

@@ -1,4 +1,4 @@
-package com.hmi.smartphotosharing;
+package com.hmi.smartphotosharing.examples;
 
 import android.content.Context;
 import android.view.Gravity;
@@ -8,7 +8,7 @@ import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-public class SettingsAdapter extends BaseExpandableListAdapter {
+public class ExpendableListAdapterExample extends BaseExpandableListAdapter {
 	
 	// Sample data set.  children[i] contains the children (String[]) for groups[i].
     private String[] groups = { "People Names", "Dog Names", "Cat Names", "Fish Names" };
@@ -21,7 +21,7 @@ public class SettingsAdapter extends BaseExpandableListAdapter {
 
 	Context context;		// The parenting Context that the Adapter is embedded in
 	
-	public SettingsAdapter(Context context) {
+	public ExpendableListAdapterExample(Context context) {
 		super();
 		
         this.context = context;
