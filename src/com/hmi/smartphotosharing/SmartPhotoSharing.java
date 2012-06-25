@@ -1,73 +1,114 @@
 package com.hmi.smartphotosharing;
 
-import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.camera.CameraActivity;
 
-import android.app.TabActivity;
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.widget.TabHost;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
+import com.hmi.smartphotosharing.camera.CameraFragment;
 /**
  * Main Activity class that controls the tabs.
  * @author Edwin
  *
  */
-public class SmartPhotoSharing extends TabActivity {
+public class SmartPhotoSharing extends Activity {
 	
 	public void onCreate(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);
-	    
-	    // Use the layout that is defined in main.xml
-	    setContentView(R.layout.main);
+		super.onCreate(savedInstanceState);
+		
+		// Setup action bar for tabs
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		actionBar.setDisplayShowTitleEnabled(false);
 
-	    // Set-up of tabs
-	    //----------------------------------------------------------------------
-	    
-	    Resources res = getResources(); 	// Resource object to get Drawables
-	    TabHost tabHost = getTabHost();  	// The activity TabHost
-	    TabHost.TabSpec spec;  				// Resusable TabSpec for each tab
-	    Intent intent;  					// Reusable Intent for each tab
+		// Popular tab
+		Tab tab = actionBar
+				.newTab()
+				.setText("Popular")
+				.setTabListener(new MyTabListener<PopularFragment>(this, "popular",
+						PopularFragment.class));
+		actionBar.addTab(tab);
 
-	    // Create an Intent to launch an Activity for the tab (to be reused)
-	    intent = new Intent().setClass(this, PopularActivity.class);
+		// Profile tab
+		tab = actionBar
+		.newTab()
+		.setText("Profile")
+		.setTabListener(new MyTabListener<ProfileFragment>(this, "profile",
+				ProfileFragment.class));
+		actionBar.addTab(tab);		
+		
+		// Groups tab
+		tab = actionBar
+				.newTab()
+				.setText("Groups")
+				.setTabListener(new MyTabListener<GroupsFragment>(this, "groups",
+						GroupsFragment.class));
+		actionBar.addTab(tab);
 
-	    // Initialize a TabSpec for each tab and add it to the TabHost
-	    spec = tabHost.newTabSpec("popular").setIndicator("Popular",
-	                      res.getDrawable(R.drawable.ic_tab_popular))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);
-
-	    // Groups tab
-	    intent = new Intent().setClass(this, GroupsActivity.class);
-	    spec = tabHost.newTabSpec("groups").setIndicator("Groups",
-	                      res.getDrawable(R.drawable.ic_tab_artists))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);
-
-	    // Camera tab
-	    intent = new Intent().setClass(this, CameraActivity.class);
-	    spec = tabHost.newTabSpec("camera").setIndicator("Camera",
-	                      res.getDrawable(R.drawable.ic_tab_camera))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);
-	    
-	    // Profile tab
-	    intent = new Intent().setClass(this, ProfileActivity.class);
-	    spec = tabHost.newTabSpec("profile").setIndicator("Profile",
-                res.getDrawable(R.drawable.ic_tab_artists))
-            .setContent(intent);
-	    tabHost.addTab(spec);
-	    
-	    // Settings tab
-	    intent = new Intent().setClass(this, SettingsActivity.class);
-	    spec = tabHost.newTabSpec("settings").setIndicator("Settings",
-	                      res.getDrawable(R.drawable.ic_tab_artists))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);
-
-	    // Set the tab to page 1
-	    tabHost.setCurrentTab(1);
+		// Camera tab
+		tab = actionBar
+				.newTab()
+				.setText("Camera")
+				.setTabListener(new MyTabListener<CameraFragment>(this, "camera",
+						CameraFragment.class));
+		actionBar.addTab(tab);
+	
 	}
 	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.main_menu, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        	case android.R.id.home:
+	            // App icon in action bar clicked; go home
+	            Intent intent = new Intent(this, SmartPhotoSharing.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
+	        case R.id.settings:
+	        	replaceTab(SettingsFragment.class);
+		        return true;
+		    case R.id.help:
+		    	replaceTab(HelpFragment.class);
+		    	return true;
+	        default:
+	        	return super.onOptionsItemSelected(item);
+        }
+    }
+
+	private void replaceTab(Class<? extends Fragment> cls) {
+    	
+		try {
+			Fragment newFragment = cls.newInstance();
+	    	FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+	    	// Replace whatever is in the fragment_container view with this fragment,
+	    	// and add the transaction to the back stack
+	    	transaction.replace(android.R.id.content, newFragment);
+	    	transaction.addToBackStack(null);
+
+	    	// Commit the transaction
+	    	transaction.commit();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 }

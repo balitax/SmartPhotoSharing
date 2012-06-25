@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,7 +20,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,7 +36,8 @@ import com.hmi.smartphotosharing.R;
  * @author Edwin
  *
  */
-public class CameraActivity extends Activity {
+public class CameraFragment extends Fragment {
+
 
 	private static final int ACTION_TAKE_PHOTO = 1;
 
@@ -49,18 +53,29 @@ public class CameraActivity extends Activity {
 
 	private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 	
-	/** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.camera);
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		
+		View view = inflater.inflate(R.layout.camera, container, false);
 
 		// Find the ImageView from the xml file
-		mImageView = (ImageView) findViewById(R.id.imageView1);
+		mImageView = (ImageView) view.findViewById(R.id.imageView1);
 		mImageBitmap = null;
 
 		// Disable the button if the Intent is not available
-		Button picBtn = (Button) findViewById(R.id.btnIntend);
+		Button picBtn = (Button) view.findViewById(R.id.btnIntend);
 		setBtnListenerOrDisable( 
 				picBtn, 
 				mTakePicOnClickListener,
@@ -68,28 +83,30 @@ public class CameraActivity extends Activity {
 		);
 		
 		// Share button
-		Button shareBtn = (Button) findViewById(R.id.btnShare);
+		Button shareBtn = (Button) view.findViewById(R.id.btnShare);
 		setBtnListenerOrDisable( 
 				shareBtn, 
 				mSharePicOnClickListener,
 				Intent.ACTION_SEND
 		);				
-		
+				
 		// Check the Android version and decide which album path settings to use
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
 			mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
 		} else {
 			mAlbumStorageDirFactory = new BaseAlbumDirFactory();
 		}
+		
+		return view;
 	}
 	
 	/**
 	 * Method that handles the result of the Intent.
 	 */
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		
-		if (requestCode == ACTION_TAKE_PHOTO && resultCode == RESULT_OK) {
+		if (requestCode == ACTION_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
 			handleCameraPhoto();
 		}
 
@@ -99,15 +116,14 @@ public class CameraActivity extends Activity {
 	 * Some lifecycle callbacks so that the image can survive orientation change
 	 */
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
+	public void onSaveInstanceState(Bundle outState) {
 		outState.putParcelable(BITMAP_STORAGE_KEY, mImageBitmap);
 		outState.putBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY, (mImageBitmap != null) );
 		super.onSaveInstanceState(outState);
 	}
 
-	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
+		super.onSaveInstanceState(savedInstanceState);
 		mImageBitmap = savedInstanceState.getParcelable(BITMAP_STORAGE_KEY);
 		mImageView.setImageBitmap(mImageBitmap);
 		mImageView.setVisibility(
@@ -115,6 +131,20 @@ public class CameraActivity extends Activity {
 						ImageView.VISIBLE : ImageView.INVISIBLE
 		);
 	}
+	
+	/**
+	 * Binds the bitmap image to the View and adds it to the gallery.
+	 */
+	private void handleCameraPhoto() {
+
+		if (mCurrentPhotoPath != null) {
+						
+			setPic();
+			galleryAddPic();
+			mCurrentPhotoPath = null;
+		}
+
+	}	
 	
 	/**
 	 *  Photo album for this application 
@@ -224,7 +254,7 @@ public class CameraActivity extends Activity {
 			File f = new File(mCurrentPhotoPath);
 		    Uri contentUri = Uri.fromFile(f);
 		    mediaScanIntent.setData(contentUri);
-		    this.sendBroadcast(mediaScanIntent);
+		    getActivity().sendBroadcast(mediaScanIntent);
 	}
 
 	/**
@@ -272,22 +302,6 @@ public class CameraActivity extends Activity {
 	}
 	
 	/**
-	 * Binds the bitmap image to the View and adds it to the gallery.
-	 */
-	private void handleCameraPhoto() {
-
-		if (mCurrentPhotoPath != null) {
-
-			LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.buttonLayout1);
-			buttonLayout.setVisibility(View.VISIBLE);
-			setPic();
-			galleryAddPic();
-			mCurrentPhotoPath = null;
-		}
-
-	}
-
-	/**
 	 * OnClickListener that responds to the Take Photo button being clicked.
 	 * Dispatches the capturing of the photo to another app.
 	 */
@@ -298,7 +312,11 @@ public class CameraActivity extends Activity {
 				dispatchTakePictureIntent(ACTION_TAKE_PHOTO);
 			}
 	};
-	
+
+	/**
+	 * OnClickListener that responds to the Share button being clicked.
+	 * Shows a chooser for sharing through an external application.
+	 */
 	Button.OnClickListener mSharePicOnClickListener = 
 		new Button.OnClickListener() {
 			@Override
@@ -307,6 +325,7 @@ public class CameraActivity extends Activity {
 			}
 
 	};
+	
 	/**
 	 * Indicates whether the specified action can be used as an intent. This
 	 * method queries the package manager for installed packages that can
@@ -339,7 +358,7 @@ public class CameraActivity extends Activity {
 			Button btn, 
 			Button.OnClickListener onClickListener,
 			String intentName) {
-		if (isIntentAvailable(this, intentName)) {
+		if (getActivity() != null && isIntentAvailable(getActivity(), intentName)) {
 			btn.setOnClickListener(onClickListener);        	
 		} else {
 			btn.setText( 
@@ -347,5 +366,4 @@ public class CameraActivity extends Activity {
 			btn.setClickable(false);
 		}
 	}
-
 }

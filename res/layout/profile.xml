@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/listView1"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
-
-    </ListView>
+		
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/profile"></TextView>
+    </LinearLayout>
