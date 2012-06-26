@@ -62,6 +62,10 @@ public class SmartPhotoSharing extends Activity {
 	
 	}
 	
+	/**
+	 * This method sets the items of the menu form an inflated xml file.
+	 * @param menu The menu that was created.
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 	    MenuInflater inflater = getMenuInflater();
@@ -69,6 +73,10 @@ public class SmartPhotoSharing extends Activity {
 	    return true;
 	}
 	
+	/**
+	 * Method that handles the interaction with the menu buttons and the app icon.
+	 * @param item The menu item that was interacted with.
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -79,36 +87,13 @@ public class SmartPhotoSharing extends Activity {
 	            startActivity(intent);
 	            return true;
 	        case R.id.settings:
-	        	replaceTab(SettingsFragment.class);
+	        	Util.replaceTab(this,SettingsFragment.class);
 		        return true;
 		    case R.id.help:
-		    	replaceTab(HelpFragment.class);
+		    	Util.replaceTab(this,HelpFragment.class);
 		    	return true;
 	        default:
 	        	return super.onOptionsItemSelected(item);
         }
     }
-
-	private void replaceTab(Class<? extends Fragment> cls) {
-    	
-		try {
-			Fragment newFragment = cls.newInstance();
-	    	FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-	    	// Replace whatever is in the fragment_container view with this fragment,
-	    	// and add the transaction to the back stack
-	    	transaction.replace(android.R.id.content, newFragment);
-	    	transaction.addToBackStack(null);
-
-	    	// Commit the transaction
-	    	transaction.commit();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
 }

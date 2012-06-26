@@ -1,5 +1,7 @@
 package com.hmi.smartphotosharing;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,7 +23,6 @@ public class GroupsFragment extends ListFragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		        	
 		return inflater.inflate(R.layout.groups, container, false);
 	}
 	
@@ -46,10 +47,17 @@ public class GroupsFragment extends ListFragment {
         	
           public void onItemClick(AdapterView<?> parent, View view,
               int position, long id) {
-            // When clicked, show a toast with the TextView text
-        	GroupHolder gh = (GroupHolder)view.getTag();
-            Toast.makeText(getActivity(), gh.txtTitle.getText(),
-                Toast.LENGTH_SHORT).show();
+
+	      		Fragment newFragment = Fragment.instantiate(getActivity(), GroupDetailFragment.class.getName());
+	          	FragmentTransaction ft = getFragmentManager().beginTransaction();
+	
+	          	// Replace whatever is in the fragment_container view with this fragment,
+	          	// and add the transaction to the back stack
+	          	ft.replace(android.R.id.content, newFragment);
+	          	ft.addToBackStack(null);
+	
+	          	// Commit the transaction
+	          	ft.commit();
           }
         });
 	}
