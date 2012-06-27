@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
+    <!--  General -->
+    <string name="app_name">Smart Photo Sharing</string>
+    <string name="icon_unknown">Unknown Icon</string>
+    <string name="chooser_title">Share this photo via</string>
+    <string name="button_send">Send</string>    
+    <string name="button_share">Share</string>    
+    <string name="add_comment">Add a comment</string>   
+    <string name="create_group">Create group</string>   
+    
     <!--  Placeholder strings -->
     
     <string name="popular_intro">My local pictures</string>
@@ -8,8 +17,6 @@
     <string name="profile">This is the Profile tab.</string>
     <string name="help">This is the Help page.</string>
     
-    <string name="app_name">Smart Photo Sharing</string>
-    <string name="icon_unknown">Unknown Icon</string>
     <string-array name="countries_array">
         <item>Bahrain</item>
         <item>Bangladesh</item>
@@ -19,7 +26,13 @@
         <item>Belize</item>
         <item>Benin</item>
     </string-array>
-    <string name="chooser_title">Share this photo via</string>
+    
+    <string-array name="demo_groups">
+        <item>Lowlands 2012</item>
+        <item>Holiday 2011</item>
+        <item>Utwente</item>
+        <item>My Friends</item>
+    </string-array>
     
     <!--  Menu -->
     
@@ -76,16 +89,22 @@
 	
     <!-- Camera -->
     
+    <string name="album_name">SPS</string>
     <string name="btnIntend">Take Picture</string>
     <string name="btnGallery">Gallery</string>
     <string name="btnShare">Share</string>
     <string name="btnDelete">Delete</string>
     <string name="cannot">Cannot</string>
-    <string name="album_name">SPS</string>
     
     <!--  Gallery -->
         
     <string name="picture">Picture</string>
     <string name="select_intro">Long-press a thumbnail to add an image</string>
 	<string name="show_intro">Press a thumbnail to display at larger size</string>
+	
+	<!--  Handle Intent -->
+	<string name="intent_intro">How would you like to share this picture?</string>
+	<string name="intent_img_description">This is the image that was shared.</string>
+	<string name="intent_pick_group">Select a group to share with.</string>
+	
 </resources>

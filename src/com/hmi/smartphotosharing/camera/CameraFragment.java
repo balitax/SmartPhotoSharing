@@ -25,8 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
+import com.hmi.smartphotosharing.HandleIntent;
 import com.hmi.smartphotosharing.R;
 
 /**
@@ -81,15 +81,11 @@ public class CameraFragment extends Fragment {
 				mTakePicOnClickListener,
 				MediaStore.ACTION_IMAGE_CAPTURE
 		);
+
+		// Set onClickListener for the share button
+		Button shareBtn = (Button) view.findViewById(R.id.btnShare);	
+		shareBtn.setOnClickListener(mShareOnClickListener);
 		
-		// Share button
-		Button shareBtn = (Button) view.findViewById(R.id.btnShare);
-		setBtnListenerOrDisable( 
-				shareBtn, 
-				mSharePicOnClickListener,
-				Intent.ACTION_SEND
-		);				
-				
 		// Check the Android version and decide which album path settings to use
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
 			mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
@@ -133,6 +129,33 @@ public class CameraFragment extends Fragment {
 	}
 	
 	/**
+	 * OnClickListener that responds to the Take Photo button being clicked.
+	 * Dispatches the capturing of the photo to another app.
+	 */
+	Button.OnClickListener mTakePicOnClickListener = 
+		new Button.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dispatchTakePictureIntent(ACTION_TAKE_PHOTO);
+			}
+	};
+
+	Button.OnClickListener mShareOnClickListener = 
+		new Button.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(),HandleIntent.class);
+				intent.setType("image/jpeg");
+
+				intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mCurrentPhotoPath));
+				
+				// Create and start the chooser
+				startActivity(intent);
+			}
+	};
+
+	
+	/**
 	 * Binds the bitmap image to the View and adds it to the gallery.
 	 */
 	private void handleCameraPhoto() {
@@ -141,7 +164,7 @@ public class CameraFragment extends Fragment {
 						
 			setPic();
 			galleryAddPic();
-			mCurrentPhotoPath = null;
+			//mCurrentPhotoPath = null;
 		}
 
 	}	
@@ -291,40 +314,6 @@ public class CameraFragment extends Fragment {
 		// Handle the result of the Intent
 		startActivityForResult(takePictureIntent, actionCode);
 	}
-	
-	private void showChooser() {
-		Intent intent = new Intent(Intent.ACTION_SEND);
-		String title = getResources().getText(R.string.chooser_title).toString();
-		// Create and start the chooser
-		Intent chooser = Intent.createChooser(intent, title);
-		startActivity(chooser);
-		
-	}
-	
-	/**
-	 * OnClickListener that responds to the Take Photo button being clicked.
-	 * Dispatches the capturing of the photo to another app.
-	 */
-	Button.OnClickListener mTakePicOnClickListener = 
-		new Button.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				dispatchTakePictureIntent(ACTION_TAKE_PHOTO);
-			}
-	};
-
-	/**
-	 * OnClickListener that responds to the Share button being clicked.
-	 * Shows a chooser for sharing through an external application.
-	 */
-	Button.OnClickListener mSharePicOnClickListener = 
-		new Button.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				showChooser();
-			}
-
-	};
 	
 	/**
 	 * Indicates whether the specified action can be used as an intent. This
