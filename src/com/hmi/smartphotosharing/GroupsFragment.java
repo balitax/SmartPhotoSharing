@@ -10,9 +10,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import com.hmi.smartphotosharing.GroupAdapter.GroupHolder;
 
 public class GroupsFragment extends ListFragment {
 	
@@ -32,9 +29,10 @@ public class GroupsFragment extends ListFragment {
 
         // Create an array of Group objects, can be replaced by a database query later on
         Group groups[] = new Group[] {
-        		new Group(R.drawable.ic_unknown, "Lowlands"),
-        		new Group(R.drawable.ic_unknown, "Utwente"),
-        		new Group(R.drawable.ic_unknown, "Holiday 2011")
+        		//TODO 
+        		//new Group(R.drawable.ic_unknown, "Lowlands"),
+        		//new Group(R.drawable.ic_unknown, "Utwente"),
+        		//new Group(R.drawable.ic_unknown, "Holiday 2011")
         };
         
         setListAdapter(new GroupAdapter(getActivity(), R.layout.list_item, groups));

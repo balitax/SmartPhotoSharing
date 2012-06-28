@@ -8,25 +8,17 @@
     <string name="button_send">Send</string>    
     <string name="button_share">Share</string>    
     <string name="add_comment">Add a comment</string>   
-    <string name="create_group">Create group</string>   
+    <string name="create_group">New group</string>   
+    <string name="no_data">No data</string>
     
     <!--  Placeholder strings -->
     
     <string name="popular_intro">My local pictures</string>
     <string name="groups">This is the Groups tab.</string>
+    <string name="groups_http">http://www.skybox.utwente.nl/test/tekst.php</string>
     <string name="profile">This is the Profile tab.</string>
     <string name="help">This is the Help page.</string>
-    
-    <string-array name="countries_array">
-        <item>Bahrain</item>
-        <item>Bangladesh</item>
-        <item>Barbados</item>
-        <item>Belarus</item>
-        <item>Belgium</item>
-        <item>Belize</item>
-        <item>Benin</item>
-    </string-array>
-    
+        
     <string-array name="demo_groups">
         <item>Lowlands 2012</item>
         <item>Holiday 2011</item>
@@ -95,6 +87,7 @@
     <string name="btnShare">Share</string>
     <string name="btnDelete">Delete</string>
     <string name="cannot">Cannot</string>
+    <string name="camera_img_description">The photo that was just taken.</string>
     
     <!--  Gallery -->
         

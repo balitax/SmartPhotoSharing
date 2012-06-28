@@ -139,14 +139,20 @@ public class CameraFragment extends Fragment {
 				dispatchTakePictureIntent(ACTION_TAKE_PHOTO);
 			}
 	};
-
+	
+	/**
+	 * OnClickListener that responds to the Share button being clicked.
+	 * Simply sends the current picture to the share page.
+	 */
 	Button.OnClickListener mShareOnClickListener = 
 		new Button.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				// Send the intent to the class that can handle incoming photos
 				Intent intent = new Intent(getActivity(),HandleIntent.class);
 				intent.setType("image/jpeg");
 
+				// Add the Uri of the current photo as extra value
 				intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mCurrentPhotoPath));
 				
 				// Create and start the chooser

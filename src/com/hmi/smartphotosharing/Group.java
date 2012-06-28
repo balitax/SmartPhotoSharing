@@ -7,14 +7,14 @@ package com.hmi.smartphotosharing;
  */
 public class Group {
 
-	public int icon;		// Reference to the Drawable
+	public String icon;		// Reference to the Drawable
 	public String title;	// Title of the list item
 	
 	public Group() {
 		super();
 	}
 	
-	public Group(int icon, String title) {
+	public Group(String icon, String title) {
 		super();
 		this.icon = icon;
 		this.title = title;

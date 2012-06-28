@@ -19,10 +19,12 @@ import com.hmi.smartphotosharing.R;
  *
  */
 public class GroupAdapter extends ArrayAdapter<Group> {
+	// TODO : implements Filterable - voor type searching
 	
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
 	Group data[] = null;	// A Group array that contains all list items
+	DrawableManager dm;
 	
 	public GroupAdapter(Context context, int resource, Group[] objects) {
 		super(context, resource, objects);
@@ -30,6 +32,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         this.layoutResourceId = resource;
         this.context = context;
         this.data = objects;
+        dm = new DrawableManager(context);
 	}
 
 	/**
@@ -60,8 +63,10 @@ public class GroupAdapter extends ArrayAdapter<Group> {
        
         Group group = data[position];
         holder.txtTitle.setText(group.title);
-        holder.imgIcon.setImageResource(group.icon);
-       
+        
+        // Set the icon for this list item
+        dm.fetchDrawableOnThread(group.icon, holder.imgIcon);
+        
         return row;
     }
 	

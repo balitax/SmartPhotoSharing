@@ -31,6 +31,7 @@ public class HandleIntent extends Activity  {
 	    String action = intent.getAction();
 	    String type = intent.getType();
 
+	    // Handle the Intent form another app
 	    if (Intent.ACTION_SEND.equals(action) && type != null) {
 	        if ("text/plain".equals(type)) {
 	            handleSendText(intent); // Handle text being sent
@@ -41,7 +42,10 @@ public class HandleIntent extends Activity  {
 	        if (type.startsWith("image/")) {
 	            handleSendMultipleImages(intent); // Handle multiple images being sent
 	        }
-	    } else {
+	    } 
+	    
+	    // Handle the Intent that was sent internally, from another Activity
+	    else {
 	    	if (type.startsWith("image/")) {
 	            handleSendImage(intent); // Handle single image being sent
 	        }
