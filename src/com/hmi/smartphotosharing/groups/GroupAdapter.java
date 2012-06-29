@@ -1,4 +1,4 @@
-package com.hmi.smartphotosharing;
+package com.hmi.smartphotosharing.groups;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,8 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hmi.smartphotosharing.Group;
+import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.R.id;
+import com.hmi.smartphotosharing.groups.Group;
 
 /**
  * Custom ArrayAdapter class that is used to display a list of items with an icon.

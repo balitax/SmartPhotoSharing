@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.hmi.smartphotosharing.camera.CameraFragment;
+import com.hmi.smartphotosharing.groups.GroupsFragment;
 /**
  * Main Activity class that controls the tabs.
  * @author Edwin
@@ -30,19 +31,19 @@ public class SmartPhotoSharing extends Activity {
 
 		// Popular tab
 		Tab tab = actionBar
-				.newTab()
-				.setText("Popular")
-				.setTabListener(new MyTabListener<PopularFragment>(this, "popular",
-						PopularFragment.class));
-		actionBar.addTab(tab);
-
-		// Profile tab
-		tab = actionBar
 		.newTab()
 		.setText("Profile")
 		.setTabListener(new MyTabListener<ProfileFragment>(this, "profile",
 				ProfileFragment.class));
-		actionBar.addTab(tab);		
+		actionBar.addTab(tab);	
+
+		// Profile tab
+		tab = actionBar
+		.newTab()
+		.setText("Popular")
+		.setTabListener(new MyTabListener<PopularFragment>(this, "popular",
+				PopularFragment.class));
+		actionBar.addTab(tab);	
 		
 		// Groups tab
 		tab = actionBar
@@ -52,14 +53,6 @@ public class SmartPhotoSharing extends Activity {
 						GroupsFragment.class));
 		actionBar.addTab(tab);
 
-		// Camera tab
-		tab = actionBar
-				.newTab()
-				.setText("Camera")
-				.setTabListener(new MyTabListener<CameraFragment>(this, "camera",
-						CameraFragment.class));
-		actionBar.addTab(tab);
-	
 	}
 	
 	/**
@@ -86,6 +79,9 @@ public class SmartPhotoSharing extends Activity {
 	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	            startActivity(intent);
 	            return true;
+	        case R.id.camera:
+	        	Util.replaceTab(this,CameraFragment.class);
+		        return true;
 	        case R.id.settings:
 	        	Util.replaceTab(this,SettingsFragment.class);
 		        return true;

@@ -1,4 +1,4 @@
-package com.hmi.smartphotosharing;
+package com.hmi.smartphotosharing.groups;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,9 @@
-package com.hmi.smartphotosharing;
+package com.hmi.smartphotosharing.groups;
+
+import com.hmi.smartphotosharing.PhotoDetailAdapter;
+import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.R.id;
+import com.hmi.smartphotosharing.R.layout;
 
 import android.app.Fragment;
 import android.os.Bundle;

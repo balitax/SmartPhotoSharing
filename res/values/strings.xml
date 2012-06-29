@@ -9,27 +9,28 @@
     <string name="button_share">Share</string>    
     <string name="add_comment">Add a comment</string>   
     <string name="create_group">New group</string>   
-    <string name="no_data">No data</string>
+    <string name="no_data">This is an empty list</string>
+    
+    <!--  Profile -->
+    
+    <string name="profile_intro">This is the Profile tab.</string>
+    <string name="profile_name">Name goes here.</string>
+    <string name="profile_line2">This is another line.</string>
+    <string name="profile_line3">Even more text</string>
     
     <!--  Placeholder strings -->
     
     <string name="popular_intro">My local pictures</string>
-    <string name="groups">This is the Groups tab.</string>
+    <string name="groups_intro">This is the Groups tab.</string>
     <string name="groups_http">http://www.skybox.utwente.nl/test/tekst.php</string>
-    <string name="profile">This is the Profile tab.</string>
     <string name="help">This is the Help page.</string>
         
-    <string-array name="demo_groups">
-        <item>Lowlands 2012</item>
-        <item>Holiday 2011</item>
-        <item>Utwente</item>
-        <item>My Friends</item>
-    </string-array>
-    
     <!--  Menu -->
     
     <string name="menu_settings">Settings</string>
     <string name="menu_help">Help</string>
+    <string name="menu_camera">Camera</string>
+    <string name="menu_search">Search</string>
     
     <!-- Preferences -->
     
@@ -100,4 +101,10 @@
 	<string name="intent_img_description">This is the image that was shared.</string>
 	<string name="intent_pick_group">Select a group to share with.</string>
 	
+	<string-array name="demo_groups">
+        <item>Lowlands 2012</item>
+        <item>Holiday 2011</item>
+        <item>Utwente</item>
+        <item>My Friends</item>
+    </string-array>
 </resources>

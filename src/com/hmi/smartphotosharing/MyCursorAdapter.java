@@ -13,7 +13,6 @@ import android.widget.SimpleCursorAdapter;
 public class MyCursorAdapter extends SimpleCursorAdapter {
 
 	Context context;
-	
 	int layout;
 
 	public MyCursorAdapter(Context context, int layout, Cursor c,
@@ -30,9 +29,7 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 
         String name = c.getString(nameCol);
 
-        /**
-         * Next set the name of the entry.
-         */     
+        // Next set the image URI
         ImageView img = (ImageView) v.findViewById(R.id.image1);
         if (img != null) {
             img.setImageURI(Uri.parse(name));
@@ -52,9 +49,7 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
 
         String name = c.getString(nameCol);
 
-        /**
-         * Next set the name of the entry.
-         */     
+        //Next set the image URI 
         ImageView img = (ImageView) v.findViewById(R.id.image1);
         if (img != null) {
             img.setImageURI(Uri.parse(name));

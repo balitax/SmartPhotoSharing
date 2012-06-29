@@ -1,4 +1,4 @@
-package com.hmi.smartphotosharing;
+package com.hmi.smartphotosharing.groups;
 
 public class GroupContainer {
 

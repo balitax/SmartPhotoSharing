@@ -1,4 +1,4 @@
-package com.hmi.smartphotosharing;
+package com.hmi.smartphotosharing.groups;
 
 /**
  * This class represents a Group list item, containing an icon and a title.
