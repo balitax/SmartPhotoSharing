@@ -21,52 +21,67 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.R.id;
-import com.hmi.smartphotosharing.R.layout;
-import com.hmi.smartphotosharing.R.string;
+import com.hmi.smartphotosharing.SmartPhotoSharing;
 
 public class GroupsFragment extends ListFragment {
 	
 	private List<Group> mObjectList = new ArrayList<Group>() ;
-
+	
     private static final String DEBUG_TAG = "HttpExample";
-    private TextView textView;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+        setHasOptionsMenu(true);
     }
     
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.groups, container, false);
-
-        textView = (TextView) view.findViewById(R.id.groups_intro);
-        
-        return view;
+        return inflater.inflate(R.layout.groups, container, false);
 	}
+	
 	
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		
-        if (hasNetwork()) {
-            if (mObjectList.isEmpty())
-            	new DownloadText().execute(getActivity().getResources().getString(R.string.groups_http));            	
-        } else {
-            textView.setText("No network connection available.");
-        }
+	public void onStart() {
+        super.onStart();
+        
+        loadData();
 	}
 	
+	private boolean loadData() {
+		boolean res = false;
+		SmartPhotoSharing s = (SmartPhotoSharing)getActivity();
+		
+        s.updatePrefs();
+
+        s.updateConnectedFlags();
+        
+        if (SmartPhotoSharing.refreshDisplay) {
+        	if (s.canLoad()) {
+            	
+	        		new DownloadText().execute(getActivity().getResources().getString(R.string.groups_http));
+	        		res = true;
+	        	
+            	
+        	} else {
+		        Toast.makeText(getActivity(), R.string.connection_error, Toast.LENGTH_SHORT).show();		        
+        	}
+        } 		
+        
+        return res;
+	}
+
 	@Override
 	public void onListItemClick (ListView l, View v, int position, long id) {
 
@@ -81,6 +96,18 @@ public class GroupsFragment extends ListFragment {
       	// Commit the transaction
       	ft.commit();	
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        	case R.id.refresh:
+		        Toast.makeText(getActivity(), "Refresh!", Toast.LENGTH_SHORT).show();	
+        		
+        		return loadData();
+	        default:
+	        	return super.onOptionsItemSelected(item);
+        }
+    }
 	
 	/**
 	 * This method binds the JSON data to a GroupList.
@@ -97,7 +124,6 @@ public class GroupsFragment extends ListFragment {
 	 * Checks whether there is a network connection available
 	 * @return true if the device is connected to a network
 	 */
-	// TODO : only use Wifi Networks
 	public boolean hasNetwork() {
 		// Gets the URL from the UI's text field.
         ConnectivityManager connMgr = (ConnectivityManager) 
@@ -121,7 +147,7 @@ public class GroupsFragment extends ListFragment {
 		}
 		
 		setListAdapter(new GroupAdapter(getActivity(), R.layout.list_item, mObjectList.toArray(new Group[group_list.size()])));
-
+		mObjectList.clear();
 	}
 	
 	// Uses AsyncTask to create a task away from the main UI thread. This task takes a 
