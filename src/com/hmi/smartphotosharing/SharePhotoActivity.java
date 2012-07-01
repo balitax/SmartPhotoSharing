@@ -10,11 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
-public class HandleIntent extends Activity  {
+public class SharePhotoActivity extends Activity  {
 	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.handle_intent);
+		setContentView(R.layout.share_photo);
 		
 		// Populate the Spinner
 		Spinner spinner = (Spinner) findViewById(R.id.groups_spinner);

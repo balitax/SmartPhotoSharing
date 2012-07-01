@@ -26,7 +26,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.hmi.smartphotosharing.HandleIntent;
+import com.hmi.smartphotosharing.SharePhotoActivity;
 import com.hmi.smartphotosharing.R;
 
 /**
@@ -149,7 +149,7 @@ public class CameraFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// Send the intent to the class that can handle incoming photos
-				Intent intent = new Intent(getActivity(),HandleIntent.class);
+				Intent intent = new Intent(getActivity(),SharePhotoActivity.class);
 				intent.setType("image/jpeg");
 
 				// Add the Uri of the current photo as extra value

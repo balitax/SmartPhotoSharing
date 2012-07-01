@@ -6,25 +6,43 @@
     <string name="icon_unknown">Unknown Icon</string>
     <string name="chooser_title">Share this photo via</string>
     <string name="button_send">Send</string>    
-    <string name="button_share">Share</string>    
+    <string name="button_share">Share</string>
+    <string name="button_add_comment">Add</string>      
     <string name="add_comment">Add a comment</string>   
     <string name="create_group">New group</string>   
     <string name="no_data">This is an empty list</string>
     
+    <!--  Placeholder strings -->
+    
+    <string name="popular_intro">My local pictures</string>
+    <string name="help">This is the Help page.</string>
+    
+    <!--  Groups -->
+    
+    <string name="groups_intro">This is the Groups tab.</string>
+    <string name="groups_http">http://www.skybox.utwente.nl/test/tekst.php</string>
+    
+    <!--  Group Detail -->
+    
+    <string name="group_detail_name">My Awesome Group</string>
+    <string name="group_detail_line2">%1$d members</string>
+    <string name="group_detail_line3">%1$d photos</string>
+    <string name="group_detail_intro">This is the group detail page</string>
+    
+    <!--  Photo Detail -->
+    
+    <string name="photo_detail_name">This is a picture</string>
+    <string name="photo_detail_line2">Taken by %1$s</string>
+    <string name="photo_detail_line3">Posted in group %1$s</string>
+    <string name="photo_detail_intro">This is the photo detail page</string>
+    <string name="photo_detail_url">http://www.skybox.utwente.nl/test/rozen.jpg</string>
     <!--  Profile -->
     
     <string name="profile_intro">This is the Profile tab.</string>
     <string name="profile_name">Name goes here.</string>
     <string name="profile_line2">This is another line.</string>
     <string name="profile_line3">Even more text</string>
-    
-    <!--  Placeholder strings -->
-    
-    <string name="popular_intro">My local pictures</string>
-    <string name="groups_intro">This is the Groups tab.</string>
-    <string name="groups_http">http://www.skybox.utwente.nl/test/tekst.php</string>
-    <string name="help">This is the Help page.</string>
-        
+            
     <!--  Menu -->
     
     <string name="menu_settings">Settings</string>
@@ -32,6 +50,7 @@
     <string name="menu_camera">Camera</string>
     <string name="menu_search">Search</string>
     <string name="menu_refresh">Refresh</string>
+    <string name="menu_group_manage">Manage Group</string>
     
     <!-- Preferences -->
     
@@ -53,7 +72,7 @@
         
     <string name="picture">Picture</string>
     <string name="select_intro">Long-press a thumbnail to add an image</string>
-	<string name="show_intro">Press a thumbnail to display at larger size</string>
+	
 	
 	<!--  Handle Intent -->
 	<string name="intent_intro">How would you like to share this picture?</string>

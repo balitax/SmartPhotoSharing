@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
@@ -21,8 +22,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.hmi.smartphotosharing.OnLoadDataListener;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SmartPhotoSharing;
 
@@ -38,6 +38,8 @@ public class GroupsFragment extends ListFragment {
 	private List<Group> mObjectList = new ArrayList<Group>() ;
 	
     private static final String DEBUG_TAG = "HttpExample";
+    
+    private OnLoadDataListener mListener;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,15 @@ public class GroupsFragment extends ListFragment {
         return inflater.inflate(R.layout.groups, container, false);
 	}
 	
+	@Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnLoadDataListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
+        }
+    }	
 	
 	@Override
 	public void onStart() {
@@ -61,19 +72,12 @@ public class GroupsFragment extends ListFragment {
 	
 	private boolean loadData() {
 		boolean res = false;
-		SmartPhotoSharing s = (SmartPhotoSharing)getActivity();
-		
-        s.updatePrefs();
-
-        s.updateConnectedFlags();
+		mListener.onLoadData();
         
         if (SmartPhotoSharing.refreshDisplay) {
-        	if (s.canLoad()) {
-            	
-	        		new DownloadText().execute(getActivity().getResources().getString(R.string.groups_http));
-	        		res = true;
-	        	
-            	
+        	if (mListener.canLoad()) {
+        		new DownloadText().execute(getActivity().getResources().getString(R.string.groups_http));
+        		res = true;
         	} else {
 		        Toast.makeText(getActivity(), R.string.connection_error, Toast.LENGTH_SHORT).show();		        
         	}
@@ -84,13 +88,13 @@ public class GroupsFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick (ListView l, View v, int position, long id) {
-
-  		Fragment newFragment = Fragment.instantiate(getActivity(), GroupDetailFragment.class.getName());
+		
+  		Fragment newFragment = new GroupDetailFragment(id);
       	FragmentTransaction ft = getFragmentManager().beginTransaction();
 
       	// Replace whatever is in the fragment_container view with this fragment,
       	// and add the transaction to the back stack
-      	ft.replace(android.R.id.content, newFragment);
+      	ft.replace(android.R.id.content, newFragment, "GroupDetailFragment");
       	ft.addToBackStack(null);
 
       	// Commit the transaction
@@ -146,7 +150,12 @@ public class GroupsFragment extends ListFragment {
 		    mObjectList.add(gc.getPost());
 		}
 		
-		setListAdapter(new GroupAdapter(getActivity(), R.layout.list_item, mObjectList.toArray(new Group[group_list.size()])));
+		setListAdapter(new GroupAdapter(
+							getActivity(), 
+							R.layout.list_item, 
+							mObjectList.toArray(new Group[group_list.size()]),
+							mListener.getDrawableManager()
+						));
 		mObjectList.clear();
 	}
 	
@@ -223,5 +232,5 @@ public class GroupsFragment extends ListFragment {
     		return sb.toString();
     	}
     }
-
+ 
 }

@@ -16,7 +16,7 @@ import android.widget.ImageView;
  * - provides method to return bitmaps from array
  *
  */
-public class PhotoDetailAdapter extends BaseAdapter {
+public class MyGalleryAdapter extends BaseAdapter {
 
 	private int currentPic = 0;
 	
@@ -32,7 +32,7 @@ public class PhotoDetailAdapter extends BaseAdapter {
     Bitmap placeholder;
 
     //constructor
-    public PhotoDetailAdapter(Context c) {
+    public MyGalleryAdapter(Context c) {
     	
     	//instantiate context
     	galleryContext = c;

@@ -4,6 +4,7 @@ import com.hmi.smartphotosharing.groups.Group;
 import com.hmi.smartphotosharing.groups.GroupAdapter;
 import com.hmi.smartphotosharing.groups.GroupDetailFragment;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
@@ -16,7 +17,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class ProfileFragment extends ListFragment {
-	
+
+    private OnLoadDataListener mListener;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +29,16 @@ public class ProfileFragment extends ListFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.profile, container, false);
 	}
+
+	@Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnLoadDataListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
+        }
+    }	
 	
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -39,7 +52,7 @@ public class ProfileFragment extends ListFragment {
         		//new Group(R.drawable.ic_unknown, "Holiday 2011")
         };
         
-        setListAdapter(new GroupAdapter(getActivity(), R.layout.list_item, groups));
+        setListAdapter(new GroupAdapter(getActivity(), R.layout.list_item, groups, mListener.getDrawableManager()));
 
         ListView lv = getListView();
         lv.setTextFilterEnabled(true);

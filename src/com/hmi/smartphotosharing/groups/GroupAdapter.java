@@ -28,13 +28,13 @@ public class GroupAdapter extends ArrayAdapter<Group> {
 	Group data[] = null;	// A Group array that contains all list items
 	DrawableManager dm;
 	
-	public GroupAdapter(Context context, int resource, Group[] objects) {
+	public GroupAdapter(Context context, int resource, Group[] objects, DrawableManager dm) {
 		super(context, resource, objects);
 		
         this.layoutResourceId = resource;
         this.context = context;
         this.data = objects;
-        dm = new DrawableManager(context);
+        this.dm = dm;
 	}
 
 	/**

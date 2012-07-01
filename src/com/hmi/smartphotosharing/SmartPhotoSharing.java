@@ -1,8 +1,9 @@
 package com.hmi.smartphotosharing;
 
 
+import java.io.File;
+
 import android.app.ActionBar;
-import android.app.FragmentTransaction;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -14,6 +15,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,7 +28,7 @@ import com.hmi.smartphotosharing.groups.GroupsFragment;
  * @author Edwin
  *
  */
-public class SmartPhotoSharing extends Activity {
+public class SmartPhotoSharing extends Activity implements OnLoadDataListener {
 
     public static final String WIFI = "Wi-Fi";
     public static final String ANY = "Any";
@@ -41,9 +43,14 @@ public class SmartPhotoSharing extends Activity {
     private NetworkReceiver receiver = new NetworkReceiver();
     // The user's current network preference setting.
     public static String sPref = null;
+    public DrawableManager dm;
     
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		setContentView(R.layout.main);
+		
+		enableHttpResponseCache();
 		
 		// Setup action bar for tabs
 		ActionBar actionBar = getActionBar();
@@ -96,6 +103,8 @@ public class SmartPhotoSharing extends Activity {
     public void onStart () {
         super.onStart();  
         
+        dm = new DrawableManager(this);
+        
         updatePrefs();
 
         updateConnectedFlags(); 
@@ -125,12 +134,7 @@ public class SmartPhotoSharing extends Activity {
             mobileConnected = false;
         }  
     }
-      
-    public boolean canLoad() {
-    	return (sPref.equals(ANY) && (wifiConnected || mobileConnected))
-        			|| (sPref.equals(WIFI) && wifiConnected);
-    }
-    
+          
 	/**
 	 * This method sets the items of the menu form an inflated xml file.
 	 * @param menu The menu that was created.
@@ -169,6 +173,18 @@ public class SmartPhotoSharing extends Activity {
         }
     }
 	
+	private void enableHttpResponseCache() {
+		try {
+			long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
+			File httpCacheDir = new File(getCacheDir(), "http");
+			Class.forName("android.net.http.HttpResponseCache")
+				.getMethod("install", File.class, long.class)
+				.invoke(null, httpCacheDir, httpCacheSize);
+			} catch (Exception httpResponseCacheNotAvailable) {
+				Log.d(this.getClass().getName(), "HTTP response cache is unavailable.");
+			}
+	}
+	
 	public class NetworkReceiver extends BroadcastReceiver {   
 	    
 		@Override
@@ -203,5 +219,23 @@ public class SmartPhotoSharing extends Activity {
 		}
 	}
 
+	@Override
+	public void onLoadData() {
+
+        updatePrefs();
+        updateConnectedFlags(); 
+		
+	}
+	
+	@Override
+    public boolean canLoad() {
+    	return (sPref.equals(ANY) && (wifiConnected || mobileConnected))
+        			|| (sPref.equals(WIFI) && wifiConnected);
+    }
+
+	@Override
+	public DrawableManager getDrawableManager() {
+		return dm;
+	}
 
 }
