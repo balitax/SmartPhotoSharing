@@ -16,6 +16,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -25,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -50,7 +52,11 @@ public class GroupsFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.groups, container, false);
+        View view = inflater.inflate(R.layout.groups, container, false);
+        
+		Button createBtn = (Button) view.findViewById(R.id.button_create_group);	
+		createBtn.setOnClickListener(mCreateGroupOnClickListener);
+        return view;
 	}
 	
 	@Override
@@ -113,6 +119,14 @@ public class GroupsFragment extends ListFragment {
         }
     }
 	
+	Button.OnClickListener mCreateGroupOnClickListener = 
+		new Button.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(), GroupCreateActivity.class);
+				getActivity().startActivity(intent);
+			}
+	};	
 	/**
 	 * This method binds the JSON data to a GroupList.
 	 * @param jsonString The serialized JSON data

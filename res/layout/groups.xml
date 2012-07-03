@@ -23,7 +23,7 @@
 	     android:text="@string/no_data"/>
      
      <Button 
-	 	android:id="@+id/create_group"
+	 	android:id="@+id/button_create_group"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/create_group" />

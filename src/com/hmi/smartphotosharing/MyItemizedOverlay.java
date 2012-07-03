@@ -1,0 +1,48 @@
+package com.hmi.smartphotosharing;
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
+
+
+public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
+	
+	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
+	
+	public MyItemizedOverlay(Drawable defaultMarker) {
+		  super(boundCenterBottom(defaultMarker));
+	}
+		
+	public void addOverlay(OverlayItem overlay) {
+	    mOverlays.add(overlay);
+	    populate();
+	}
+	
+	@Override
+	protected OverlayItem createItem(int i) {
+	  return mOverlays.get(i);
+	}
+	
+	@Override
+	public int size() {
+		  return mOverlays.size();
+	}
+	
+	@Override
+	public boolean onTap(GeoPoint p, MapView mapView)  {
+		
+		mOverlays.clear();
+        OverlayItem overlayitem = new OverlayItem(p, null, null);
+        addOverlay(overlayitem);
+        mapView.invalidate();
+        return true;
+	}
+}

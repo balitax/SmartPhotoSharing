@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/group_create_name" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:lines="3"
+        android:hint="@string/group_create_description" />
+
+    <TextView 
+        android:id="@+id/textView1"
+        android:text="@string/group_create_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <com.google.android.maps.MapView
+	    android:id="@+id/mapview"
+	    android:layout_width="fill_parent"
+	    android:layout_height="256dp"
+	    android:clickable="true"
+	    android:apiKey="0LgN0zWElNFx2cMBe0vH1UtWShWq1VlUPUeUb9w" />
+    
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/group_create_button" />
+   
+</LinearLayout> 

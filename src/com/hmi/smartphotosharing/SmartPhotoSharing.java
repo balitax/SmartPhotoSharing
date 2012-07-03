@@ -55,7 +55,7 @@ public class SmartPhotoSharing extends Activity implements OnLoadDataListener {
 		// Setup action bar for tabs
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setDisplayShowTitleEnabled(false); 
 
 		// Popular tab
 		Tab tab = actionBar
