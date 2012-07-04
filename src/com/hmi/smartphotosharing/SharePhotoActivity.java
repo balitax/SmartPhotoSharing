@@ -6,11 +6,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.hmi.smartphotosharing.groups.GroupCreateActivity;
 
 public class SharePhotoActivity extends Activity  {
+	
+	public static final int CREATE_GROUP = 4;
 	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,7 +57,29 @@ public class SharePhotoActivity extends Activity  {
 	        }
 	    }
 	}
-
+	
+	public void onClickCreateGroup(View v) {
+		Intent intent = new Intent(this, GroupCreateActivity.class);
+		startActivityForResult(intent, CREATE_GROUP);
+	}
+	
+	public void onClickShare(View v) {
+		setResult(RESULT_OK);
+		finish();
+	}	
+	
+	protected void onActivityResult(int requestCode, int resultCode,
+            Intent data) {
+        if (requestCode == CREATE_GROUP) {
+            if (resultCode == RESULT_OK) {
+                // A contact was picked.  Here we will just display it
+                // to the user.
+            	// TODO : refresh group list
+            	Toast.makeText(this, "Group Created", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }	
+	
 	private void handleSendText(Intent intent) {
 	    String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
 	    if (sharedText != null) {

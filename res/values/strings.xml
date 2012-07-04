@@ -57,6 +57,7 @@
     <string name="menu_help">Help</string>
     <string name="menu_camera">Camera</string>
     <string name="menu_search">Search</string>
+    <string name="menu_share">Share</string>
     <string name="menu_refresh">Refresh</string>
     <string name="menu_group_manage">Manage Group</string>
     

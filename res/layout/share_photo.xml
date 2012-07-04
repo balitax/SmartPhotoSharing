@@ -42,7 +42,8 @@
 	        android:id="@+id/create_group"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="@string/create_group" />    
+	        android:text="@string/create_group"
+	        android:onClick="onClickCreateGroup" />    
 	    
 	</LinearLayout>
 	
@@ -50,5 +51,6 @@
 	        android:id="@+id/button_send"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:text="@string/button_share" />
+	        android:text="@string/button_share"
+	        android:onClick="onClickShare" />
 </LinearLayout>

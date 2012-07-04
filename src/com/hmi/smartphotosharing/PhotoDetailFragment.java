@@ -2,10 +2,13 @@ package com.hmi.smartphotosharing;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -37,7 +40,28 @@ public class PhotoDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
+    
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        	case R.id.share:
+        		// TODO : fix working uri
+        		String uri = getActivity().getResources().getString(R.string.photo_detail_url);
+        		
+        		Intent intent = new Intent(getActivity(),SharePhotoActivity.class);
+				intent.setType("image/jpeg");
 
+				// Add the Uri of the current photo as extra value
+				intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(uri));
+				
+				// Create and start the chooser
+				startActivity(intent);
+				return true;
+	        default:
+	        	return super.onOptionsItemSelected(item);
+        }
+    }
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.photo_detail, container, false);
@@ -52,14 +76,17 @@ public class PhotoDetailFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        // TODO : fix url
+        String uri = getActivity().getResources().getString(R.string.photo_detail_url);
+        
         dm = mListener.getDrawableManager();
-        dm.fetchDrawableOnThread(getActivity().getResources().getString(R.string.photo_detail_url), imgView);
+        dm.fetchDrawableOnThread(uri, imgView);
 	
 	}
 	
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-	    inflater.inflate(R.menu.group_menu, menu);
+	    inflater.inflate(R.menu.photo_menu, menu);
 	}	
 
 

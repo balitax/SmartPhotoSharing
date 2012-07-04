@@ -14,6 +14,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -43,6 +45,9 @@ public class GroupCreateActivity extends MapActivity {
         
         setContentView(R.layout.group_create);
         
+		Button createGroupBtn = (Button) findViewById(R.id.button1);	
+		createGroupBtn.setOnClickListener(mCreateGroupOnClickListener);
+		
         // MapView
         //------------------
         
@@ -80,9 +85,16 @@ public class GroupCreateActivity extends MapActivity {
             // call enableLocationSettings()
             new EnableGpsDialogFragment().show(getFragmentManager(), "enableGpsDialog");
         } else {
+        	
         	setup();
         	
-            if (gpsLocation != null) addMyLocationToMap((int)(gpsLocation.getLongitude()*1E6),(int)(gpsLocation.getLatitude()*1E6));
+        	// TODO check if getLastKnownLocation works
+            if (gpsLocation == null) {
+            	gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+            	
+            addMyLocationToMap((int)(gpsLocation.getLongitude()*1E6),(int)(gpsLocation.getLatitude()*1E6));
+            
         }
     }
     
@@ -109,6 +121,15 @@ public class GroupCreateActivity extends MapActivity {
         mLocationManager.removeUpdates(listener);
     }
     
+	Button.OnClickListener mCreateGroupOnClickListener = 
+		new Button.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				setResult(RESULT_OK); // TODO : cancel button
+				finish();
+			}
+	};	
+	
     // Method to launch Settings
     private void enableLocationSettings() {
         Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);

@@ -40,6 +40,7 @@ public class GroupsFragment extends ListFragment {
 	private List<Group> mObjectList = new ArrayList<Group>() ;
 	
     private static final String DEBUG_TAG = "HttpExample";
+    public static final int CREATE_GROUP = 4;
     
     private OnLoadDataListener mListener;
     
@@ -124,9 +125,22 @@ public class GroupsFragment extends ListFragment {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(getActivity(), GroupCreateActivity.class);
-				getActivity().startActivity(intent);
+				getActivity().startActivityForResult(intent, CREATE_GROUP);
 			}
 	};	
+	
+	public void onActivityResult(int requestCode, int resultCode,
+            Intent data) {
+        if (requestCode == CREATE_GROUP) {
+            if (resultCode == Activity.RESULT_OK) {
+                // A contact was picked.  Here we will just display it
+                // to the user.
+            	// TODO : refresh group list
+            	Toast.makeText(getActivity(), "Group Created", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }	
+	
 	/**
 	 * This method binds the JSON data to a GroupList.
 	 * @param jsonString The serialized JSON data
