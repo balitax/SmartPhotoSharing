@@ -4,7 +4,6 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -83,7 +83,8 @@ public class GroupCreateActivity extends MapActivity {
             // Build an alert dialog here that requests that the user enable
             // the location services, then when the user clicks the "OK" button,
             // call enableLocationSettings()
-            new EnableGpsDialogFragment().show(getFragmentManager(), "enableGpsDialog");
+        	// TODO
+            //new EnableGpsDialogFragment().show(getSupportFragmentManager(), "enableGpsDialog");
         } else {
         	
         	setup();

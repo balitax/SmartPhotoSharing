@@ -3,9 +3,6 @@ package com.hmi.smartphotosharing;
 
 import java.io.File;
 
-import android.app.ActionBar;
-import android.app.ActionBar.Tab;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,14 +10,18 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.Tab;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.hmi.smartphotosharing.camera.CameraFragment;
 import com.hmi.smartphotosharing.groups.GroupsFragment;
 /**
@@ -28,7 +29,7 @@ import com.hmi.smartphotosharing.groups.GroupsFragment;
  * @author Edwin
  *
  */
-public class SmartPhotoSharing extends Activity implements OnLoadDataListener {
+public class SmartPhotoSharing extends SherlockFragmentActivity implements OnLoadDataListener {
 
     public static final String WIFI = "Wi-Fi";
     public static final String ANY = "Any";
@@ -46,14 +47,16 @@ public class SmartPhotoSharing extends Activity implements OnLoadDataListener {
     public DrawableManager dm;
     
 	public void onCreate(Bundle savedInstanceState) {
+		if (Build.VERSION.SDK_INT < 11){
+	        this.setTheme(com.actionbarsherlock.R.style.Theme_Sherlock);
+		}
+
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.main);
-		
 		enableHttpResponseCache();
 		
 		// Setup action bar for tabs
-		ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		actionBar.setDisplayShowTitleEnabled(false); 
 
@@ -86,7 +89,7 @@ public class SmartPhotoSharing extends Activity implements OnLoadDataListener {
         receiver = new NetworkReceiver();
         this.registerReceiver(receiver, filter);
 	}
-	
+		
 	@Override 
     public void onDestroy() {
         super.onDestroy();
@@ -141,7 +144,7 @@ public class SmartPhotoSharing extends Activity implements OnLoadDataListener {
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
+	    MenuInflater inflater = getSupportMenuInflater();
 	    inflater.inflate(R.menu.main_menu, menu);
 	    return true;
 	}
@@ -153,17 +156,20 @@ public class SmartPhotoSharing extends Activity implements OnLoadDataListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+        /*
         	case android.R.id.home:
 	            // App icon in action bar clicked; go home
 	            Intent intent = new Intent(this, SmartPhotoSharing.class);
 	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	            startActivity(intent);
-	            return true;
+	            return true;*/
 	        case R.id.camera:
 	        	Util.replaceTab(this,CameraFragment.class);
 		        return true;
 	        case R.id.settings:
-	        	Util.replaceTab(this,SettingsFragment.class);
+	            Intent i = new Intent(this, SettingsActivity.class);
+	            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(i);
 		        return true;
 		    case R.id.help:
 		    	Util.replaceTab(this,HelpFragment.class);

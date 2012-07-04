@@ -1,12 +1,13 @@
 package com.hmi.smartphotosharing;
 
-import android.app.Fragment;
+import com.actionbarsherlock.app.SherlockFragment;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class HelpFragment extends Fragment {
+public class HelpFragment extends SherlockFragment {
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {

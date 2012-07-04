@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,8 +25,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.hmi.smartphotosharing.SharePhotoActivity;
+import com.actionbarsherlock.app.SherlockFragment;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.SharePhotoActivity;
 
 /**
  * This class handles the Camera page.
@@ -36,7 +36,7 @@ import com.hmi.smartphotosharing.R;
  * @author Edwin
  *
  */
-public class CameraFragment extends Fragment {
+public class CameraFragment extends SherlockFragment {
 
 
 	private static final int ACTION_TAKE_PHOTO = 1;

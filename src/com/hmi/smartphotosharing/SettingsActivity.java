@@ -1,0 +1,18 @@
+package com.hmi.smartphotosharing;
+
+import android.os.Bundle;
+
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
+
+public class SettingsActivity extends SherlockPreferenceActivity {
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Load the preferences from an XML resource
+        addPreferencesFromResource(R.xml.preferences);
+        
+    }
+    
+}

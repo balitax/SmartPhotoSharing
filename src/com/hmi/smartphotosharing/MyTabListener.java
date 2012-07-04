@@ -1,10 +1,11 @@
 package com.hmi.smartphotosharing;
 
-import android.app.ActionBar;
-import android.app.ActionBar.TabListener;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.TabListener;
 
 public class MyTabListener<T extends Fragment> implements TabListener {
 	

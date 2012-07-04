@@ -1,20 +1,17 @@
 package com.hmi.smartphotosharing;
 
-import android.app.Fragment;
-import android.app.LoaderManager;
-import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 
 public class PopularFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -51,8 +48,8 @@ public class PopularFragment extends Fragment implements LoaderManager.LoaderCal
                 	R.layout.simple_image, 								// The target layout
                 	null,												// Cursor should be null here
                 	new String[] { MediaStore.Images.Thumbnails.DATA }, // Column names to bind to the UI
-                	new int[] { R.id.image1 }, 							// The views that should display column in the previous parameter
-                	0);													// Flags used to determine the behavior of the adapter.
+                	new int[] { R.id.image1 } 							// The views that should display column in the previous parameter
+                	);													// Flags used to determine the behavior of the adapter.
         
         gridView.setAdapter(mAdapter);
      
@@ -75,13 +72,17 @@ public class PopularFragment extends Fragment implements LoaderManager.LoaderCal
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         // Swap the new cursor in.  (The framework will take care of closing the
         // old cursor once we return.)
-        mAdapter.swapCursor(data);
+		// TODO
+    	mAdapter.changeCursor(data);
+        //mAdapter.swapCursor(data);
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {
         // This is called when the last Cursor provided to onLoadFinished()
         // above is about to be closed.  We need to make sure we are no
         // longer using it.
-        mAdapter.swapCursor(null);
+    	// TODO
+    	mAdapter.changeCursor(null);
+        //mAdapter.swapCursor(null);
     }
 }
