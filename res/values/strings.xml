@@ -18,7 +18,7 @@
     
     <!--  Placeholder strings -->
     
-    <string name="popular_intro">My local pictures</string>
+    <string name="popular_http">http://www.skybox.utwente.nl/test/imgs.php</string>
     <string name="help">This is the Help page.</string>
     
     <!--  Groups -->

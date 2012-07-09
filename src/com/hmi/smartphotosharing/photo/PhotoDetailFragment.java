@@ -1,4 +1,13 @@
-package com.hmi.smartphotosharing;
+package com.hmi.smartphotosharing.photo;
+
+import com.hmi.smartphotosharing.DrawableManager;
+import com.hmi.smartphotosharing.OnLoadDataListener;
+import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.SharePhotoActivity;
+import com.hmi.smartphotosharing.R.id;
+import com.hmi.smartphotosharing.R.layout;
+import com.hmi.smartphotosharing.R.menu;
+import com.hmi.smartphotosharing.R.string;
 
 import android.app.Activity;
 import android.content.Intent;

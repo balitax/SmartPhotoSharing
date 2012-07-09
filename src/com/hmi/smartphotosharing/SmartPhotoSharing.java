@@ -33,6 +33,7 @@ public class SmartPhotoSharing extends SherlockFragmentActivity implements OnLoa
 
     public static final String WIFI = "Wi-Fi";
     public static final String ANY = "Any";
+	public static final int HONEYCOMB = 11;
 	
     // Whether there is a Wi-Fi connection.
     private static boolean wifiConnected = false;
@@ -47,7 +48,7 @@ public class SmartPhotoSharing extends SherlockFragmentActivity implements OnLoa
     public DrawableManager dm;
     
 	public void onCreate(Bundle savedInstanceState) {
-		if (Build.VERSION.SDK_INT < 11){
+		if (Build.VERSION.SDK_INT < HONEYCOMB){
 	        this.setTheme(com.actionbarsherlock.R.style.Theme_Sherlock);
 		}
 

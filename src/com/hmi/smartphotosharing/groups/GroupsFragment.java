@@ -37,7 +37,7 @@ import com.hmi.smartphotosharing.SmartPhotoSharing;
 
 public class GroupsFragment extends ListFragment {
 	
-	private List<Group> mObjectList = new ArrayList<Group>() ;
+	private List<Group> mObjectList;
 	
     private static final String DEBUG_TAG = "HttpExample";
     public static final int CREATE_GROUP = 4;
@@ -47,6 +47,8 @@ public class GroupsFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        mObjectList = new ArrayList<Group>();
         setHasOptionsMenu(true);
     }
     
@@ -235,7 +237,6 @@ public class GroupsFragment extends ListFragment {
 
     	        // Convert the InputStream into a string
     	        String contentAsString = readIt(is);
-    	        is.close();
     	        return contentAsString;
     	        
     	    // Makes sure that the InputStream is closed after the app is

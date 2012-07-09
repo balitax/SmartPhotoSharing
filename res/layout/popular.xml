@@ -3,14 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-    
-	<TextView android:layout_width="fill_parent" 
-	    android:layout_height="wrap_content"
-	    android:padding="5dp"
-	    android:text="@string/popular_intro"
-	    android:gravity="center"
-	    android:textStyle="bold" />
-	
+    	
 	<GridView xmlns:android="http://schemas.android.com/apk/res/android" 
 	    android:id="@+id/popularGrid"
 	    android:layout_width="fill_parent" 
@@ -23,5 +16,12 @@
 	    android:stretchMode="columnWidth"
 	    android:gravity="center"
 	/>
+    <TextView
+        android:id="@+id/empty_list_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="List view is empty"
+        android:visibility="gone" />
+	
 	
 </LinearLayout>

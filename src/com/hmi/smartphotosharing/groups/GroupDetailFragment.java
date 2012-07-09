@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 import com.hmi.smartphotosharing.MyGalleryAdapter;
 import com.hmi.smartphotosharing.OnLoadDataListener;
-import com.hmi.smartphotosharing.PhotoDetailFragment;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.photo.PhotoDetailFragment;
 
 public class GroupDetailFragment extends Fragment {
 
