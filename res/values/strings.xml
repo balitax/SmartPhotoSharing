@@ -23,7 +23,6 @@
     
     <!--  Groups -->
     
-    <string name="groups_intro">This is the Groups tab.</string>
     <string name="groups_http">http://www.skybox.utwente.nl/test/tekst.php</string>
     <string name="group_create_name">Group name</string>
     <string name="group_create_description">Enter a description</string>

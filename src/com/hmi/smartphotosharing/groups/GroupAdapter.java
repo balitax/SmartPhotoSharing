@@ -6,10 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hmi.smartphotosharing.DrawableManager;
+import com.hmi.smartphotosharing.MyGalleryAdapter;
 import com.hmi.smartphotosharing.R;
 
 /**
@@ -25,6 +27,9 @@ public class GroupAdapter extends ArrayAdapter<Group> {
 	int layoutResourceId;	// The xml layout file for each ListView item
 	Group data[] = null;	// A Group array that contains all list items
 	DrawableManager dm;
+
+	private Gallery picGallery;
+	private MyGalleryAdapter imgAdapt;
 	
 	public GroupAdapter(Context context, int resource, Group[] objects, DrawableManager dm) {
 		super(context, resource, objects);
@@ -33,6 +38,8 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         this.context = context;
         this.data = objects;
         this.dm = dm;
+        
+
 	}
 
 	/**
@@ -42,7 +49,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
 	 */
 	@Override
     public View getView(int position, View convertView, ViewGroup parent) {
-		
+
         View row = convertView;
         GroupHolder holder = null;
        
@@ -60,7 +67,15 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         } else {
             holder = (GroupHolder)row.getTag();
         }
-       
+        
+        picGallery = (Gallery) row.findViewById(R.id.gallery);
+        
+	    // Create a new adapter
+	    imgAdapt = new MyGalleryAdapter(context);
+	    
+	    // Set the gallery adapter
+	    picGallery.setAdapter(imgAdapt);
+        
         Group group = data[position];
         holder.txtTitle.setText(group.title);
         

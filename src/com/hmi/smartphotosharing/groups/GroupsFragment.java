@@ -43,7 +43,8 @@ public class GroupsFragment extends ListFragment {
     public static final int CREATE_GROUP = 4;
     
     private OnLoadDataListener mListener;
-    
+
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,10 +57,16 @@ public class GroupsFragment extends ListFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.groups, container, false);
+
         
 		Button createBtn = (Button) view.findViewById(R.id.button_create_group);	
 		createBtn.setOnClickListener(mCreateGroupOnClickListener);
         return view;
+	}
+
+	@Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 	}
 	
 	@Override
