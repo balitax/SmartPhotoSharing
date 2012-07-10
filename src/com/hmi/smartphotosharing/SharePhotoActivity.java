@@ -159,7 +159,7 @@ public class SharePhotoActivity extends Activity  {
     		HttpEntity resEntity = response.getEntity();
     		Log.d("sendPost",""+response.getStatusLine());
     		if (resEntity != null) {
-    			Log.e("sendPost",EntityUtils.toString(resEntity));
+    			Log.d("sendPost",EntityUtils.toString(resEntity));
     			resEntity.consumeContent();
     		}
     		httpclient.getConnectionManager().shutdown();

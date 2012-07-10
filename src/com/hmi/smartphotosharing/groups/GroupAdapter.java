@@ -2,8 +2,12 @@ package com.hmi.smartphotosharing.groups;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Gallery;
@@ -81,6 +85,10 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         // Set the icon for this list item
         dm.fetchDrawableOnThread(group.icon, holder.imgIcon);
         
+        // We need to set the onClickListener here to make sure that
+        // the row can also be clicked, in addition to the gallery photos
+        row.setOnClickListener(new OnItemClickListener(context,position));
+
         return row;
     }
 	
@@ -95,4 +103,21 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         ImageView imgIcon;
         TextView txtTitle;
     }	
+    
+    private class OnItemClickListener implements OnClickListener{       
+        private int mPosition;
+        private Context context;
+        
+        public OnItemClickListener(Context context, int position){
+            mPosition = position;
+            this.context = context;
+        }
+        
+        @Override
+        public void onClick(View arg0) {
+        	Intent intent = new Intent(context, GroupDetailActivity.class);
+        	context.startActivity(intent);
+        }       
+    }
+
 }

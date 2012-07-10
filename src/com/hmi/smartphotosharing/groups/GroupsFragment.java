@@ -23,6 +23,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +33,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.hmi.smartphotosharing.HelpFragment;
 import com.hmi.smartphotosharing.OnLoadDataListener;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.SettingsActivity;
 import com.hmi.smartphotosharing.SmartPhotoSharing;
+import com.hmi.smartphotosharing.Util;
+import com.hmi.smartphotosharing.camera.CameraFragment;
 
 public class GroupsFragment extends ListFragment {
 	
@@ -56,12 +62,7 @@ public class GroupsFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.groups, container, false);
-
-        
-		Button createBtn = (Button) view.findViewById(R.id.button_create_group);	
-		createBtn.setOnClickListener(mCreateGroupOnClickListener);
-        return view;
+		return inflater.inflate(R.layout.groups, container, false);
 	}
 
 	@Override
@@ -86,6 +87,28 @@ public class GroupsFragment extends ListFragment {
         loadData();
 	}
 	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	    inflater.inflate(R.menu.group_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+	}	
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        	case R.id.refresh:
+		        Toast.makeText(getActivity(), "Refresh!", Toast.LENGTH_SHORT).show();	
+        		return loadData();
+	        case R.id.create_group:
+	        	Intent intent = new Intent(getActivity(), GroupCreateActivity.class);
+	        	startActivityForResult(intent, CREATE_GROUP);
+		    	return true;
+	        default:
+	        	return super.onOptionsItemSelected(item);
+        }
+    }
+	
 	private boolean loadData() {
 		boolean res = false;
 		mListener.onLoadData();
@@ -102,6 +125,7 @@ public class GroupsFragment extends ListFragment {
         return res;
 	}
 
+	/*
 	@Override
 	public void onListItemClick (ListView l, View v, int position, long id) {
 		
@@ -115,29 +139,8 @@ public class GroupsFragment extends ListFragment {
 
       	// Commit the transaction
       	ft.commit();	
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        	case R.id.refresh:
-		        Toast.makeText(getActivity(), "Refresh!", Toast.LENGTH_SHORT).show();	
-        		
-        		return loadData();
-	        default:
-	        	return super.onOptionsItemSelected(item);
-        }
-    }
-	
-	Button.OnClickListener mCreateGroupOnClickListener = 
-		new Button.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(getActivity(), GroupCreateActivity.class);
-				getActivity().startActivityForResult(intent, CREATE_GROUP);
-			}
-	};	
-	
+	}*/
+		
 	public void onActivityResult(int requestCode, int resultCode,
             Intent data) {
         if (requestCode == CREATE_GROUP) {

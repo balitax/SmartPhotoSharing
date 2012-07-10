@@ -60,6 +60,7 @@
     <string name="menu_share">Share</string>
     <string name="menu_refresh">Refresh</string>
     <string name="menu_group_manage">Manage Group</string>
+    <string name="menu_group_create">Create Group</string>
     
     <!-- Preferences -->
     

@@ -88,12 +88,7 @@ public class GroupCreateActivity extends MapActivity {
         } else {
         	
         	setup();
-        	
-        	// TODO check if getLastKnownLocation works
-            if (gpsLocation == null) {
-            	gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            }
-            	
+        	            	
             addMyLocationToMap((int)(gpsLocation.getLongitude()*1E6),(int)(gpsLocation.getLatitude()*1E6));
             
         }
