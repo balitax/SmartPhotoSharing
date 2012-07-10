@@ -1,11 +1,27 @@
 package com.hmi.smartphotosharing;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -17,6 +33,7 @@ import com.hmi.smartphotosharing.groups.GroupCreateActivity;
 public class SharePhotoActivity extends Activity  {
 	
 	public static final int CREATE_GROUP = 4;
+	private Uri imageUri;
 	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,8 +81,13 @@ public class SharePhotoActivity extends Activity  {
 	}
 	
 	public void onClickShare(View v) {
-		setResult(RESULT_OK);
-		finish();
+		
+		if (imageUri != null) {
+			new UploadImage().execute(getResources().getString(R.string.url_upload),Environment.getExternalStorageDirectory().getAbsolutePath() + "/Pictures/rozen.jpg");
+		} else {
+			setResult(RESULT_CANCELED);
+			finish();
+		}
 	}	
 	
 	protected void onActivityResult(int requestCode, int resultCode,
@@ -88,10 +110,9 @@ public class SharePhotoActivity extends Activity  {
 	}
 
 	private void handleSendImage(Intent intent) {
-	    Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+	    imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
 	    if (imageUri != null) {
 	        ImageView view = (ImageView) findViewById(R.id.image1);
-	        
 	        view.setImageURI(imageUri);
 	    }
 	}
@@ -102,4 +123,47 @@ public class SharePhotoActivity extends Activity  {
 	        // Update UI to reflect multiple images being shared
 	    }
 	}
+	
+
+    private class UploadImage extends AsyncTask<String,Void,String> {
+        
+    	@Override
+    	protected String doInBackground(String... urls) {
+             
+	       // params comes from the execute() call: params[0] is the url.
+	           try {
+				return sendPost(urls[0],urls[1]);
+			} catch (ClientProtocolException e) {
+				Log.e("Upload image", e.getMessage());
+				return null;
+			} catch (IOException e) {
+				Log.e("Upload image", e.getMessage());
+				return null;
+			}
+    	}
+    	
+    	public String sendPost(String url, String imagePath) throws IOException, ClientProtocolException  {
+    		HttpClient httpclient = new DefaultHttpClient();
+    		//httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+    		HttpPost httppost = new HttpPost(url);
+    		File file = new File(imagePath);
+
+    		MultipartEntity mpEntity = new MultipartEntity();
+    		ContentBody cbFile = new FileBody(file, "image/jpeg");
+    		mpEntity.addPart("userfile", cbFile);
+    	
+    		httppost.setEntity(mpEntity);
+    		Log.d("sendPost","executing request " + httppost.getRequestLine());
+    		HttpResponse response = httpclient.execute(httppost);
+    		HttpEntity resEntity = response.getEntity();
+    		Log.d("sendPost",""+response.getStatusLine());
+    		if (resEntity != null) {
+    			Log.e("sendPost",EntityUtils.toString(resEntity));
+    			resEntity.consumeContent();
+    		}
+    		httpclient.getConnectionManager().shutdown();
+    		return "ok";
+    	}
+    }
 }

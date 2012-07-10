@@ -18,6 +18,7 @@
     
     <!--  Placeholder strings -->
     
+    <string name="url_upload">http://www.skybox.utwente.nl/test/upload_image.php</string>
     <string name="popular_http">http://www.skybox.utwente.nl/test/imgs.php</string>
     <string name="help">This is the Help page.</string>
     

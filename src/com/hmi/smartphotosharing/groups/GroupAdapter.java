@@ -39,7 +39,6 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         this.data = objects;
         this.dm = dm;
         
-
 	}
 
 	/**
