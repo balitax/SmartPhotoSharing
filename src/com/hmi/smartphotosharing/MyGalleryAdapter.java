@@ -1,11 +1,16 @@
 package com.hmi.smartphotosharing;
 
+import com.hmi.smartphotosharing.groups.GroupDetailActivity;
+import com.hmi.smartphotosharing.photo.PhotoDetailActivity;
+
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
@@ -24,7 +29,7 @@ public class MyGalleryAdapter extends BaseAdapter {
     int defaultItemBackground;
     
     //gallery context
-    private Context galleryContext;
+    private Context context;
 
     //array to store bitmaps to display
     private Bitmap[] imageBitmaps;
@@ -35,7 +40,7 @@ public class MyGalleryAdapter extends BaseAdapter {
     public MyGalleryAdapter(Context c) {
     	
     	//instantiate context
-    	galleryContext = c;
+    	context = c;
     	
     	//create bitmap array
         imageBitmaps  = new Bitmap[10];
@@ -47,7 +52,7 @@ public class MyGalleryAdapter extends BaseAdapter {
         	imageBitmaps[i]=placeholder;
         
         //get the styling attributes - use default Andorid system resources
-        TypedArray styleAttrs = galleryContext.obtainStyledAttributes(R.styleable.PicGallery);
+        TypedArray styleAttrs = context.obtainStyledAttributes(R.styleable.PicGallery);
         //get the background resource
         defaultItemBackground = styleAttrs.getResourceId(
         		R.styleable.PicGallery_android_galleryItemBackground, 0);
@@ -76,7 +81,7 @@ public class MyGalleryAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
     	//create the view
-        ImageView imageView = new ImageView(galleryContext);
+        ImageView imageView = new ImageView(context);
         //specify the bitmap at this position in the array
         imageView.setImageBitmap(imageBitmaps[position]);
         //set layout options
@@ -86,9 +91,27 @@ public class MyGalleryAdapter extends BaseAdapter {
         //set default gallery item background
         imageView.setBackgroundResource(defaultItemBackground);
         //return the view
+        
+        imageView.setOnClickListener(new OnItemClickListener(context,position));
+        
         return imageView;
     }
     
+    private class OnItemClickListener implements OnClickListener{       
+        private int mPosition;
+        private Context context;
+        
+        public OnItemClickListener(Context context, int position){
+            mPosition = position;
+            this.context = context;
+        }
+        
+        @Override
+        public void onClick(View arg0) {
+        	Intent intent = new Intent(context, PhotoDetailActivity.class);
+        	context.startActivity(intent);
+        }       
+    }
     //custom methods for this app
     
     //helper method to add a bitmap to the gallery when the user chooses one

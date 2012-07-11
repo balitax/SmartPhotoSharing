@@ -42,6 +42,7 @@
 		
         <activity android:label="Create Group" android:name=".groups.GroupCreateActivity" />
         <activity android:label="Group Details" android:name=".groups.GroupDetailActivity" />
+        <activity android:label="Photo Details" android:name=".photo.PhotoDetailActivity" />
 		
 		<activity android:label="SettingsActivity" android:name=".SettingsActivity">
              <intent-filter>

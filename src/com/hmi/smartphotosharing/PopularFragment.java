@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,14 +23,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.photo.Photo;
 import com.hmi.smartphotosharing.photo.PhotoContainer;
+import com.hmi.smartphotosharing.photo.PhotoDetailActivity;
 import com.hmi.smartphotosharing.photo.PhotoList;
 
 public class PopularFragment extends Fragment {
@@ -66,18 +69,27 @@ public class PopularFragment extends Fragment {
     	return view;
     }
     
-
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        
-        
-        gridView.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Toast.makeText(getActivity(), "" + position, Toast.LENGTH_SHORT).show();
-            }
-        });
+    public void onActivityCreated (Bundle savedInstanceState) {
+    	super.onActivityCreated(savedInstanceState);
+    	gridView.setOnItemClickListener(new MyOnItemClickListener(getActivity()));
     }
+    
+    private class MyOnItemClickListener implements OnItemClickListener {
+		private Context c;
+		
+		public MyOnItemClickListener(Context c) {
+			this.c = c;
+		}
+		
+		// Handle clicks
+		@Override
+	    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+	    	Intent intent = new Intent(c, PhotoDetailActivity.class);
+	    	intent.putExtra("id", id);
+	    	startActivity(intent);
+	    }
+    }   
     
 	@Override
     public void onAttach(Activity activity) {
@@ -111,6 +123,7 @@ public class PopularFragment extends Fragment {
         
         return res;
 	}
+	
 	private void parseJson(String result) {
 		Gson gson = new Gson();
 		PhotoList list = gson.fromJson(result, PhotoList.class);

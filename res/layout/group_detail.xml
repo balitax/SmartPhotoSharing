@@ -46,17 +46,18 @@
         android:text="@string/group_detail_intro"
         android:layout_below="@+id/group_detail_line3" />
     
-    <Gallery
-    	android:id="@+id/gallery"
-    	android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
-        android:layout_below="@+id/group_detail_intro" />
-    
-    <ImageView 
-        android:id="@+id/picture"
-    	android:layout_width="fill_parent"
-    	android:layout_height="fill_parent"
-    	android:contentDescription="@string/picture"
-        android:layout_below="@+id/gallery" />
+	<GridView xmlns:android="http://schemas.android.com/apk/res/android" 
+	    android:id="@+id/grid"
+	    android:layout_width="fill_parent" 
+	    android:layout_height="fill_parent"
+	    android:padding="2dp"
+	    android:verticalSpacing="2dp"
+	    android:horizontalSpacing="2dp"
+	    android:numColumns="auto_fit"
+	    android:columnWidth="90dp"
+	    android:stretchMode="columnWidth"
+	    android:gravity="center"
+        android:layout_below="@+id/group_detail_intro"
+	/>
    
 </RelativeLayout>

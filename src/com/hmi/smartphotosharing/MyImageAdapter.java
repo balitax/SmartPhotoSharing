@@ -1,14 +1,17 @@
 package com.hmi.smartphotosharing;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hmi.smartphotosharing.groups.GroupDetailActivity;
 import com.hmi.smartphotosharing.photo.Photo;
 
 public class MyImageAdapter extends BaseAdapter {
@@ -48,6 +51,7 @@ public class MyImageAdapter extends BaseAdapter {
 
         Photo photo = data[position];
         dm.fetchDrawableOnThread(photo.src, imageView);
+        
         return imageView;
     }
     
@@ -60,4 +64,5 @@ public class MyImageAdapter extends BaseAdapter {
     	
     	return textView;
     }
+    
 }

@@ -28,9 +28,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.HelpFragment;
@@ -40,6 +42,7 @@ import com.hmi.smartphotosharing.SettingsActivity;
 import com.hmi.smartphotosharing.SmartPhotoSharing;
 import com.hmi.smartphotosharing.Util;
 import com.hmi.smartphotosharing.camera.CameraFragment;
+import com.hmi.smartphotosharing.photo.PhotoDetailActivity;
 
 public class GroupsFragment extends ListFragment {
 	
@@ -59,6 +62,7 @@ public class GroupsFragment extends ListFragment {
         setHasOptionsMenu(true);
     }
     
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -124,22 +128,6 @@ public class GroupsFragment extends ListFragment {
         
         return res;
 	}
-
-	/*
-	@Override
-	public void onListItemClick (ListView l, View v, int position, long id) {
-		
-  		Fragment newFragment = new GroupDetailFragment(id);
-      	FragmentTransaction ft = getFragmentManager().beginTransaction();
-
-      	// Replace whatever is in the fragment_container view with this fragment,
-      	// and add the transaction to the back stack
-      	ft.replace(android.R.id.content, newFragment, "GroupDetailFragment");
-      	ft.addToBackStack(null);
-
-      	// Commit the transaction
-      	ft.commit();	
-	}*/
 		
 	public void onActivityResult(int requestCode, int resultCode,
             Intent data) {

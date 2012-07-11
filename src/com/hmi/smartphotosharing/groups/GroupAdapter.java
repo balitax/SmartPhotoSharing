@@ -116,6 +116,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         @Override
         public void onClick(View arg0) {
         	Intent intent = new Intent(context, GroupDetailActivity.class);
+        	intent.putExtra("id", mPosition);
         	context.startActivity(intent);
         }       
     }
