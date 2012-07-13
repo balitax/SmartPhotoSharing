@@ -23,6 +23,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.hmi.smartphotosharing.camera.CameraFragment;
+import com.hmi.smartphotosharing.groups.GroupCreateActivity;
 import com.hmi.smartphotosharing.groups.GroupsFragment;
 /**
  * Main Activity class that controls the tabs.
@@ -34,6 +35,7 @@ public class SmartPhotoSharing extends SherlockFragmentActivity implements OnLoa
     public static final String WIFI = "Wi-Fi";
     public static final String ANY = "Any";
 	public static final int HONEYCOMB = 11;
+    public static final int CREATE_GROUP = 4;
 	
     // Whether there is a Wi-Fi connection.
     private static boolean wifiConnected = false;
@@ -174,6 +176,10 @@ public class SmartPhotoSharing extends SherlockFragmentActivity implements OnLoa
 		        return true;
 		    case R.id.help:
 		    	Util.replaceTab(this,HelpFragment.class);
+		    	return true;
+	        case R.id.create_group:
+	        	Intent intent = new Intent(this, GroupCreateActivity.class);
+	        	startActivityForResult(intent, CREATE_GROUP);
 		    	return true;
 	        default:
 	        	return super.onOptionsItemSelected(item);

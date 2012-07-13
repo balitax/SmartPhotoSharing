@@ -16,10 +16,22 @@
     <string name="enable_gps_dialog">GPS provider not enabled. Would you like to enable it?</string>
     <string name="not_support_gps">GPS provider not supported</string>
     
+    <!--  Login -->
+    
+    <string name="login_intro">Please log in to continue</string>
+    <string name="login_username_txt">Username</string>
+    <string name="login_password_txt">Password</string>
+    <string name="login_username">s0166049@student.utwente.nl</string>
+    <string name="login_password">changeme22</string>
+    <string name="login_button">Login</string>    
+    <string name="login_http">http://sps.juursema.com/api.php?cmd=login&amp;u=%1$s&amp;p=%2$s</string>     
+    
     <!--  Placeholder strings -->
     
     <string name="url_upload">http://www.skybox.utwente.nl/test/upload_image.php</string>
     <string name="popular_http">http://www.skybox.utwente.nl/test/imgs.php</string>
+    
+    <string name="profile_http">http://www.skybox.utwente.nl/test/userinfo.php</string>
     <string name="help">This is the Help page.</string>
     
     <!--  Groups -->

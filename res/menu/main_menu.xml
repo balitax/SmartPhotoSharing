@@ -13,6 +13,8 @@
           android:icon="@drawable/ic_menu_refresh"
           android:title="@string/menu_refresh"
           android:showAsAction="always" />
+    <item android:id="@+id/create_group"
+          android:title="@string/menu_group_create" />
     <item android:id="@+id/settings"
           android:icon="@drawable/ic_menu_preferences"
           android:title="@string/menu_settings" />
