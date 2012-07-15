@@ -1,6 +1,5 @@
 package com.hmi.smartphotosharing.groups;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -10,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -17,50 +17,56 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
+import com.hmi.json.Group;
+import com.hmi.json.GroupDetailResponse;
 import com.hmi.json.OnDownloadListener;
+import com.hmi.json.PhotoMessage;
+import com.hmi.json.PopularResponse;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.MyImageAdapter;
+import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SmartPhotoSharing;
-import com.hmi.smartphotosharing.photo.Photo;
-import com.hmi.smartphotosharing.photo.PhotoContainer;
-import com.hmi.smartphotosharing.photo.PhotoDetailActivity;
-import com.hmi.smartphotosharing.photo.PhotoList;
 
 public class GroupDetailActivity extends SherlockFragmentActivity implements OnDownloadListener {
 
+	private static final int CODE_GROUP_DETAILS = 1;
+	private static final int CODE_GROUP_PHOTOS = 2;
+	
 	//adapter for gallery view
 	private MyImageAdapter imgAdapt;
 	//gallery object
 	private GridView gridView;
 	//image view for larger display
-	private TextView textView;
-
-	private DrawableManager dm;
-	private List<Photo> mObjectList;
 	
-	private long id;
-		
+	private TextView groupPhotos;
+	private TextView groupMembers;
+	private TextView groupName;
+	private ImageView groupIcon;
+	
+	private DrawableManager dm;
+			
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.group_detail);
 
-        mObjectList = new ArrayList<Photo>();
         dm = new DrawableManager(this);
         
-        textView = (TextView) findViewById(R.id.group_detail_intro);
+        groupName = (TextView) findViewById(R.id.group_detail_name);
+        groupIcon = (ImageView) findViewById(R.id.group_detail_icon);
+        groupPhotos = (TextView) findViewById(R.id.group_detail_photos);
+        groupMembers = (TextView) findViewById(R.id.group_detail_members);
         
         // Get the gallery view
         gridView = (GridView) findViewById(R.id.grid);
 
-        textView.setText("Selected id was: " + String.valueOf(id));
-        
         // Set the gallery adapter
         gridView.setAdapter(imgAdapt);
 
         // Set the click listener for each item in the thumbnail gallery
-        gridView.setOnItemClickListener(new MyOnItemClickListener(this));       	
+        gridView.setOnItemClickListener(new MyOnItemClickListener(this));      
+        
     }
 
     private class MyOnItemClickListener implements OnItemClickListener {
@@ -96,31 +102,60 @@ public class GroupDetailActivity extends SherlockFragmentActivity implements OnD
 		boolean res = false;
         
         if (SmartPhotoSharing.refreshDisplay) {
-    		new FetchJSON(this).execute(getResources().getString(R.string.popular_http));
+        	// Get group info
+    		new FetchJSON(this,CODE_GROUP_DETAILS).execute(getResources().getString(R.string.group_http_detail));
+    		// Get list of photos
+    		new FetchJSON(this,CODE_GROUP_PHOTOS).execute(getResources().getString(R.string.group_http_detail_photos));
     		res = true;
         } 		
         
         return res;
 	}
 	
-	public void parseJson(String result) {
-		Gson gson = new Gson();
-		PhotoList list = gson.fromJson(result, PhotoList.class);
+	public void parseJson(String result, int code) {
 		
-		List<PhotoContainer> group_list = list.getPostContainterList();
-		PhotoContainer gc;
-		for (int i = 0; i < group_list.size(); i++) {
-		    gc = group_list.get(i);
-		    mObjectList.add(gc.getPost());
+		switch (code) {
+			case CODE_GROUP_DETAILS:
+				parseGroup(result);
+				break;
+			case CODE_GROUP_PHOTOS:
+				parsePhoto(result);
+				break;
+			default:
 		}
+	}
+
+	private void parsePhoto(String result) {
+		Gson gson = new Gson();
+		PopularResponse list = gson.fromJson(result, PopularResponse.class);
+		
+		List<PhotoMessage> photo_list = list.msg;
 		
 		gridView.setAdapter(
 			new MyImageAdapter(
 					this, 
-					mObjectList.toArray(new Photo[group_list.size()]),
+					photo_list,
 					dm
 		));
+
+		// Set the string telling how many photos the group has
+		String photos = String.format(getResources().getString(R.string.group_detail_photos), photo_list.size());
+		groupPhotos.setText(photos);
 		
-		mObjectList.clear();
+	}
+
+	private void parseGroup(String result) {
+		Gson gson = new Gson();
+		GroupDetailResponse gdr = gson.fromJson(result, GroupDetailResponse.class);
+		
+		Group g = gdr.msg;
+
+		groupName.setText(g.name);
+		String logoUrl = getResources().getString(R.string.group_http_logo) + g.logo;
+		dm.fetchDrawableOnThread(logoUrl, groupIcon);
+
+		// Set the string telling how many members the group has
+		String photos = String.format(getResources().getString(R.string.group_detail_members), 0);
+		groupMembers.setText(photos);
 	}
 }

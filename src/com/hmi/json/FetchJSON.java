@@ -15,9 +15,24 @@ import android.os.AsyncTask;
 public class FetchJSON extends AsyncTask<String,Void,String> {
     
 	private OnDownloadListener dl;
-	
+	private int code;
+
 	public FetchJSON(OnDownloadListener dl) {
 		this.dl = dl;
+		this.code = 0;
+	}
+	
+	/**
+	 * Creates a FetchJSON object with the listener and a request code.
+	 * The request code can be used when multiple requests are done from one activity.
+	 * A switch statement can be used in the listener's parseJson method to distinguish between request codes.
+	 * @param dl The listener object
+	 * @param code The request code
+	 */
+	public FetchJSON(OnDownloadListener dl, int code) {
+		this.dl = dl;
+		this.code = code;
+		
 	}
 	
 	@Override
@@ -33,7 +48,7 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 	
 	@Override
 	protected void onPostExecute(String result) {
-		dl.parseJson(result);
+		dl.parseJson(result, code);
 	}
 	
 	// Given a URL, establishes an HttpUrlConnection and retrieves

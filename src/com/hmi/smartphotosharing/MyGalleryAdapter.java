@@ -1,7 +1,6 @@
 package com.hmi.smartphotosharing;
 
 import com.hmi.smartphotosharing.groups.GroupDetailActivity;
-import com.hmi.smartphotosharing.photo.PhotoDetailActivity;
 
 import android.content.Context;
 import android.content.Intent;

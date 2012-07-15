@@ -1,6 +1,5 @@
 package com.hmi.smartphotosharing.groups;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -17,6 +16,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
+import com.hmi.json.Group;
+import com.hmi.json.GroupsResponse;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.smartphotosharing.OnLoadDataListener;
 import com.hmi.smartphotosharing.R;
@@ -24,9 +25,6 @@ import com.hmi.smartphotosharing.SmartPhotoSharing;
 
 public class GroupsFragment extends ListFragment implements OnDownloadListener {
 	
-	private List<Group> mObjectList;
-	
-    private static final String DEBUG_TAG = "HttpExample";
     public static final int CREATE_GROUP = 4;
     
     private OnLoadDataListener mListener;
@@ -36,7 +34,6 @@ public class GroupsFragment extends ListFragment implements OnDownloadListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        mObjectList = new ArrayList<Group>();
     }
     
 
@@ -96,16 +93,6 @@ public class GroupsFragment extends ListFragment implements OnDownloadListener {
         }
     }	
 	
-	/**
-	 * This method binds the JSON data to a GroupList.
-	 * @param jsonString The serialized JSON data
-	 * @return GroupList object that contains the JSON data as Group objects
-	 */
-	protected <T>T deserialize(String jsonString, Class<T> classOfT){
-		Gson gson = new Gson();
-		return gson.fromJson(jsonString, classOfT);
-	}
-
 
 	/**
 	 * Checks whether there is a network connection available
@@ -125,22 +112,19 @@ public class GroupsFragment extends ListFragment implements OnDownloadListener {
 	 * @param result
 	 */
 	@Override
-	public void parseJson(String result) {
-		GroupList list = deserialize(result, GroupList.class);
-		List <GroupContainer> group_list = list.getPostContainterList();
-		GroupContainer gc;
-		for (int i = 0; i < group_list.size(); i++) {
-		    gc = group_list.get(i);
-		    mObjectList.add(gc.getPost());
-		}
+	public void parseJson(String result, int code) {
+		
+		Gson gson = new Gson();
+		GroupsResponse gr = gson.fromJson(result, GroupsResponse.class);
+		
+		List <Group> group_list = gr.getGroupsList();
 		
 		setListAdapter(new GroupAdapter(
 							getActivity(), 
 							R.layout.list_item, 
-							mObjectList.toArray(new Group[group_list.size()]),
+							group_list.toArray(new Group[group_list.size()]),
 							mListener.getDrawableManager()
 						));
-		mObjectList.clear();
 	}
  
 }

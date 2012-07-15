@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
@@ -16,22 +17,25 @@ public class Login extends Activity implements OnDownloadListener{
 	
 	public static int INCORRECT = 403;
 	
-	public TextView status;
+	EditText username;
+	EditText password;
 	
 	@Override
-	public void onCreate(Bundle icicle) {
+	public void onCreate(Bundle bundle) {
 		
-		super.onCreate(icicle);
-	
+		super.onCreate(bundle);
 		setContentView(R.layout.login);
+
+		username = (EditText) findViewById(R.id.login_username);
+		password = (EditText) findViewById(R.id.login_password);
 		
-		status = (TextView) findViewById(R.id.login_status);
+		// TODO remove
+		username.setText("s0166049");
+		password.setText("changeme22");
 	}
-	
+		
 	public void onClickLogin(View v) {
 
-		EditText username = (EditText) findViewById(R.id.login_username);
-		EditText password = (EditText) findViewById(R.id.login_password);
 			
 		String url = String.format(
 				getResources().getString(R.string.login_http), 
@@ -43,7 +47,7 @@ public class Login extends Activity implements OnDownloadListener{
 	}
 
 	@Override
-	public void parseJson(String json) {
+	public void parseJson(String json, int code) {
 		Gson gson = new Gson();
 		LoginResponse response = gson.fromJson(json, LoginResponse.class);
 
@@ -51,7 +55,7 @@ public class Login extends Activity implements OnDownloadListener{
 			Intent intent = new Intent(this, SmartPhotoSharing.class);
 		    startActivity(intent);	
 		} else {
-			status.setText("Login incorrect");
+			Toast.makeText(this, "Login incorrect", Toast.LENGTH_SHORT).show();
 		}
 		
 	}	

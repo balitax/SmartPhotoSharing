@@ -14,6 +14,7 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hmi.json.Group;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.MyGalleryAdapter;
 import com.hmi.smartphotosharing.R;
@@ -80,10 +81,11 @@ public class GroupAdapter extends ArrayAdapter<Group> {
 	    picGallery.setAdapter(imgAdapt);
         
         Group group = data[position];
-        holder.txtTitle.setText(group.title);
+        holder.txtTitle.setText(group.name);
         
         // Set the icon for this list item
-        dm.fetchDrawableOnThread(group.icon, holder.imgIcon);
+        String url = context.getResources().getString(R.string.group_http_logo) + group.logo;
+        dm.fetchDrawableOnThread(url, holder.imgIcon);
         
         // We need to set the onClickListener here to make sure that
         // the row can also be clicked, in addition to the gallery photos

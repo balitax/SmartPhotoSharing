@@ -9,20 +9,25 @@
         android:src="@drawable/ic_unknown"
         android:layout_width="50dp"
         android:layout_height="50dp"
+		android:adjustViewBounds="true"  
+		android:maxWidth="42dp"  
+		android:maxHeight="42dp"  
+		android:scaleType="fitCenter"  
         android:layout_alignParentLeft="true"
         android:padding="4dp" />
     
     <TextView
     	android:id="@+id/group_detail_name"
     	android:text="@string/group_detail_name"
+    	android:singleLine="true"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/group_detail_icon"
-        android:textSize="20sp" />
+        android:textSize="15sp" />
     
     <TextView 
-    	android:id="@+id/group_detail_line2"
-    	android:text="@string/group_detail_line2"
+    	android:id="@+id/group_detail_members"
+    	android:text="@string/group_detail_members"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/group_detail_icon"
@@ -30,21 +35,14 @@
         android:textSize="10sp" />
     
    <TextView
-    	android:id="@+id/group_detail_line3"
-    	android:text="@string/group_detail_line3"
+    	android:id="@+id/group_detail_photos"
+    	android:text="@string/group_detail_photos"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/group_detail_icon"
-        android:layout_below="@+id/group_detail_line2"
+        android:layout_below="@+id/group_detail_members"
         android:textSize="10sp" />
     
-    <TextView 
-        android:id="@+id/group_detail_intro"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:text="@string/group_detail_intro"
-        android:layout_below="@+id/group_detail_line3" />
     
 	<GridView xmlns:android="http://schemas.android.com/apk/res/android" 
 	    android:id="@+id/grid"
@@ -57,7 +55,7 @@
 	    android:columnWidth="90dp"
 	    android:stretchMode="columnWidth"
 	    android:gravity="center"
-        android:layout_below="@+id/group_detail_intro"
+        android:layout_below="@+id/group_detail_icon"
 	/>
    
 </RelativeLayout>

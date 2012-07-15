@@ -17,6 +17,10 @@
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
+		  	android:adjustViewBounds="true"  
+		  	android:maxWidth="42dp"  
+		  	android:maxHeight="42dp"  
+		  	android:scaleType="fitCenter"  
 		    android:layout_marginRight="6dp" 
 		    android:src="@drawable/ic_unknown" />
 		    

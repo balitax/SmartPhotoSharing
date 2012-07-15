@@ -1,4 +1,4 @@
-package com.hmi.smartphotosharing.photo;
+package com.hmi.smartphotosharing;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,9 +9,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.SharePhotoActivity;
 
 public class PhotoDetailActivity extends SherlockFragmentActivity {
 

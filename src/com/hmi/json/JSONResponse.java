@@ -5,5 +5,5 @@ public class JSONResponse {
 
 	public int status;
 	
-	public Message msg;
+	public User msg;
 }

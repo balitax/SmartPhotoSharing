@@ -40,10 +40,15 @@
 		    </intent-filter>
 		</activity>
 		
-        <activity android:label="Create Group" android:name=".groups.GroupCreateActivity" />
-        <activity android:label="Group Details" android:name=".groups.GroupDetailActivity" />
-        <activity android:label="Photo Details" android:name=".photo.PhotoDetailActivity" />
-        <activity android:label="Login" android:name=".SmartPhotoSharing" />
+        <activity android:label="Create Group" 
+            android:name=".groups.GroupCreateActivity" />
+        <activity android:label="Group Details" 
+            android:name=".groups.GroupDetailActivity"
+            android:theme="@android:style/Theme.Holo.NoActionBar" />
+        <activity android:label="Photo Details" 
+            android:name=".PhotoDetailActivity" />
+        <activity android:label="Login" 
+            android:name=".SmartPhotoSharing" />
 		
 		<activity android:label="SettingsActivity" android:name=".SettingsActivity">
              <intent-filter>

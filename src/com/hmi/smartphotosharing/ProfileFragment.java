@@ -57,7 +57,7 @@ public class ProfileFragment extends ListFragment implements OnDownloadListener 
 	}
 
 	@Override
-	public void parseJson(String json) {
+	public void parseJson(String json, int code) {
 		Gson gson = new Gson();
 		JSONResponse response = gson.fromJson(json, JSONResponse.class);
 		

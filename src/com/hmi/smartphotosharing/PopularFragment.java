@@ -1,6 +1,5 @@
 package com.hmi.smartphotosharing;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -22,10 +21,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.OnDownloadListener;
-import com.hmi.smartphotosharing.photo.Photo;
-import com.hmi.smartphotosharing.photo.PhotoContainer;
-import com.hmi.smartphotosharing.photo.PhotoDetailActivity;
-import com.hmi.smartphotosharing.photo.PhotoList;
+import com.hmi.json.PhotoMessage;
+import com.hmi.json.PopularResponse;
 
 public class PopularFragment extends Fragment implements OnDownloadListener {
 	
@@ -38,7 +35,6 @@ public class PopularFragment extends Fragment implements OnDownloadListener {
     // The view that will contain the images
     private GridView gridView;
 
-	private List<Photo> mObjectList;
 
     private OnLoadDataListener mListener;
     
@@ -48,7 +44,6 @@ public class PopularFragment extends Fragment implements OnDownloadListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mObjectList = new ArrayList<Photo>();
         setHasOptionsMenu(true);
     }        
     
@@ -117,25 +112,19 @@ public class PopularFragment extends Fragment implements OnDownloadListener {
         return res;
 	}
 	
-	public void parseJson(String result) {
+	public void parseJson(String result, int code) {
 		Gson gson = new Gson();
-		PhotoList list = gson.fromJson(result, PhotoList.class);
+		PopularResponse list = gson.fromJson(result, PopularResponse.class);
 		
-		List<PhotoContainer> group_list = list.getPostContainterList();
-		PhotoContainer gc;
-		for (int i = 0; i < group_list.size(); i++) {
-		    gc = group_list.get(i);
-		    mObjectList.add(gc.getPost());
-		}
+		List<PhotoMessage> photo_list = list.msg;
 		
 		gridView.setAdapter(
 			new MyImageAdapter(
 					getActivity(), 
-					mObjectList.toArray(new Photo[group_list.size()]),
+					photo_list,
 					mListener.getDrawableManager()
 		));
 		
-		mObjectList.clear();
 	}
 	
 }

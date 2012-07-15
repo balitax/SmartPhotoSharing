@@ -1,6 +1,6 @@
 package com.hmi.json;
 
-public class Message {
+public class User {
 	
 	public String uid;
 	public String active;
