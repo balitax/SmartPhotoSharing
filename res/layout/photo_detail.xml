@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true"
+    android:orientation="vertical">
+    
+<RelativeLayout 
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical" >
 
     <ImageView 
@@ -21,8 +28,7 @@
         android:textSize="20sp" />
     
     <TextView 
-    	android:id="@+id/photo_detail_line2"
-    	android:text="@string/photo_detail_line2"
+    	android:id="@+id/photo_detail_date"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/photo_detail_icon"
@@ -30,30 +36,22 @@
         android:textSize="10sp" />
     
    <TextView
-    	android:id="@+id/photo_detail_line3"
-    	android:text="@string/photo_detail_line3"
+    	android:id="@+id/photo_detail_group"
+    	android:text="@string/photo_detail_group"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/photo_detail_icon"
-        android:layout_below="@+id/photo_detail_line2"
+        android:layout_below="@+id/photo_detail_date"
         android:textSize="10sp" />
-    
-    
-    <TextView 
-        android:id="@+id/photo_detail_intro"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:text="@string/photo_detail_intro"
-        android:layout_below="@+id/photo_detail_line3" />
     
  
     <ImageView 
         android:id="@+id/picture"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
+    	android:scaleType="centerInside"
     	android:contentDescription="@string/picture"
-        android:layout_below="@+id/photo_detail_intro" />
+        android:layout_below="@+id/photo_detail_icon" />
     
     <EditText 
         android:id="@+id/edit_message"
@@ -72,3 +70,4 @@
         android:layout_toRightOf="@+id/edit_message"
         android:layout_alignParentRight="true" />   
 </RelativeLayout>
+</ScrollView>

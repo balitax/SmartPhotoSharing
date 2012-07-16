@@ -1,6 +1,6 @@
 package com.hmi.json;
 
-public class PhotoMessage {
+public class Photo {
 
 	public String name;
 	public String location;

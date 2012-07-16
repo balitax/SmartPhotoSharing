@@ -20,7 +20,7 @@ import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
 import com.hmi.json.GroupDetailResponse;
 import com.hmi.json.OnDownloadListener;
-import com.hmi.json.PhotoMessage;
+import com.hmi.json.Photo;
 import com.hmi.json.PopularResponse;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.MyImageAdapter;
@@ -129,7 +129,7 @@ public class GroupDetailActivity extends SherlockFragmentActivity implements OnD
 		Gson gson = new Gson();
 		PopularResponse list = gson.fromJson(result, PopularResponse.class);
 		
-		List<PhotoMessage> photo_list = list.msg;
+		List<Photo> photo_list = list.msg;
 		
 		gridView.setAdapter(
 			new MyImageAdapter(

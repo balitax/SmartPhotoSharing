@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.LoginResponse;
 import com.hmi.json.OnDownloadListener;
+import com.hmi.smartphotosharing.groups.GroupsActivity;
 
 public class Login extends Activity implements OnDownloadListener{
 	
@@ -52,7 +52,7 @@ public class Login extends Activity implements OnDownloadListener{
 		LoginResponse response = gson.fromJson(json, LoginResponse.class);
 
 		if (response.status != INCORRECT) {
-			Intent intent = new Intent(this, SmartPhotoSharing.class);
+			Intent intent = new Intent(this, GroupsActivity.class);
 		    startActivity(intent);	
 		} else {
 			Toast.makeText(this, "Login incorrect", Toast.LENGTH_SHORT).show();

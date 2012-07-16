@@ -1,21 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
          android:orientation="vertical"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          android:paddingLeft="8dp"
          android:paddingRight="8dp">
-             
+
+    <ImageView 
+        android:id="@+id/groups_icon"
+        android:src="@drawable/ic_unknown"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:padding="4dp" />
+    
+    <TextView
+    	android:id="@+id/groups_name"
+    	android:text="@string/profile_name"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/groups_icon"
+        android:textSize="20sp" />
+    
+    <TextView
+    	android:id="@+id/groups_line2"
+    	android:text="@string/profile_line2"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/groups_icon"
+        android:layout_below="@+id/groups_name"
+        android:textSize="10sp" />
+    
+   <TextView
+    	android:id="@+id/groups_line3"
+    	android:text="@string/profile_line3"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/groups_icon"
+        android:layout_below="@+id/groups_line2"
+        android:textSize="10sp" />
+                
      <ListView android:id="@id/android:list"
 	     android:layout_width="match_parent"
 	     android:layout_height="wrap_content"
-	     android:drawSelectorOnTop="false"/>
+	     android:drawSelectorOnTop="false"
+         android:layout_below="@+id/groups_icon" />
 
      <TextView android:id="@id/android:empty"
 	     android:layout_width="match_parent"
 	     android:layout_height="match_parent"
-	     android:text="@string/no_data"/> 
+	     android:text="@string/no_data"
+         android:layout_below="@+id/groups_icon" /> 
      
 
        
- </LinearLayout>
+</RelativeLayout>

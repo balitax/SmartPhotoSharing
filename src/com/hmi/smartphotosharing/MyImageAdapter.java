@@ -11,14 +11,14 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hmi.json.PhotoMessage;
+import com.hmi.json.Photo;
 
 public class MyImageAdapter extends BaseAdapter {
 	private Context mContext;
 	private DrawableManager dm;
-	private List<PhotoMessage> data;
+	private List<Photo> data;
 	
-    public MyImageAdapter(Context c, List<PhotoMessage> list, DrawableManager dm) {
+    public MyImageAdapter(Context c, List<Photo> list, DrawableManager dm) {
         mContext = c;
         this.dm = dm;
         this.data = list;
@@ -48,7 +48,7 @@ public class MyImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        PhotoMessage photo = data.get(position);
+        Photo photo = data.get(position);
         
         String url = photo.thumb;
         dm.fetchDrawableOnThread(url, imageView);

@@ -85,8 +85,6 @@ public class GroupsFragment extends ListFragment implements OnDownloadListener {
             Intent data) {
         if (requestCode == CREATE_GROUP) {
             if (resultCode == Activity.RESULT_OK) {
-                // A contact was picked.  Here we will just display it
-                // to the user.
             	// TODO : refresh group list
             	Toast.makeText(getActivity(), "Group Created", Toast.LENGTH_SHORT).show();
             }

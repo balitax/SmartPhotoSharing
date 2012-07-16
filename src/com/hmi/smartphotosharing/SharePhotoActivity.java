@@ -3,6 +3,7 @@ package com.hmi.smartphotosharing;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -28,27 +29,26 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.hmi.json.FetchJSON;
+import com.hmi.json.Group;
+import com.hmi.json.GroupsResponse;
+import com.hmi.json.OnDownloadListener;
 import com.hmi.smartphotosharing.groups.GroupCreateActivity;
 
-public class SharePhotoActivity extends Activity  {
+public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	
 	public static final int CREATE_GROUP = 4;
 	private Uri imageUri;
+	private Spinner spinner;
 	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.share_photo);
 		
 		// Populate the Spinner
-		Spinner spinner = (Spinner) findViewById(R.id.groups_spinner);
-		// Create an ArrayAdapter using the string array and a default spinner layout
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-		        R.array.demo_groups, android.R.layout.simple_spinner_item);
-		// Specify the layout to use when the list of choices appears
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		// Apply the adapter to the spinner
-		spinner.setAdapter(adapter);
-		
+		spinner = (Spinner) findViewById(R.id.groups_spinner);
+				
 	    // Get intent, action and MIME type
 	    Intent intent = getIntent();
 	    String action = intent.getAction();
@@ -73,8 +73,16 @@ public class SharePhotoActivity extends Activity  {
 	            handleSendImage(intent); // Handle single image being sent
 	        }
 	    }
+	    
+	    loadData();
 	}
 	
+	private void loadData() {
+		
+        new FetchJSON(this).execute(getResources().getString(R.string.groups_http));
+		
+	}
+
 	public void onClickCreateGroup(View v) {
 		Intent intent = new Intent(this, GroupCreateActivity.class);
 		startActivityForResult(intent, CREATE_GROUP);
@@ -166,4 +174,23 @@ public class SharePhotoActivity extends Activity  {
     		return "ok";
     	}
     }
+
+
+	@Override
+	public void parseJson(String json, int code) {
+		Gson gson = new Gson();
+		GroupsResponse gr = gson.fromJson(json, GroupsResponse.class);
+		List<Group> list = gr.msg;
+		
+		String[] items = new String[list.size()];
+		
+		for(int i = 0; i < list.size(); i++) {
+			items[i] = list.get(i).name;
+		}
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+	            android.R.layout.simple_spinner_item, items);
+
+		spinner.setAdapter(adapter);
+	}
 }

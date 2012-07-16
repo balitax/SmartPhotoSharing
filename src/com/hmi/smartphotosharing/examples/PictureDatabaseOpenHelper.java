@@ -1,4 +1,4 @@
-package com.hmi.smartphotosharing;
+package com.hmi.smartphotosharing.examples;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

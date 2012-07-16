@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/camera"
+          android:icon="@drawable/ic_menu_camera"
+          android:title="@string/menu_camera"
+          android:showAsAction="always" />
     <item android:id="@+id/create_group"
           android:title="@string/menu_group_create" />
+    <item android:id="@+id/settings"
+          android:icon="@drawable/ic_menu_preferences"
+          android:title="@string/menu_settings" />
 </menu> 

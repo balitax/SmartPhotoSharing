@@ -54,11 +54,10 @@
     
     <!--  Photo Detail -->
     
-    <string name="photo_detail_name">This is a picture</string>
-    <string name="photo_detail_line2">Taken by %1$s on %2$s</string>
-    <string name="photo_detail_line3">Posted in group %1$s</string>
-    <string name="photo_detail_intro">This is the photo detail page</string>
-    <string name="photo_detail_url">http://www.skybox.utwente.nl/test/rozen.jpg</string>
+    <string name="photo_detail_name">By %1$s</string>
+    <string name="photo_detail_group">Posted in group %1$s</string>
+    <string name="photo_detail_url">http://www.skybox.utwente.nl/test/image_list.php</string>
+    
     <!--  Profile -->
     
     <string name="profile_intro">This is the Profile tab.</string>
@@ -87,9 +86,7 @@
     
     <string name="album_name">SPS</string>
     <string name="btnIntend">Take Picture</string>
-    <string name="btnGallery">Gallery</string>
     <string name="btnShare">Share</string>
-    <string name="btnDelete">Delete</string>
     <string name="cannot">Cannot</string>
     <string name="camera_img_description">The photo that was just taken.</string>
     
@@ -103,14 +100,7 @@
 	<string name="intent_intro">How would you like to share this picture?</string>
 	<string name="intent_img_description">This is the image that was shared.</string>
 	<string name="intent_pick_group">Select a group to share with.</string>
-	
-	<string-array name="demo_groups">
-        <item>Lowlands 2012</item>
-        <item>Holiday 2011</item>
-        <item>Utwente</item>
-        <item>My Friends</item>
-    </string-array>
-    
+	    
 	<!--  NetworkActivity -->
     <string name="lost_connection">Lost connection.</string>
     <string name="wifi_connected">Wi-Fi reconnected.</string>

@@ -94,6 +94,8 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 		while ((line = br.readLine()) != null) {
 			sb.append(line + "\n");
 		}
+		br.close();
+		reader.close();
 		return sb.toString();
 	}
 }

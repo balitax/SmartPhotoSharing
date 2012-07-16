@@ -32,7 +32,8 @@
             </intent-filter>
         </activity>
         
-        <activity android:label="Smart Photo Sharing" android:name=".SharePhotoActivity" >
+        <activity android:label="Share Photo" 
+            android:name=".SharePhotoActivity" >
 		    <intent-filter>
 		        <action android:name="android.intent.action.SEND" />
 		        <category android:name="android.intent.category.DEFAULT" />
@@ -40,13 +41,20 @@
 		    </intent-filter>
 		</activity>
 		
+        <activity android:label="Groups" 
+            android:name=".groups.GroupsActivity"
+            android:theme="@android:style/Theme.Holo.NoActionBar" />
+        <activity android:label="Camera" 
+            android:name=".camera.CameraActivity"
+            android:theme="@android:style/Theme.Holo.NoActionBar" />
         <activity android:label="Create Group" 
             android:name=".groups.GroupCreateActivity" />
         <activity android:label="Group Details" 
             android:name=".groups.GroupDetailActivity"
             android:theme="@android:style/Theme.Holo.NoActionBar" />
         <activity android:label="Photo Details" 
-            android:name=".PhotoDetailActivity" />
+            android:name=".PhotoDetailActivity"
+            android:theme="@android:style/Theme.Holo.NoActionBar" />
         <activity android:label="Login" 
             android:name=".SmartPhotoSharing" />
 		

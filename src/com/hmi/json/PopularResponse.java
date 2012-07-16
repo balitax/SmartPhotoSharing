@@ -5,5 +5,5 @@ import java.util.List;
 public class PopularResponse {
 	public int status;
 	
-	public List<PhotoMessage> msg;
+	public List<Photo> msg;
 }

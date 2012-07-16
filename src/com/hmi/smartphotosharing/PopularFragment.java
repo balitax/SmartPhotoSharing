@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.OnDownloadListener;
-import com.hmi.json.PhotoMessage;
+import com.hmi.json.Photo;
 import com.hmi.json.PopularResponse;
 
 public class PopularFragment extends Fragment implements OnDownloadListener {
@@ -116,7 +116,7 @@ public class PopularFragment extends Fragment implements OnDownloadListener {
 		Gson gson = new Gson();
 		PopularResponse list = gson.fromJson(result, PopularResponse.class);
 		
-		List<PhotoMessage> photo_list = list.msg;
+		List<Photo> photo_list = list.msg;
 		
 		gridView.setAdapter(
 			new MyImageAdapter(

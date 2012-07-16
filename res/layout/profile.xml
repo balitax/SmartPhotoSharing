@@ -57,6 +57,5 @@
         android:layout_height="match_parent"
         android:text="@string/no_data"
       	android:layout_below="@id/profile_intro" />
-
         
 </RelativeLayout>

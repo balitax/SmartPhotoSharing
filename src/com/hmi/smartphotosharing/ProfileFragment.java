@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
-import com.hmi.json.JSONResponse;
+import com.hmi.json.ProfileResponse;
 import com.hmi.json.OnDownloadListener;
 
 public class ProfileFragment extends ListFragment implements OnDownloadListener {
@@ -59,7 +59,7 @@ public class ProfileFragment extends ListFragment implements OnDownloadListener 
 	@Override
 	public void parseJson(String json, int code) {
 		Gson gson = new Gson();
-		JSONResponse response = gson.fromJson(json, JSONResponse.class);
+		ProfileResponse response = gson.fromJson(json, ProfileResponse.class);
 		
 		username.setText(response.msg.rname);
 		

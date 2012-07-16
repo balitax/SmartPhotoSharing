@@ -1,7 +1,7 @@
 package com.hmi.json;
 
 
-public class JSONResponse {
+public class ProfileResponse {
 
 	public int status;
 	

@@ -10,4 +10,8 @@ public class User {
 	public String email;
 	public String fb_id;
 	public String fb_oauth;
+	
+	public String getName() {
+		return rname;
+	}
 }
