@@ -3,16 +3,12 @@ package com.hmi.smartphotosharing;
 import java.util.List;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
-
-import com.hmi.json.Photo;
 
 /**
  * Base Adapter subclass creates Gallery view
@@ -22,9 +18,10 @@ import com.hmi.json.Photo;
  */
 public class MyGalleryAdapter extends BaseAdapter {
 
+
 	private Context context;
 	private DrawableManager dm;
-	private List<Photo> data;
+	private List<String> data;
 	
 	//use the default gallery background image
     int defaultItemBackground;
@@ -33,7 +30,7 @@ public class MyGalleryAdapter extends BaseAdapter {
     Bitmap placeholder;
 
     //constructor
-    public MyGalleryAdapter(Context c, List<Photo> list, DrawableManager dm) {
+    public MyGalleryAdapter(Context c, List<String> list, DrawableManager dm) {
         context = c;
         this.dm = dm;
         this.data = list;
@@ -51,13 +48,13 @@ public class MyGalleryAdapter extends BaseAdapter {
     }
 
     @Override
-    public Photo getItem(int position) {
+    public String getItem(int position) {
         return data.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return data.get(position).getId();
+        return 0;
     }
 
     //get view specifies layout and display options for each thumbnail in the gallery
@@ -67,10 +64,8 @@ public class MyGalleryAdapter extends BaseAdapter {
         ImageView imageView = new ImageView(context);
         //specify the bitmap at this position in the array
 
-        Photo photo = data.get(position);
-        
-        String url = photo.thumb;
-        dm.fetchDrawableOnThread(url, imageView);
+        String photo = data.get(position);
+        dm.fetchDrawableOnThread(photo, imageView);
         
         //set layout options
         imageView.setLayoutParams(new Gallery.LayoutParams(150, 100));
@@ -80,26 +75,12 @@ public class MyGalleryAdapter extends BaseAdapter {
         imageView.setBackgroundResource(defaultItemBackground);
         //return the view
         
-        imageView.setOnClickListener(new OnItemClickListener(context, position));
+        //imageView.setOnLongClickListener(new OnItemClickListener(context, position));
         
         return imageView;
     }
     
-    private class OnItemClickListener implements OnClickListener{    
-        private Context context;
-        private int position;
-        
-        public OnItemClickListener(Context context, int position){
-            this.context = context;
-            this.position = position;
-        }
-        
-        @Override
-        public void onClick(View arg0) {
-        	Intent intent = new Intent(context, PhotoDetailActivity.class);
-        	intent.putExtra("id", getItemId(position));
-        	context.startActivity(intent);
-        }       
-    }
- 
+
+
+
 }

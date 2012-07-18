@@ -1,29 +1,27 @@
 package com.hmi.smartphotosharing.groups;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
-import com.hmi.json.OnDownloadListener;
-import com.hmi.json.Photo;
-import com.hmi.json.PopularResponse;
 import com.hmi.smartphotosharing.DrawableManager;
-import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyGalleryAdapter;
+import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 
 /**
@@ -32,14 +30,18 @@ import com.hmi.smartphotosharing.R;
  * @author Edwin
  *
  */
-public class GroupAdapter extends ArrayAdapter<Group> implements OnDownloadListener{
-	
+public class GroupAdapter extends ArrayAdapter<Group> {
+
+    private static final int SWIPE_MAX_OFF_PATH = 250;
+    private GestureDetector gestureDetector;
+    
+    OnTouchListener gestureListener;
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
 	Group data[] = null;	// A Group array that contains all list items
 	DrawableManager dm;
 
-	private Gallery[] picGallery;
+	private Gallery picGallery;
 		
 	public GroupAdapter(Context context, int resource, Group[] objects, DrawableManager dm) {
 		super(context, resource, objects);
@@ -48,7 +50,6 @@ public class GroupAdapter extends ArrayAdapter<Group> implements OnDownloadListe
         this.context = context;
         this.data = objects;
         this.dm = dm;
-        picGallery = new Gallery[data.length];
 	}
 	
     @Override
@@ -91,15 +92,7 @@ public class GroupAdapter extends ArrayAdapter<Group> implements OnDownloadListe
         } else {
             holder = (GroupHolder)row.getTag();
         }
-        
-        picGallery[position] = (Gallery) row.findViewById(R.id.gallery);
-        
-	    // Create a new adapter
-	    //imgAdapt = new MyGalleryAdapter(context);
-	    
-	    // Set the gallery adapter
-	    //picGallery.setAdapter(imgAdapt);
-        
+                        
         Group group = data[position];
         holder.txtTitle.setText(group.name);
         
@@ -109,14 +102,31 @@ public class GroupAdapter extends ArrayAdapter<Group> implements OnDownloadListe
         
         // We need to set the onClickListener here to make sure that
         // the row can also be clicked, in addition to the gallery photos
-        row.setOnClickListener(new OnItemClickListener(context,position));
+        row.setOnClickListener(new MyOnClickListener(context,position));
 
-		SharedPreferences settings = context.getSharedPreferences(Login.SESSION_PREFS, Activity.MODE_PRIVATE);
-		String hash = settings.getString(Login.SESSION_HASH, null);
-
-        String galleryUrl = String.format(context.getResources().getString(R.string.groups_http_gallery), hash, getItemId(position));
-		new FetchJSON(this,position).execute(galleryUrl);
+        // Set the adapter for the gallery
+        picGallery = (Gallery) row.findViewById(R.id.gallery);
+		picGallery.setAdapter(
+				new MyGalleryAdapter(
+						context, 
+						group.photos,
+						dm
+			));
 		
+		// GestureDetector to detect swipes on the gallery
+        gestureDetector = new GestureDetector(new MyGestureDetector());
+        gestureListener = new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        };
+        
+        // Detect clicking an image
+        picGallery.setOnItemClickListener(new MyOnItemClickListener(context));
+        
+        // Detect swipes
+        picGallery.setOnTouchListener(gestureListener);
+        
         return row;
     }
 	
@@ -132,11 +142,11 @@ public class GroupAdapter extends ArrayAdapter<Group> implements OnDownloadListe
         TextView txtTitle;
     }	
     
-    private class OnItemClickListener implements OnClickListener{       
+    private class MyOnClickListener implements OnClickListener{       
         private int mPosition;
         private Context context;
         
-        public OnItemClickListener(Context context, int position){
+        public MyOnClickListener(Context context, int position){
             mPosition = position;
             this.context = context;
         }
@@ -146,22 +156,52 @@ public class GroupAdapter extends ArrayAdapter<Group> implements OnDownloadListe
         	Intent intent = new Intent(context, GroupDetailActivity.class);
         	intent.putExtra("id", getItemId(mPosition));
         	context.startActivity(intent);
+        	
         }       
     }
+	
+	/**
+	 * Gesture detector needed to detect swipes
+	 * This is needed in combination with onItemClickListener to
+	 * enable both swiping the gallery and clicking imageviews.
+	 * @author Edwin
+	 *
+	 */
+    private class MyGestureDetector extends SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            try {
+                if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+                    return false;
+            } catch (Exception e) {
+                // nothing
+            }
+            return false;
+        }
 
-	@Override
-	public void parseJson(String json, int code) {
-		Gson gson = new Gson();
-		PopularResponse list = gson.fromJson(json, PopularResponse.class);
-		
-		List<Photo> photo_list = list.msg;
-		
-		picGallery[code].setAdapter(
-			new MyGalleryAdapter(
-					context, 
-					photo_list,
-					dm
-		));
-	}
+    }
 
+    /**
+     * Listener for clicking images on the gallery.
+     * @author Edwin
+     *
+     */
+    private class MyOnItemClickListener implements OnItemClickListener{    
+        private Context context;
+        
+        public MyOnItemClickListener(Context context){
+            this.context = context;
+        }
+        
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+        	Intent intent = new Intent(context, PhotoDetailActivity.class);
+        	intent.putExtra("id", id);
+        	context.startActivity(intent);
+        	
+        }
+
+    }
+ 
 }

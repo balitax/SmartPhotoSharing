@@ -1,5 +1,7 @@
 package com.hmi.json;
 
+import java.util.List;
+
 import com.google.gson.annotations.SerializedName;
 /**
  * This class represents a Group list item, containing an icon and a title.
@@ -24,6 +26,8 @@ public class Group {
 	public String logo;
 	public String description;
 	public String owner;
+	
+	public List<String> photos;
 	
 	public long getId() {
 		return Long.parseLong(gid);
