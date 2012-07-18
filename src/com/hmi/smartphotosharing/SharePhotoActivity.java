@@ -18,6 +18,7 @@ import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -41,6 +43,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	public static final int CREATE_GROUP = 4;
 	private Uri imageUri;
 	private Spinner spinner;
+	private EditText comment;
 	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,7 +51,8 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		
 		// Populate the Spinner
 		spinner = (Spinner) findViewById(R.id.groups_spinner);
-				
+		comment = (EditText) findViewById(R.id.edit_message);
+		
 	    // Get intent, action and MIME type
 	    Intent intent = getIntent();
 	    String action = intent.getAction();
@@ -78,8 +82,12 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	}
 	
 	private void loadData() {
+
+		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+		String hash = settings.getString(Login.SESSION_HASH, null);
 		
-        new FetchJSON(this).execute(getResources().getString(R.string.groups_http));
+		String groupsUrl = String.format(getResources().getString(R.string.groups_http), hash);
+        new FetchJSON(this).execute(groupsUrl);
 		
 	}
 
@@ -91,7 +99,16 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	public void onClickShare(View v) {
 		
 		if (imageUri != null) {
-			new UploadImage().execute(getResources().getString(R.string.url_upload),Environment.getExternalStorageDirectory().getAbsolutePath() + "/Pictures/rozen.jpg");
+
+    		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+    		String hash = settings.getString(Login.SESSION_HASH, null);
+    		
+    		String commentTxt = comment.getText().toString();
+    		long group = spinner.getSelectedItemId();
+    		String shareUrl = String.format(getResources().getString(R.string.url_upload), hash, group, 0, 0, commentTxt);
+    		
+    		String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Pictures/rozen.jpg";
+			new UploadImage().execute(shareUrl,path);
 		} else {
 			setResult(RESULT_CANCELED);
 			finish();
@@ -159,7 +176,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 
     		MultipartEntity mpEntity = new MultipartEntity();
     		ContentBody cbFile = new FileBody(file, "image/jpeg");
-    		mpEntity.addPart("userfile", cbFile);
+    		mpEntity.addPart("photo", cbFile);
     	
     		httppost.setEntity(mpEntity);
     		Log.d("sendPost","executing request " + httppost.getRequestLine());

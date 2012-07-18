@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.hmi.json.GroupsResponse;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.json.ProfileResponse;
 import com.hmi.smartphotosharing.DrawableManager;
+import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SettingsActivity;
 import com.hmi.smartphotosharing.camera.CameraActivity;
@@ -81,15 +83,18 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 	        	return super.onOptionsItemSelected(item);
         }
     }	
-	private boolean loadData() {
-		boolean res = false;        
+	
+	private void loadData() {
+		
+		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+		String hash = settings.getString(Login.SESSION_HASH, null);
 
-        new FetchJSON(this,CODE_PROFILE).execute(getResources().getString(R.string.profile_http));
-		new FetchJSON(this,CODE_GROUPS).execute(getResources().getString(R.string.groups_http));
+        String profileUrl = String.format(getResources().getString(R.string.profile_http),hash);		
+        new FetchJSON(this,CODE_PROFILE).execute(profileUrl);
 
-		res = true;
-        
-        return res;
+        String groupsUrl = String.format(getResources().getString(R.string.groups_http),hash);
+		new FetchJSON(this,CODE_GROUPS).execute(groupsUrl);
+
 	}
 		
 	public void onActivityResult(int requestCode, int resultCode,

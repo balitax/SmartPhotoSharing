@@ -1,8 +1,11 @@
 package com.hmi.smartphotosharing.groups;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,8 +15,14 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
+import com.hmi.json.OnDownloadListener;
+import com.hmi.json.Photo;
+import com.hmi.json.PopularResponse;
 import com.hmi.smartphotosharing.DrawableManager;
+import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyGalleryAdapter;
 import com.hmi.smartphotosharing.R;
 
@@ -23,17 +32,15 @@ import com.hmi.smartphotosharing.R;
  * @author Edwin
  *
  */
-public class GroupAdapter extends ArrayAdapter<Group> {
-	// TODO : implements Filterable - voor type searching
+public class GroupAdapter extends ArrayAdapter<Group> implements OnDownloadListener{
 	
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
 	Group data[] = null;	// A Group array that contains all list items
 	DrawableManager dm;
 
-	private Gallery picGallery;
-	private MyGalleryAdapter imgAdapt;
-	
+	private Gallery[] picGallery;
+		
 	public GroupAdapter(Context context, int resource, Group[] objects, DrawableManager dm) {
 		super(context, resource, objects);
 		
@@ -41,9 +48,24 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         this.context = context;
         this.data = objects;
         this.dm = dm;
-        
+        picGallery = new Gallery[data.length];
 	}
+	
+    @Override
+    public int getCount() {
+        return data.length;
+    }
 
+    @Override
+    public Group getItem(int position) {
+        return data[position];
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return getItem(position).getId();
+    }
+    
 	/**
 	 * This method overrides the inherited getView() method.
 	 * It is called for every ListView item to create the view with
@@ -70,13 +92,13 @@ public class GroupAdapter extends ArrayAdapter<Group> {
             holder = (GroupHolder)row.getTag();
         }
         
-        picGallery = (Gallery) row.findViewById(R.id.gallery);
+        picGallery[position] = (Gallery) row.findViewById(R.id.gallery);
         
 	    // Create a new adapter
-	    imgAdapt = new MyGalleryAdapter(context);
+	    //imgAdapt = new MyGalleryAdapter(context);
 	    
 	    // Set the gallery adapter
-	    picGallery.setAdapter(imgAdapt);
+	    //picGallery.setAdapter(imgAdapt);
         
         Group group = data[position];
         holder.txtTitle.setText(group.name);
@@ -89,6 +111,12 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         // the row can also be clicked, in addition to the gallery photos
         row.setOnClickListener(new OnItemClickListener(context,position));
 
+		SharedPreferences settings = context.getSharedPreferences(Login.SESSION_PREFS, Activity.MODE_PRIVATE);
+		String hash = settings.getString(Login.SESSION_HASH, null);
+
+        String galleryUrl = String.format(context.getResources().getString(R.string.groups_http_gallery), hash, getItemId(position));
+		new FetchJSON(this,position).execute(galleryUrl);
+		
         return row;
     }
 	
@@ -116,9 +144,24 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         @Override
         public void onClick(View arg0) {
         	Intent intent = new Intent(context, GroupDetailActivity.class);
-        	intent.putExtra("id", mPosition);
+        	intent.putExtra("id", getItemId(mPosition));
         	context.startActivity(intent);
         }       
     }
+
+	@Override
+	public void parseJson(String json, int code) {
+		Gson gson = new Gson();
+		PopularResponse list = gson.fromJson(json, PopularResponse.class);
+		
+		List<Photo> photo_list = list.msg;
+		
+		picGallery[code].setAdapter(
+			new MyGalleryAdapter(
+					context, 
+					photo_list,
+					dm
+		));
+	}
 
 }

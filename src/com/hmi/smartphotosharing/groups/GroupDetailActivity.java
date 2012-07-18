@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,11 +12,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
 import com.hmi.json.GroupDetailResponse;
@@ -23,6 +26,7 @@ import com.hmi.json.OnDownloadListener;
 import com.hmi.json.Photo;
 import com.hmi.json.PopularResponse;
 import com.hmi.smartphotosharing.DrawableManager;
+import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyImageAdapter;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
@@ -33,8 +37,6 @@ public class GroupDetailActivity extends SherlockFragmentActivity implements OnD
 	private static final int CODE_GROUP_DETAILS = 1;
 	private static final int CODE_GROUP_PHOTOS = 2;
 	
-	//adapter for gallery view
-	private MyImageAdapter imgAdapt;
 	//gallery object
 	private GridView gridView;
 	//image view for larger display
@@ -46,6 +48,8 @@ public class GroupDetailActivity extends SherlockFragmentActivity implements OnD
 	
 	private DrawableManager dm;
 			
+	private long id;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,12 +65,10 @@ public class GroupDetailActivity extends SherlockFragmentActivity implements OnD
         // Get the gallery view
         gridView = (GridView) findViewById(R.id.grid);
 
-        // Set the gallery adapter
-        gridView.setAdapter(imgAdapt);
-
-        // Set the click listener for each item in the thumbnail gallery
-        gridView.setOnItemClickListener(new MyOnItemClickListener(this));      
+        // Set the click listener for each item in the thumbnail gallery     
         
+        Intent intent = getIntent();
+        id = intent.getLongExtra("id", 0);
     }
 
     private class MyOnItemClickListener implements OnItemClickListener {
@@ -102,10 +104,17 @@ public class GroupDetailActivity extends SherlockFragmentActivity implements OnD
 		boolean res = false;
         
         if (SmartPhotoSharing.refreshDisplay) {
+        	
+    		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+    		String hash = settings.getString(Login.SESSION_HASH, null);
+    		
         	// Get group info
-    		new FetchJSON(this,CODE_GROUP_DETAILS).execute(getResources().getString(R.string.group_http_detail));
+    		String detailUrl = String.format(getResources().getString(R.string.group_http_detail),hash,id);
+    		new FetchJSON(this,CODE_GROUP_DETAILS).execute(detailUrl);
+    		
     		// Get list of photos
-    		new FetchJSON(this,CODE_GROUP_PHOTOS).execute(getResources().getString(R.string.group_http_detail_photos));
+    		String photosUrl = String.format(getResources().getString(R.string.group_http_detail_photos),hash,id);
+    		new FetchJSON(this,CODE_GROUP_PHOTOS).execute(photosUrl);
     		res = true;
         } 		
         
@@ -138,6 +147,8 @@ public class GroupDetailActivity extends SherlockFragmentActivity implements OnD
 					dm
 		));
 
+        gridView.setOnItemClickListener(new MyOnItemClickListener(this)); 
+        
 		// Set the string telling how many photos the group has
 		String photos = String.format(getResources().getString(R.string.group_detail_photos), photo_list.size());
 		groupPhotos.setText(photos);
@@ -146,16 +157,22 @@ public class GroupDetailActivity extends SherlockFragmentActivity implements OnD
 
 	private void parseGroup(String result) {
 		Gson gson = new Gson();
-		GroupDetailResponse gdr = gson.fromJson(result, GroupDetailResponse.class);
 		
-		Group g = gdr.msg;
+		try {
+			GroupDetailResponse gdr = gson.fromJson(result, GroupDetailResponse.class);
+			Group g = gdr.msg;
 
-		groupName.setText(g.name);
-		String logoUrl = getResources().getString(R.string.group_http_logo) + g.logo;
-		dm.fetchDrawableOnThread(logoUrl, groupIcon);
+			groupName.setText(g.name);
+			String logoUrl = getResources().getString(R.string.group_http_logo) + g.logo;
+			dm.fetchDrawableOnThread(logoUrl, groupIcon);
 
-		// Set the string telling how many members the group has
-		String photos = String.format(getResources().getString(R.string.group_detail_members), 0);
-		groupMembers.setText(photos);
+			// Set the string telling how many members the group has
+			String photos = String.format(getResources().getString(R.string.group_detail_members), 0);
+			groupMembers.setText(photos);
+		} catch (JsonSyntaxException e) {
+			Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+		}
+
+		
 	}
 }

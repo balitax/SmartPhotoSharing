@@ -22,4 +22,14 @@ public class Photo {
 	
 	public String age;
 	public String thumb;
+	
+	public String picname;
+	
+	public String getUrl() {
+		return location + picname;
+	}
+	
+	public long getId() {
+		return Long.parseLong(iid);		
+	}
 }

@@ -24,19 +24,26 @@ public class MyImageAdapter extends BaseAdapter {
         this.data = list;
     }
 
+    @Override
     public int getCount() {
-        return data.size();
+    	if (data == null){
+    		return 0;
+    	} else {
+    		return data.size();
+    	}
     }
 
-    public Object getItem(int position) {
-        return null;
+    @Override
+    public Photo getItem(int position) {
+        return data.get(position);
     }
 
+    @Override
     public long getItemId(int position) {
-        return 0;
+        return getItem(position).getId();
     }
 
-    // create a new ImageView for each item referenced by the Adapter
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
         

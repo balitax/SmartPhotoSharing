@@ -18,12 +18,16 @@ public class Group {
 	public String longend;
 	public String latstart;
 	public String latend;
-
+	
 	@SerializedName("private")
 	public String private_group;
 	public String logo;
 	public String description;
-	public String owner;	
-		
+	public String owner;
+	
+	public long getId() {
+		return Long.parseLong(gid);
+	}	
+			
 	
 }

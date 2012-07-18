@@ -25,19 +25,20 @@
     <string name="login_password">changeme22</string>
     <string name="login_button">Login</string>    
     <string name="login_http">http://sps.juursema.com/api.php?cmd=login&amp;u=%1$s&amp;p=%2$s</string> 
-    <string name="login_validate">http://sps.juursema.com/api.php?cmd=status&amp;sid=sessionhash</string> 
+    <string name="login_validate">http://sps.juursema.com/api.php?cmd=status&amp;sid=%1$s</string> 
         
     <!--  Placeholder strings -->
     
-    <string name="url_upload">http://www.skybox.utwente.nl/test/upload_image.php</string>
+    <string name="url_upload">http://sps.juursema.com/api.php?cmd=login&amp;sid=%1$s&amp;group=%2$s&amp;lon=%3$s&amp;lat=%4$s&amp;comment=%5$s</string> 
     <string name="popular_http">http://www.skybox.utwente.nl/test/image_list.php</string>
     
-    <string name="profile_http">http://www.skybox.utwente.nl/test/userinfo.php</string>
+    <string name="profile_http">http://sps.juursema.com/api.php?cmd=userinfo&amp;sid=%1$s</string>
     <string name="help">This is the Help page.</string>
     
     <!--  Groups -->
     
-    <string name="groups_http">http://www.skybox.utwente.nl/test/groups.php</string>
+    <string name="groups_http">http://sps.juursema.com/api.php?cmd=allgroups&amp;sid=%1$s</string>
+    <string name="groups_http_gallery">http://sps.juursema.com/api.php?cmd=listpics&amp;sid=%1$s&amp;max=5&amp;gid=%2$s</string>
     <string name="group_create_name">Group name</string>
     <string name="group_create_description">Enter a description</string>
     <string name="group_create_button">Create Group</string>
@@ -46,8 +47,8 @@
     <!--  Group Detail -->
     
     <string name="group_http_logo">http://sps.juursema.com/logodb/</string>
-    <string name="group_http_detail">http://www.skybox.utwente.nl/test/group_detail.php</string>
-    <string name="group_http_detail_photos">http://www.skybox.utwente.nl/test/image_list.php</string>
+    <string name="group_http_detail">http://sps.juursema.com/api.php?cmd=group&amp;sid=%1$s&amp;gid=%2$s</string>
+    <string name="group_http_detail_photos">http://sps.juursema.com/api.php?cmd=listpics&amp;sid=%1$s&amp;gid=%2$s</string>
     <string name="group_detail_name">My Awesome Group</string>
     <string name="group_detail_members">%1$d members</string>
     <string name="group_detail_photos">%1$d photos</string>
@@ -56,7 +57,7 @@
     
     <string name="photo_detail_name">By %1$s</string>
     <string name="photo_detail_group">Posted in group %1$s</string>
-    <string name="photo_detail_url">http://www.skybox.utwente.nl/test/image_list.php</string>
+    <string name="photo_detail_url">http://sps.juursema.com/api.php?cmd=pic&amp;sid=%1$s&amp;iid=%2$s</string>
     
     <!--  Profile -->
     

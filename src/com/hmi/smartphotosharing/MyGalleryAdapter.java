@@ -1,16 +1,18 @@
 package com.hmi.smartphotosharing;
 
+import java.util.List;
+
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
+
+import com.hmi.json.Photo;
 
 /**
  * Base Adapter subclass creates Gallery view
@@ -20,58 +22,42 @@ import android.widget.ImageView;
  */
 public class MyGalleryAdapter extends BaseAdapter {
 
-	private int currentPic = 0;
+	private Context context;
+	private DrawableManager dm;
+	private List<Photo> data;
 	
 	//use the default gallery background image
     int defaultItemBackground;
     
-    //gallery context
-    private Context context;
-
-    //array to store bitmaps to display
-    private Bitmap[] imageBitmaps;
     //placeholder bitmap for empty spaces in gallery
     Bitmap placeholder;
 
     //constructor
-    public MyGalleryAdapter(Context c) {
-    	
-    	//instantiate context
-    	context = c;
-    	
-    	//create bitmap array
-        imageBitmaps  = new Bitmap[10];
-        //decode the placeholder image
-        placeholder = BitmapFactory.decodeResource(c.getResources(), R.drawable.ic_launcher);
-        
-        //set placeholder as all thumbnail images in the gallery initially
-        for(int i=0; i<imageBitmaps.length; i++)
-        	imageBitmaps[i]=placeholder;
-        
-        //get the styling attributes - use default Andorid system resources
-        TypedArray styleAttrs = context.obtainStyledAttributes(R.styleable.PicGallery);
-        //get the background resource
-        defaultItemBackground = styleAttrs.getResourceId(
-        		R.styleable.PicGallery_android_galleryItemBackground, 0);
-        //recycle attributes
-        styleAttrs.recycle();
+    public MyGalleryAdapter(Context c, List<Photo> list, DrawableManager dm) {
+        context = c;
+        this.dm = dm;
+        this.data = list;
     }
 
     //BaseAdapter methods
     
-    //return number of data items i.e. bitmap images
+    @Override
     public int getCount() {
-        return imageBitmaps.length;
+    	if (data == null) {
+    		return 0;
+    	} else {
+    		return data.size();
+    	}
     }
 
-    //return item at specified position
-    public Object getItem(int position) {
-        return position;
+    @Override
+    public Photo getItem(int position) {
+        return data.get(position);
     }
 
-    //return item ID at specified position
+    @Override
     public long getItemId(int position) {
-        return position;
+        return data.get(position).getId();
     }
 
     //get view specifies layout and display options for each thumbnail in the gallery
@@ -80,7 +66,12 @@ public class MyGalleryAdapter extends BaseAdapter {
     	//create the view
         ImageView imageView = new ImageView(context);
         //specify the bitmap at this position in the array
-        imageView.setImageBitmap(imageBitmaps[position]);
+
+        Photo photo = data.get(position);
+        
+        String url = photo.thumb;
+        dm.fetchDrawableOnThread(url, imageView);
+        
         //set layout options
         imageView.setLayoutParams(new Gallery.LayoutParams(150, 100));
         //scale type within view area
@@ -89,41 +80,26 @@ public class MyGalleryAdapter extends BaseAdapter {
         imageView.setBackgroundResource(defaultItemBackground);
         //return the view
         
-        imageView.setOnClickListener(new OnItemClickListener(context,position));
+        imageView.setOnClickListener(new OnItemClickListener(context, position));
         
         return imageView;
     }
     
-    private class OnItemClickListener implements OnClickListener{       
-        private int mPosition;
+    private class OnItemClickListener implements OnClickListener{    
         private Context context;
+        private int position;
         
         public OnItemClickListener(Context context, int position){
-            mPosition = position;
             this.context = context;
+            this.position = position;
         }
         
         @Override
         public void onClick(View arg0) {
         	Intent intent = new Intent(context, PhotoDetailActivity.class);
+        	intent.putExtra("id", getItemId(position));
         	context.startActivity(intent);
         }       
     }
-    //custom methods for this app
-    
-    //helper method to add a bitmap to the gallery when the user chooses one
-    public void addPic(Bitmap newPic) {
-    	//set at currently selected index
-    	imageBitmaps[currentPic] = newPic;
-    }
-    
-    //return bitmap at specified position for larger display
-    public Bitmap getPic(int posn) {
-    	//return bitmap at posn index
-    	return imageBitmaps[posn];
-    }
-    
-    public void setPic(int pos) {
-    	currentPic = pos;
-    }
+ 
 }

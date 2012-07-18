@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -17,6 +18,7 @@ import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.json.Photo;
+import com.hmi.json.PhotoResponse;
 import com.hmi.json.PopularResponse;
 
 public class PhotoDetailActivity extends SherlockFragmentActivity implements OnDownloadListener {
@@ -32,11 +34,16 @@ public class PhotoDetailActivity extends SherlockFragmentActivity implements OnD
         setContentView(R.layout.photo_detail);
 
         imgView = (ImageView) findViewById(R.id.picture);
-        
-		new FetchJSON(this).execute(getResources().getString(R.string.photo_detail_url));
 
         Intent intent = getIntent();
-        id = intent.getIntExtra("id", 0);
+        id = intent.getLongExtra("id", 0);
+        
+		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+		String hash = settings.getString(Login.SESSION_HASH, null);
+        
+        String photoUrl = String.format(getResources().getString(R.string.photo_detail_url),hash,id);
+		new FetchJSON(this).execute(photoUrl);
+
     }
     
 	@Override
@@ -70,12 +77,11 @@ public class PhotoDetailActivity extends SherlockFragmentActivity implements OnD
 	@Override
 	public void parseJson(String json, int code) {
 		Gson gson = new Gson();
-		PopularResponse pr = gson.fromJson(json, PopularResponse.class);
+		PhotoResponse pr = gson.fromJson(json, PhotoResponse.class);
 		
-		// TODO single photo in json response
-		Photo p = pr.msg.get(0);
+		Photo p = pr.msg;
 		
-		String uri = p.location + p.name;
+		String uri = p.getUrl();
 		        
         dm = new DrawableManager(this);
         dm.fetchDrawableOnThread(uri, imgView);
