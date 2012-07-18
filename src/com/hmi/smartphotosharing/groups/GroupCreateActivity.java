@@ -13,7 +13,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -188,23 +187,4 @@ public class GroupCreateActivity extends MapActivity {
         }
     };
 
-    /**
-     * Dialog to prompt users to enable GPS on the device.
-     */
-    public class EnableGpsDialogFragment extends DialogFragment {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return new AlertDialog.Builder(getActivity())
-                    .setTitle(R.string.enable_gps)
-                    .setMessage(R.string.enable_gps_dialog)
-                    .setPositiveButton(R.string.enable_gps, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            enableLocationSettings();
-                        }
-                    })
-                    .create();
-        }
-    }
 }

@@ -17,8 +17,7 @@
 	
     <application
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/Theme.Sherlock">
+        android:label="@string/app_name">
         
 		<uses-library android:name="com.google.android.maps"/>
         
@@ -42,19 +41,15 @@
 		</activity>
 		
         <activity android:label="Groups" 
-            android:name=".groups.GroupsActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar" />
+            android:name=".groups.GroupsActivity" />
         <activity android:label="Camera" 
-            android:name=".camera.CameraActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar" />
+            android:name=".camera.CameraActivity" />
         <activity android:label="Create Group" 
             android:name=".groups.GroupCreateActivity" />
         <activity android:label="Group Details" 
-            android:name=".groups.GroupDetailActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar" />
+            android:name=".groups.GroupDetailActivity" />
         <activity android:label="Photo Details" 
-            android:name=".PhotoDetailActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar" />
+            android:name=".PhotoDetailActivity" />
         <activity android:label="Login" 
             android:name=".SmartPhotoSharing" />
 		

@@ -2,10 +2,13 @@ package com.hmi.smartphotosharing.groups;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -14,9 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.hmi.json.FetchJSON;
@@ -30,9 +30,8 @@ import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyImageAdapter;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.SmartPhotoSharing;
 
-public class GroupDetailActivity extends SherlockFragmentActivity implements OnDownloadListener {
+public class GroupDetailActivity extends Activity implements OnDownloadListener {
 
 	private static final int CODE_GROUP_DETAILS = 1;
 	private static final int CODE_GROUP_PHOTOS = 2;
@@ -88,7 +87,7 @@ public class GroupDetailActivity extends SherlockFragmentActivity implements OnD
     
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
-    	MenuInflater inflater = getSupportMenuInflater();
+    	MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.group_detail_menu, menu);
 	    return true;
 	}	
@@ -100,25 +99,19 @@ public class GroupDetailActivity extends SherlockFragmentActivity implements OnD
         loadData();
 	}
 	
-	private boolean loadData() {
-		boolean res = false;
-        
-        if (SmartPhotoSharing.refreshDisplay) {
-        	
-    		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
-    		String hash = settings.getString(Login.SESSION_HASH, null);
-    		
-        	// Get group info
-    		String detailUrl = String.format(getResources().getString(R.string.group_http_detail),hash,id);
-    		new FetchJSON(this,CODE_GROUP_DETAILS).execute(detailUrl);
-    		
-    		// Get list of photos
-    		String photosUrl = String.format(getResources().getString(R.string.group_http_detail_photos),hash,id);
-    		new FetchJSON(this,CODE_GROUP_PHOTOS).execute(photosUrl);
-    		res = true;
-        } 		
-        
-        return res;
+	private void loadData() {
+    	
+		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+		String hash = settings.getString(Login.SESSION_HASH, null);
+		
+    	// Get group info
+		String detailUrl = String.format(getResources().getString(R.string.group_http_detail),hash,id);
+		new FetchJSON(this,CODE_GROUP_DETAILS).execute(detailUrl);
+		
+		// Get list of photos
+		String photosUrl = String.format(getResources().getString(R.string.group_http_detail_photos),hash,id);
+		new FetchJSON(this,CODE_GROUP_PHOTOS).execute(photosUrl);
+		        
 	}
 	
 	public void parseJson(String result, int code) {

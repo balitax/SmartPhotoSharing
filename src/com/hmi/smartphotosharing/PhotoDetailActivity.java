@@ -3,17 +3,17 @@ package com.hmi.smartphotosharing;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.OnDownloadListener;
@@ -21,7 +21,7 @@ import com.hmi.json.Photo;
 import com.hmi.json.PhotoResponse;
 import com.hmi.json.PopularResponse;
 
-public class PhotoDetailActivity extends SherlockFragmentActivity implements OnDownloadListener {
+public class PhotoDetailActivity extends Activity implements OnDownloadListener {
 
 	private ImageView imgView;
 	
@@ -69,7 +69,7 @@ public class PhotoDetailActivity extends SherlockFragmentActivity implements OnD
 
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
-    	MenuInflater inflater = getSupportMenuInflater();
+    	MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.photo_menu, menu);
 	    return true;
 	}
