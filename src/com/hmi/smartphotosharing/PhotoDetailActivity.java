@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,12 +39,16 @@ public class PhotoDetailActivity extends Activity implements OnDownloadListener 
         Intent intent = getIntent();
         id = intent.getLongExtra("id", 0);
         
-		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
-		String hash = settings.getString(Login.SESSION_HASH, null);
-        
-        String photoUrl = String.format(getResources().getString(R.string.photo_detail_url),hash,id);
-		new FetchJSON(this).execute(photoUrl);
-
+        if (id != 0) {
+			SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+			String hash = settings.getString(Login.SESSION_HASH, null);
+	        
+	        String photoUrl = String.format(getResources().getString(R.string.photo_detail_url),hash,id);
+	        Log.i("JSON parse", photoUrl);
+			new FetchJSON(this).execute(photoUrl);
+        } else {
+        	Log.e("SmartPhotoSharing", "Photo id was 0, url was probably incorrect");
+        }
     }
     
 	@Override
@@ -77,6 +82,8 @@ public class PhotoDetailActivity extends Activity implements OnDownloadListener 
 	@Override
 	public void parseJson(String json, int code) {
 		Gson gson = new Gson();
+		Log.i("JSON parse", json);
+		
 		PhotoResponse pr = gson.fromJson(json, PhotoResponse.class);
 		
 		Photo p = pr.msg;

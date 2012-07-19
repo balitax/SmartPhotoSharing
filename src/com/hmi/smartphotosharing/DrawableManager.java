@@ -26,45 +26,45 @@ import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.ImageView;
 
 public class DrawableManager {
-   private final Map<String, Drawable> drawableMap;
+   private final Map<String, Bitmap> bitmaps;
 
    private Context context;
    
    public DrawableManager(Context context) {
-       drawableMap = new HashMap<String, Drawable>();
+       bitmaps = new HashMap<String, Bitmap>();
        this.context = context;
    }
 
-   public Drawable fetchDrawable(String urlString) {
-       if (drawableMap.containsKey(urlString)) {
-           return drawableMap.get(urlString);
+   public Bitmap fetchDrawable(String urlString, ImageView imageView) {
+	   if (bitmaps.containsKey(urlString)) {
+           return bitmaps.get(urlString);
        }
-
+	   
        Log.d(this.getClass().getSimpleName(), "image url:" + urlString);
        try {
-           InputStream is = fetch(urlString);
-           Drawable drawable = Drawable.createFromStream(is, "src");
-           
-           if (drawable != null) {
-               drawableMap.put(urlString, drawable);
-               Log.d(this.getClass().getSimpleName(), "got a thumbnail drawable: " + drawable.getBounds() + ", "
-                       + drawable.getIntrinsicHeight() + "," + drawable.getIntrinsicWidth() + ", "
-                       + drawable.getMinimumHeight() + "," + drawable.getMinimumWidth());
+    	   BufferedHttpEntity be = getHttpEntity(urlString);
+           Bitmap b = getBitmapFromStream(be, imageView);
+           if (b != null) {
+        	   bitmaps.put(urlString, b);
+               Log.d(this.getClass().getSimpleName(), "got a thumbnail drawable: " + b.getHeight() + ", " + b.getWidth());
            } else {
-             Log.w(this.getClass().getSimpleName(), "could not get thumbnail");
+        	   //b = BitmapFactory.decodeStream(is);
+        	   Log.w(this.getClass().getSimpleName(), "could not get thumbnail");
            }
 
-           return drawable;
+           return b;
        } catch (MalformedURLException e) {
            Log.e(this.getClass().getSimpleName(), "fetchDrawable failed", e);
            return null;
@@ -76,8 +76,10 @@ public class DrawableManager {
 
    public void fetchDrawableOnThread(final String urlString, final ImageView imageView) {
 	   
-       if (drawableMap.containsKey(urlString)) {
-           imageView.setImageDrawable(drawableMap.get(urlString));
+       if (bitmaps.containsKey(urlString)) {
+           imageView.setImageBitmap(bitmaps.get(urlString));
+           Log.i("DrawableManager", "Image loaded from cache");
+           return;
        } else {
     	   imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_launcher));
        }
@@ -85,26 +87,70 @@ public class DrawableManager {
        final Handler handler = new Handler() {
            @Override
            public void handleMessage(Message message) {
-               imageView.setImageDrawable((Drawable) message.obj);
+        	   Bitmap b = (Bitmap) message.obj;
+               if (b != null) imageView.setImageBitmap(b);
            }
        };
 
        Thread thread = new Thread() {
            @Override
            public void run() {
-               Drawable drawable = fetchDrawable(urlString);
-               Message message = handler.obtainMessage(1, drawable);
+               Bitmap b = fetchDrawable(urlString, imageView);
+               Message message = handler.obtainMessage(1, b);
                handler.sendMessage(message);
            }
        };
        thread.start();
    }
 
-   private InputStream fetch(String urlString) throws MalformedURLException, IOException {
+   private BufferedHttpEntity getHttpEntity(String urlString) throws MalformedURLException, IOException {
        DefaultHttpClient httpClient = new DefaultHttpClient();
        HttpGet request = new HttpGet(urlString);
        HttpResponse response = httpClient.execute(request);
-       return response.getEntity().getContent();
-   }
+       
+       return new BufferedHttpEntity(response.getEntity());
 
+   }
+   
+	/**
+	 * Prescales the image to fit the view.
+	 * @throws IOException 
+	 */
+	private Bitmap getBitmapFromStream(BufferedHttpEntity be, ImageView mImageView) throws IOException {
+		
+		/* There isn't enough memory to open up more than a couple camera photos */
+		/* So pre-scale the target bitmap into which the file is decoded */
+
+		/* Get the size of the ImageView */
+		int targetW = mImageView.getWidth();
+		int targetH = mImageView.getHeight();
+
+		/* Get the size of the image */
+		BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+		bmOptions.inJustDecodeBounds = true;
+		//BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+		InputStream is = be.getContent();
+		BitmapFactory.decodeStream(is, null, bmOptions);
+		is.close();
+		int photoW = bmOptions.outWidth;
+		int photoH = bmOptions.outHeight;
+		
+		/* Figure out which way needs to be reduced less */
+		int scaleFactor = 1;
+		if ((targetW > 0) || (targetH > 0)) {
+			scaleFactor = Math.min(photoW/targetW, photoH/targetH);	
+		}
+		
+		/* Set bitmap options to scale the image decode target */
+		bmOptions.inJustDecodeBounds = false;
+		bmOptions.inSampleSize = scaleFactor;
+		bmOptions.inPurgeable = true;
+
+		/* Decode the JPEG file into a Bitmap */
+		is = be.getContent();
+		Bitmap b = BitmapFactory.decodeStream(is, null, bmOptions);
+		is.close();
+		return b;
+		
+	}
 }

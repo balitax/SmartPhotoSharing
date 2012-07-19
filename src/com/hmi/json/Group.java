@@ -27,7 +27,7 @@ public class Group {
 	public String description;
 	public String owner;
 	
-	public List<String> photos;
+	public List<Photo> photos;
 	
 	public long getId() {
 		return Long.parseLong(gid);

@@ -1,5 +1,9 @@
 package com.hmi.smartphotosharing.groups;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
@@ -7,12 +11,21 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,21 +35,30 @@ import com.hmi.json.Group;
 import com.hmi.json.GroupsResponse;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.json.ProfileResponse;
+import com.hmi.json.User;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SettingsActivity;
-import com.hmi.smartphotosharing.camera.CameraActivity;
-
+import com.hmi.smartphotosharing.SharePhotoActivity;
+import com.hmi.smartphotosharing.camera.*;
 public class GroupsActivity extends ListActivity implements OnDownloadListener {
 	
     public static final int CREATE_GROUP = 4;
 
     private static final int CODE_PROFILE = 1;
     private static final int CODE_GROUPS = 2;
+    private static final int ACTION_TAKE_PHOTO = 5;
     
 	private DrawableManager dm;
 	private TextView name;
+	private ImageView pic;
+
+	private String mCurrentPhotoPath;
+	private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
+	private static final String JPEG_FILE_PREFIX = "IMG_";
+	private static final String JPEG_FILE_SUFFIX = ".jpg";
+	
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,8 +66,17 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
         setContentView(R.layout.groups);
         
         name = (TextView) findViewById(R.id.groups_name);
+        pic = (ImageView) findViewById(R.id.groups_icon);
+        
         dm = new DrawableManager(this);
         loadData();
+        
+		// Check the Android version and decide which album path settings to use
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+			mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
+		} else {
+			mAlbumStorageDirFactory = new BaseAlbumDirFactory();
+		}
     }
     	
 	@Override
@@ -67,9 +98,11 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 		
         switch (item.getItemId()) {
 	        case R.id.camera:
-				intent = new Intent(this, CameraActivity.class);
-			    startActivity(intent);	
-		        return true;
+	        	dispatchTakePhoto();
+				//intent = new Intent(this, CameraActivity.class);
+			    //startActivity(intent);	
+		        //return true;
+	        	return true;
 	        case R.id.settings:
 	            intent = new Intent(this, SettingsActivity.class);
 	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -84,6 +117,26 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
         }
     }	
 	
+	private void dispatchTakePhoto() {
+		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+		File f = null;
+		
+		try {
+			f = setUpPhotoFile();
+			mCurrentPhotoPath = f.getAbsolutePath();
+			takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+		} catch (IOException e) {
+			e.printStackTrace();
+			f = null;
+			mCurrentPhotoPath = null;
+		}
+
+		// Handle the result of the Intent
+		startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
+		
+	}
+
 	private void loadData() {
 		
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
@@ -97,16 +150,15 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 
 	}
 		
-	public void onActivityResult(int requestCode, int resultCode,
-            Intent data) {
-        if (requestCode == CREATE_GROUP) {
-            if (resultCode == Activity.RESULT_OK) {
-            	// TODO : refresh group list
-            	Toast.makeText(this, "Group Created", Toast.LENGTH_SHORT).show();
-            }
-        }
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CREATE_GROUP && resultCode == Activity.RESULT_OK) {
+            // TODO : refresh group list
+            Toast.makeText(this, "Group Created", Toast.LENGTH_SHORT).show();
+        } else if (requestCode == ACTION_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+			handleCameraPhoto();
+		}
     }	
-	
+
 	/**
 	 * Checks whether there is a network connection available
 	 * @return true if the device is connected to a network
@@ -143,13 +195,19 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 	private void parseProfile(String result) {
 		Gson gson = new Gson();
 		ProfileResponse response = gson.fromJson(result, ProfileResponse.class);
+		User user = response.msg;
 		
+		// Set the user name
 		name.setText(response.msg.getName());
 		
+		// Set the user icon
+		String userPic = getResources().getString(R.string.group_http_logo) + user.picture;
+		dm.fetchDrawableOnThread(userPic, pic);
 	}
 
 	private void parseGroups(String result) {
 		
+		Log.i("JSON parse", result);
 		Gson gson = new Gson();
 		GroupsResponse gr = gson.fromJson(result, GroupsResponse.class);
 		
@@ -160,8 +218,105 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 							R.layout.list_item, 
 							group_list.toArray(new Group[group_list.size()]),
 							dm
-						));
-			
+						));			
 	}
+	
+	/**
+	 *  Photo album for this application 
+	 */
+	private String getAlbumName() {
+		return getString(R.string.album_name);
+	}
+	
+	/**
+	 * Tries to create the album directory
+	 * @return The created directory or null when it cannot create the directory.
+	 */
+	private File getAlbumDir() {
+		File storageDir = null;
+
+		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+			
+			storageDir = mAlbumStorageDirFactory.getAlbumStorageDir(getAlbumName());
+
+			if (storageDir != null) {
+				if (! storageDir.mkdirs()) {
+					if (! storageDir.exists()){
+						Log.d("CameraSample", "failed to create directory");
+						return null;
+					}
+				}
+			}
+			
+		} else {
+			Log.v(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
+		}
+		
+		return storageDir;
+	}
+
+	/**
+	 * Sets the filename and actually creates the file.
+	 * @return
+	 * @throws IOException
+	 */
+	private File createImageFile() throws IOException {
+		// Create an image file name
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+		String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
+		File albumF = getAlbumDir();
+		File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
+		return imageF;
+	}
+
+	/**
+	 * Creates the file and sets the path for the photo
+	 * @return The File where the image is stored.
+	 * @throws IOException Thrown when writing is not possible.
+	 */
+	private File setUpPhotoFile() throws IOException {
+		
+		File f = createImageFile();
+		mCurrentPhotoPath = f.getAbsolutePath();
+		
+		return f;
+	}
+
+	private void handleCameraPhoto() {
+
+		if (mCurrentPhotoPath != null) {
+						
+			//setPic();
+			galleryAddPic();
+			
+			// Send the intent to the class that can handle incoming photos
+			Intent intent = new Intent(this,SharePhotoActivity.class);
+			intent.setType("image/jpeg");
+
+			// Add the Uri of the current photo as extra value
+			intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mCurrentPhotoPath));
+			
+			// Create and start the chooser
+			startActivity(intent);
+			//mCurrentPhotoPath = null;
+		} else {
+			Log.w("Camera result", "Resulting photo path is null");
+		}
+
+	}
+	
+	/**
+	 * Method for adding the current photo to the gallery.
+	 * Creates an Intent to rescan the media gallery.
+	 */
+	private void galleryAddPic() {
+		    Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
+			File f = new File(mCurrentPhotoPath);
+		    Uri contentUri = Uri.fromFile(f);
+		    mediaScanIntent.setData(contentUri);
+		    sendBroadcast(mediaScanIntent);
+	}
+	
+
  
 }

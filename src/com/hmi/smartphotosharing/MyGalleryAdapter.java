@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
 
+import com.hmi.json.Photo;
+
 /**
  * Base Adapter subclass creates Gallery view
  * - provides method for adding new images from user selection
@@ -21,7 +23,7 @@ public class MyGalleryAdapter extends BaseAdapter {
 
 	private Context context;
 	private DrawableManager dm;
-	private List<String> data;
+	private List<Photo> data;
 	
 	//use the default gallery background image
     int defaultItemBackground;
@@ -30,7 +32,7 @@ public class MyGalleryAdapter extends BaseAdapter {
     Bitmap placeholder;
 
     //constructor
-    public MyGalleryAdapter(Context c, List<String> list, DrawableManager dm) {
+    public MyGalleryAdapter(Context c, List<Photo> list, DrawableManager dm) {
         context = c;
         this.dm = dm;
         this.data = list;
@@ -48,13 +50,13 @@ public class MyGalleryAdapter extends BaseAdapter {
     }
 
     @Override
-    public String getItem(int position) {
+    public Photo getItem(int position) {
         return data.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return getItem(position).getId();
     }
 
     //get view specifies layout and display options for each thumbnail in the gallery
@@ -64,8 +66,8 @@ public class MyGalleryAdapter extends BaseAdapter {
         ImageView imageView = new ImageView(context);
         //specify the bitmap at this position in the array
 
-        String photo = data.get(position);
-        dm.fetchDrawableOnThread(photo, imageView);
+        Photo photo = data.get(position);
+        dm.fetchDrawableOnThread(photo.thumb, imageView);
         
         //set layout options
         imageView.setLayoutParams(new Gallery.LayoutParams(150, 100));
