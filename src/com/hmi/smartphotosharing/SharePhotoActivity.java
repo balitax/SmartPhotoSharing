@@ -13,17 +13,24 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -35,6 +42,7 @@ import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
 import com.hmi.json.GroupsResponse;
+import com.hmi.json.LoginResponse;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.smartphotosharing.groups.GroupCreateActivity;
 
@@ -44,16 +52,28 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	private Uri imageUri;
 	private Spinner spinner;
 	private EditText comment;
+	private ImageView imageView;
+	private String imgPath;
+	
+	private static final int CODE_GROUPS = 2;
+	private static final int CODE_UPLOAD = 3;
+	private static int STATUS_OK = 200;
+	private static int STATUS_FAIL = 500;
 	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.share_photo);
-		
+				
 		// Populate the Spinner
 		spinner = (Spinner) findViewById(R.id.groups_spinner);
 		comment = (EditText) findViewById(R.id.edit_message);
 		
-	    // Get intent, action and MIME type
+	    loadData();
+	}
+	
+	protected void onStart () {
+		imageView = (ImageView) findViewById(R.id.image1);
+		 // Get intent, action and MIME type
 	    Intent intent = getIntent();
 	    String action = intent.getAction();
 	    String type = intent.getType();
@@ -74,11 +94,10 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	    // Handle the Intent that was sent internally, from another Activity
 	    else {
 	    	if (type.startsWith("image/")) {
-	            handleSendImage(intent); // Handle single image being sent
+	            handleInternalImage(intent); // Handle single image being sent
 	        }
 	    }
-	    
-	    loadData();
+		super.onStart();
 	}
 	
 	private void loadData() {
@@ -87,7 +106,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		
 		String groupsUrl = String.format(getResources().getString(R.string.groups_http), hash);
-        new FetchJSON(this).execute(groupsUrl);
+        new FetchJSON(this, CODE_GROUPS).execute(groupsUrl);
 		
 	}
 
@@ -102,13 +121,16 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 
     		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
     		String hash = settings.getString(Login.SESSION_HASH, null);
+
+    		String group = Long.toString(spinner.getSelectedItemId());
     		
+    		// TODO fix gps
+    		String lat = Long.toString(0);
+    		String lon = Long.toString(0);
     		String commentTxt = comment.getText().toString();
-    		long group = spinner.getSelectedItemId();
-    		String shareUrl = String.format(getResources().getString(R.string.url_upload), hash, group, 0, 0, commentTxt);
     		
-    		String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Pictures/rozen.jpg";
-			new UploadImage().execute(shareUrl,path);
+    		String shareUrl = getResources().getString(R.string.url_upload);
+			new UploadImage().execute(shareUrl,hash,group,lat,lon,commentTxt);
 		} else {
 			setResult(RESULT_CANCELED);
 			finish();
@@ -137,11 +159,21 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	private void handleSendImage(Intent intent) {
 	    imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
 	    if (imageUri != null) {
-	        ImageView view = (ImageView) findViewById(R.id.image1);
-	        view.setImageURI(imageUri);
+
+	    	imgPath = getRealPathFromURI(imageUri);
+	    	showImageFromPath(imgPath);
 	    }
 	}
 
+	private void handleInternalImage(Intent intent) {
+	    imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+	    if (imageUri != null) {
+
+	    	imgPath = imageUri.getPath();
+	    	showImageFromPath(imgPath);
+	    }
+	}
+	
 	private void handleSendMultipleImages(Intent intent) {
 	    ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
 	    if (imageUris != null) {
@@ -149,15 +181,84 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	    }
 	}
 	
+	private void showImageFromPath(String imgPath) {
+    	Display display = getWindowManager().getDefaultDisplay();	    	
+    	int targetW = display.getWidth();
+		int targetH = imageView.getHeight();
+		
+		BitmapFactory.Options o = new BitmapFactory.Options();
+		o.inJustDecodeBounds = true;
+    	BitmapFactory.decodeFile(imgPath,o);
+    	
+    	int photoW = o.outWidth;
+		int photoH = o.outHeight;
+		
+		// Figure out which way needs to be reduced less
+		int scaleFactor = 1;
+		if ((targetW > 0) || (targetH > 0)) {
+			scaleFactor = photoW/targetW;	
+		}
+		
+		// Set bitmap options to scale the image decode target
+		o.inJustDecodeBounds = false;
+		o.inSampleSize = scaleFactor;
+		o.inPurgeable = true;
+		
+    	Bitmap myBitmap = BitmapFactory.decodeFile(imgPath,o);
+    	imageView.setImageBitmap(myBitmap);
+	}	
+	public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
 
-    private class UploadImage extends AsyncTask<String,Void,String> {
+	@Override
+	public void parseJson(String json, int code) {
+		switch(code){
+		case(CODE_GROUPS):
+			parseGroups(json);
+			break;
+		case(CODE_UPLOAD):
+			parseUpload(json);
+			break;
+		default:
+		}
+	}
+
+    private void parseUpload(String json) {
+		Gson gson = new Gson();
+		LoginResponse response = gson.fromJson(json, LoginResponse.class);
+		
+		if (response.status == STATUS_OK) {
+        	Toast.makeText(this, "Upload successful", Toast.LENGTH_SHORT).show();			
+		} else if (response.status == STATUS_FAIL) {
+        	Toast.makeText(this, "Upload failed", Toast.LENGTH_SHORT).show();	
+		} else {
+        	Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();	
+		}
+		
+	}
+
+	private void parseGroups(String json) {
+
+		Gson gson = new Gson();
+		GroupsResponse gr = gson.fromJson(json, GroupsResponse.class);
+		List<Group> list = gr. msg;
+		spinner.setAdapter(new MySpinnerAdapter(this,list));
+		
+	}
+
+	private class UploadImage extends AsyncTask<String,Void,String> {
         
     	@Override
-    	protected String doInBackground(String... urls) {
+    	protected String doInBackground(String... args) {
              
 	       // params comes from the execute() call: params[0] is the url.
 	           try {
-				return sendPost(urls[0],urls[1]);
+				return sendPost(args[0],args[1],args[2],args[3],args[4],args[5]);
 			} catch (ClientProtocolException e) {
 				Log.e("Upload image", e.getMessage());
 				return null;
@@ -167,14 +268,26 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 			}
     	}
     	
-    	public String sendPost(String url, String imagePath) throws IOException, ClientProtocolException  {
+    	@Override
+    	protected void onPostExecute(String result) {
+    		Log.i("JSON parse", result);
+    		parseJson(result, CODE_UPLOAD);
+    	}
+    	
+    	public String sendPost(String url, String sid, String group, String lat, String lon, String comment) throws IOException, ClientProtocolException  {
     		HttpClient httpclient = new DefaultHttpClient();
     		//httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
     		HttpPost httppost = new HttpPost(url);
-    		File file = new File(imagePath);
+    		File file = new File(imgPath);
 
     		MultipartEntity mpEntity = new MultipartEntity();
+    		mpEntity.addPart("sid", new StringBody(sid));
+    		mpEntity.addPart("group", new StringBody(group));
+    		mpEntity.addPart("lat", new StringBody(lat));
+    		mpEntity.addPart("lon", new StringBody(lon));
+    		mpEntity.addPart("comment", new StringBody(comment));
+    		
     		ContentBody cbFile = new FileBody(file, "image/jpeg");
     		mpEntity.addPart("photo", cbFile);
     	
@@ -183,31 +296,16 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		HttpResponse response = httpclient.execute(httppost);
     		HttpEntity resEntity = response.getEntity();
     		Log.d("sendPost",""+response.getStatusLine());
+    		
+    		String res = null;
     		if (resEntity != null) {
-    			Log.d("sendPost",EntityUtils.toString(resEntity));
+    			res = EntityUtils.toString(resEntity);
+    			Log.d("sendPost",res);
     			resEntity.consumeContent();
     		}
     		httpclient.getConnectionManager().shutdown();
-    		return "ok";
+    		return res;
     	}
     }
 
-
-	@Override
-	public void parseJson(String json, int code) {
-		Gson gson = new Gson();
-		GroupsResponse gr = gson.fromJson(json, GroupsResponse.class);
-		List<Group> list = gr.msg;
-		
-		String[] items = new String[list.size()];
-		
-		for(int i = 0; i < list.size(); i++) {
-			items[i] = list.get(i).name;
-		}
-		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-	            android.R.layout.simple_spinner_item, items);
-
-		spinner.setAdapter(adapter);
-	}
 }

@@ -44,7 +44,7 @@
 	     android:layout_width="match_parent"
 	     android:layout_height="wrap_content"
 	     android:drawSelectorOnTop="false"
-         android:layout_below="@+id/groups_icon" />
+         android:layout_below="@+id/groups_line3" />
 
      <TextView android:id="@id/android:empty"
 	     android:layout_width="match_parent"

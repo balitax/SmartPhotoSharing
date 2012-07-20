@@ -29,7 +29,7 @@
         
     <!--  Placeholder strings -->
     
-    <string name="url_upload">http://sps.juursema.com/api.php?cmd=login&amp;sid=%1$s&amp;group=%2$s&amp;lon=%3$s&amp;lat=%4$s&amp;comment=%5$s</string> 
+    <string name="url_upload">http://sps.juursema.com/api.php?cmd=upload</string> 
     <string name="popular_http">http://www.skybox.utwente.nl/test/image_list.php</string>
     
     <string name="profile_http">http://sps.juursema.com/api.php?cmd=userinfo&amp;sid=%1$s</string>

@@ -3,6 +3,7 @@ package com.hmi.smartphotosharing.groups;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,8 +12,6 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -24,7 +23,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +39,9 @@ import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SettingsActivity;
 import com.hmi.smartphotosharing.SharePhotoActivity;
-import com.hmi.smartphotosharing.camera.*;
+import com.hmi.smartphotosharing.camera.AlbumStorageDirFactory;
+import com.hmi.smartphotosharing.camera.BaseAlbumDirFactory;
+import com.hmi.smartphotosharing.camera.FroyoAlbumDirFactory;
 public class GroupsActivity extends ListActivity implements OnDownloadListener {
 	
     public static final int CREATE_GROUP = 4;
@@ -212,6 +212,7 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 		GroupsResponse gr = gson.fromJson(result, GroupsResponse.class);
 		
 		List <Group> group_list = gr.getGroupsList();
+		if (group_list == null) group_list = new ArrayList<Group>();
 		
 		setListAdapter(new GroupAdapter(
 							this, 

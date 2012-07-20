@@ -1,5 +1,6 @@
 package com.hmi.smartphotosharing.groups;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -132,6 +133,10 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 		PopularResponse list = gson.fromJson(result, PopularResponse.class);
 		
 		List<Photo> photo_list = list.msg;
+		
+		// JSON will return null if there are no photos in this group
+		if (photo_list == null)
+			photo_list = new ArrayList<Photo>();
 		
 		gridView.setAdapter(
 			new MyImageAdapter(

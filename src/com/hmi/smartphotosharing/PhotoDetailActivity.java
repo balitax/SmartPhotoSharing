@@ -93,6 +93,11 @@ public class PhotoDetailActivity extends Activity implements OnDownloadListener 
         dm = new DrawableManager(this);
         dm.fetchDrawableOnThread(uri, imgView);
         
+        // Update user icon
+        ImageView pic = (ImageView) findViewById(R.id.photo_detail_icon);
+		String userPic = getResources().getString(R.string.group_http_logo) + p.picture;
+		dm.fetchDrawableOnThread(userPic, pic);
+        
 		// Update the 'Taken by' text
         TextView by = (TextView)findViewById(R.id.photo_detail_name);
         String byTxt = getResources().getString(R.string.photo_detail_name);
@@ -109,7 +114,7 @@ public class PhotoDetailActivity extends Activity implements OnDownloadListener 
         // Update the group text
         TextView group = (TextView)findViewById(R.id.photo_detail_group);
         String groupTxt = getResources().getString(R.string.photo_detail_group);
-        group.setText(String.format(groupTxt, p.gid));
+        group.setText(String.format(groupTxt, p.groupname));
         
         
 	}	

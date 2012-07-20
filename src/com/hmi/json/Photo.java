@@ -12,19 +12,24 @@ public class Photo {
 	public String comments;
 	public String time;
 	public String active;
+
+	public String age;
+	public String thumb;
 	
+	public String picname;
+	
+	// Group attributes
+	public String groupname;
+	
+	// User attributes
 	public String uname;
 	public String rname;
 	public String pword;
 	public String email;
 	public String fb_id;
 	public String fb_oauth;
-	
-	public String age;
-	public String thumb;
-	
-	public String picname;
-	
+	public String picture;
+		
 	public String getUrl() {
 		return location + picname;
 	}
