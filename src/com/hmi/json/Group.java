@@ -21,6 +21,9 @@ public class Group {
 	public String latstart;
 	public String latend;
 	
+	public int members;
+	public int member;
+	
 	@SerializedName("private")
 	public String private_group;
 	public String logo;

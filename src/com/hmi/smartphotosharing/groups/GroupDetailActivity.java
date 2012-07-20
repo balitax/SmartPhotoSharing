@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import com.google.gson.JsonSyntaxException;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
 import com.hmi.json.GroupDetailResponse;
+import com.hmi.json.LoginResponse;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.json.Photo;
 import com.hmi.json.PopularResponse;
@@ -36,6 +38,13 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 
 	private static final int CODE_GROUP_DETAILS = 1;
 	private static final int CODE_GROUP_PHOTOS = 2;
+	private static final int CODE_JOIN = 3;
+	private static final int CODE_LEAVE = 4;
+	
+	private static final int STATUS_OK = 200;
+	private static final int STATUS_FORBIDDEN = 403;
+	private static final int STATUS_404 = 404;
+	private static final int STATUS_FAILED = 500;
 	
 	//gallery object
 	private GridView gridView;
@@ -45,10 +54,12 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 	private TextView groupMembers;
 	private TextView groupName;
 	private ImageView groupIcon;
+	private Button groupJoinBtn;
 	
 	private DrawableManager dm;
 			
 	private long id;
+	private boolean isMember;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +72,7 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
         groupIcon = (ImageView) findViewById(R.id.group_detail_icon);
         groupPhotos = (TextView) findViewById(R.id.group_detail_photos);
         groupMembers = (TextView) findViewById(R.id.group_detail_members);
+        groupJoinBtn = (Button) findViewById(R.id.join_group);
         
         // Get the gallery view
         gridView = (GridView) findViewById(R.id.grid);
@@ -69,8 +81,24 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
         
         Intent intent = getIntent();
         id = intent.getLongExtra("id", 0);
+        
+        isMember = true;
     }
 
+    public void onClickJoinGroup(View view) {
+
+		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+		String hash = settings.getString(Login.SESSION_HASH, null);
+
+		if (isMember) {
+	        String leaveUrl = String.format(getResources().getString(R.string.groups_http_leave),hash,id);		
+	        new FetchJSON(this, CODE_LEAVE).execute(leaveUrl);
+		} else {
+	        String joinUrl = String.format(getResources().getString(R.string.groups_http_join),hash,id);		
+	        new FetchJSON(this, CODE_JOIN).execute(joinUrl);
+		}
+    }
+    
     private class MyOnItemClickListener implements OnItemClickListener {
 		private Context c;
 		
@@ -124,10 +152,84 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 			case CODE_GROUP_PHOTOS:
 				parsePhoto(result);
 				break;
+			case CODE_JOIN:
+				parseJoin(result);
+				break;
+			case CODE_LEAVE:
+				parseLeave(result);
+				break;
 			default:
 		}
 	}
+	
+	private void parseLeave(String json) {
 
+		Gson gson = new Gson();
+		LoginResponse response = gson.fromJson(json, LoginResponse.class);
+		
+		if (response != null) {
+			switch(response.status) {
+			
+			case(STATUS_OK):
+				// TODO
+				Toast.makeText(this, "Group left", Toast.LENGTH_SHORT).show();
+		    	Intent intent = new Intent(this, GroupsActivity.class);
+		    	startActivity(intent);
+				break;
+				
+			case(STATUS_404):
+				Toast.makeText(this, "Group does not exist", Toast.LENGTH_SHORT).show();
+				break;
+								
+			case(STATUS_FAILED):
+				Toast.makeText(this, "You can't leave since you are the owner", Toast.LENGTH_SHORT).show();
+				break;	
+				
+			default:
+				Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+			
+			}
+		}
+		
+	}
+
+	private void parseJoin(String json) {
+
+		Gson gson = new Gson();
+		LoginResponse response = gson.fromJson(json, LoginResponse.class);
+		
+		if (response != null) {
+			switch(response.status) {
+			
+			case(STATUS_OK):
+				if (isMember) { // If user PREVIOUSLY was a member...
+					groupJoinBtn.setText("Join group");
+					isMember = false;
+				} else {
+					groupJoinBtn.setText("Leave group");
+					isMember = true;				
+				}
+				break;
+				
+			case(STATUS_404):
+				Toast.makeText(this, "Group does not exist", Toast.LENGTH_SHORT).show();
+				break;
+				
+			case(STATUS_FORBIDDEN):
+				Toast.makeText(this, "This group is private, you need an invite", Toast.LENGTH_SHORT).show();
+				break;	
+				
+			case(STATUS_FAILED):
+				Toast.makeText(this, "You already are a member", Toast.LENGTH_SHORT).show();
+				break;	
+				
+			default:
+				Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+			
+			}
+		}
+		
+	}
 	private void parsePhoto(String result) {
 		Gson gson = new Gson();
 		PopularResponse list = gson.fromJson(result, PopularResponse.class);
@@ -164,8 +266,17 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 			String logoUrl = getResources().getString(R.string.group_http_logo) + g.logo;
 			dm.fetchDrawableOnThread(logoUrl, groupIcon);
 
+			// Set the button text join/leave group
+			if (g.member == 0) {
+				groupJoinBtn.setText("Join group");
+				isMember = false;
+			} else {
+				groupJoinBtn.setText("Leave group");
+				isMember = true;				
+			}
+			
 			// Set the string telling how many members the group has
-			String photos = String.format(getResources().getString(R.string.group_detail_members), 0);
+			String photos = String.format(getResources().getString(R.string.group_detail_members), g.members);
 			groupMembers.setText(photos);
 		} catch (JsonSyntaxException e) {
 			Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();

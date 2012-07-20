@@ -24,7 +24,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,12 +45,13 @@ import com.hmi.smartphotosharing.SharePhotoActivity;
 import com.hmi.smartphotosharing.camera.AlbumStorageDirFactory;
 import com.hmi.smartphotosharing.camera.BaseAlbumDirFactory;
 import com.hmi.smartphotosharing.camera.FroyoAlbumDirFactory;
-public class GroupsActivity extends ListActivity implements OnDownloadListener {
+public class GroupsActivity extends ListActivity implements OnDownloadListener, OnGroupClickListener {
 	
     public static final int CREATE_GROUP = 4;
 
     private static final int CODE_PROFILE = 1;
     private static final int CODE_GROUPS = 2;
+    private static final int JOIN_GROUP = 6;
     private static final int ACTION_TAKE_PHOTO = 5;
     
 	private DrawableManager dm;
@@ -124,6 +127,10 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 	        	intent = new Intent(this, GroupCreateActivity.class);
 	        	startActivityForResult(intent, CREATE_GROUP);
 		    	return true;
+	        case R.id.join_group:
+	        	intent = new Intent(this, JoinGroupActivity.class);
+	        	startActivityForResult(intent, JOIN_GROUP);
+	        	return true;
 	        default:
 	        	return super.onOptionsItemSelected(item);
         }
@@ -234,7 +241,8 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 								this, 
 								R.layout.list_item, 
 								group_list.toArray(new Group[group_list.size()]),
-								dm
+								dm,
+								this
 							));	
 		}
 	}
@@ -333,6 +341,15 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 		    Uri contentUri = Uri.fromFile(f);
 		    mediaScanIntent.setData(contentUri);
 		    sendBroadcast(mediaScanIntent);
+	}
+
+	@Override
+	public void OnGroupClick(long id) {
+
+    	Intent intent = new Intent(this, GroupDetailActivity.class);
+    	intent.putExtra("id", id);
+    	startActivity(intent);
+		
 	}
 	
 

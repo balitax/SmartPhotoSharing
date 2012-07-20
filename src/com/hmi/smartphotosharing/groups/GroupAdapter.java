@@ -36,6 +36,8 @@ public class GroupAdapter extends ArrayAdapter<Group> {
     private GestureDetector gestureDetector;
     
     OnTouchListener gestureListener;
+    OnGroupClickListener groupClickListener;
+    
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
 	Group data[] = null;	// A Group array that contains all list items
@@ -43,13 +45,14 @@ public class GroupAdapter extends ArrayAdapter<Group> {
 
 	private Gallery picGallery;
 		
-	public GroupAdapter(Context context, int resource, Group[] objects, DrawableManager dm) {
+	public GroupAdapter(Context context, int resource, Group[] objects, DrawableManager dm, OnGroupClickListener groupClickListener) {
 		super(context, resource, objects);
 		
         this.layoutResourceId = resource;
         this.context = context;
         this.data = objects;
         this.dm = dm;
+        this.groupClickListener = groupClickListener;
 	}
 	
     @Override
@@ -153,9 +156,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         
         @Override
         public void onClick(View arg0) {
-        	Intent intent = new Intent(context, GroupDetailActivity.class);
-        	intent.putExtra("id", getItemId(mPosition));
-        	context.startActivity(intent);
+        	groupClickListener.OnGroupClick(getItemId(mPosition));
         	
         }       
     }
@@ -197,8 +198,8 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
         	Intent intent = new Intent(context, PhotoDetailActivity.class);
-        	intent.putExtra("id", id);
-        	context.startActivity(intent);
+		    intent.putExtra("id", id);
+		    context.startActivity(intent);
         	
         }
 
