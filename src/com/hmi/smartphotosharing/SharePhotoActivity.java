@@ -18,21 +18,22 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -45,6 +46,7 @@ import com.hmi.json.GroupsResponse;
 import com.hmi.json.LoginResponse;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.smartphotosharing.groups.GroupCreateActivity;
+import com.hmi.smartphotosharing.groups.GroupsActivity;
 
 public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	
@@ -54,11 +56,14 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	private EditText comment;
 	private ImageView imageView;
 	private String imgPath;
+	private LocationManager locationManager;
 	
 	private static final int CODE_GROUPS = 2;
 	private static final int CODE_UPLOAD = 3;
 	private static int STATUS_OK = 200;
 	private static int STATUS_FAIL = 500;
+	
+	private boolean isExternal;
 	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,6 +72,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		// Populate the Spinner
 		spinner = (Spinner) findViewById(R.id.groups_spinner);
 		comment = (EditText) findViewById(R.id.edit_message);
+		isExternal = false;
 		
 	    loadData();
 	}
@@ -80,6 +86,9 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 
 	    // Handle the Intent form another app
 	    if (Intent.ACTION_SEND.equals(action) && type != null) {
+	    	
+	    	isExternal = true;
+	    	
 	        if ("text/plain".equals(type)) {
 	            handleSendText(intent); // Handle text being sent
 	        } else if (type.startsWith("image/")) {
@@ -118,20 +127,34 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	public void onClickShare(View v) {
 		
 		if (imageUri != null) {
-
+			
+			// Find GPS coordinates
+			Criteria criteria = new Criteria();
+			criteria.setAccuracy(Criteria.ACCURACY_FINE);
+			criteria.setAltitudeRequired(false);
+			criteria.setBearingRequired(false);
+			criteria.setCostAllowed(false);
+			criteria.setPowerRequirement(Criteria.POWER_LOW);
+			
+			locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+			String provider = locationManager.getBestProvider(criteria, true);
+			Location location = locationManager.getLastKnownLocation(provider);
+			
+			// Get user session ID
     		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
     		String hash = settings.getString(Login.SESSION_HASH, null);
 
     		String group = Long.toString(spinner.getSelectedItemId());
     		
     		// TODO fix gps
-    		String lat = Long.toString(0);
-    		String lon = Long.toString(0);
+    		String lat = Double.toString(location.getLatitude());
+    		String lon = Double.toString(location.getLongitude());
     		String commentTxt = comment.getText().toString();
     		
     		String shareUrl = getResources().getString(R.string.url_upload);
 			new UploadImage().execute(shareUrl,hash,group,lat,lon,commentTxt);
 		} else {
+			
 			setResult(RESULT_CANCELED);
 			finish();
 		}
@@ -233,7 +256,17 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		LoginResponse response = gson.fromJson(json, LoginResponse.class);
 		
 		if (response.status == STATUS_OK) {
-        	Toast.makeText(this, "Upload successful", Toast.LENGTH_SHORT).show();			
+        	Toast.makeText(this, "Upload successful", Toast.LENGTH_SHORT).show();
+        	
+        	if (isExternal) {
+        		setResult(RESULT_OK);
+        		finish();
+        	} else {
+    			// Send the intent to the class that can handle incoming photos
+    			Intent intent = new Intent(this,GroupsActivity.class);    			
+    			// Create and start the chooser
+    			startActivity(intent);
+        	}
 		} else if (response.status == STATUS_FAIL) {
         	Toast.makeText(this, "Upload failed", Toast.LENGTH_SHORT).show();	
 		} else {
@@ -276,7 +309,6 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     	
     	public String sendPost(String url, String sid, String group, String lat, String lon, String comment) throws IOException, ClientProtocolException  {
     		HttpClient httpclient = new DefaultHttpClient();
-    		//httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
     		HttpPost httppost = new HttpPost(url);
     		File file = new File(imgPath);

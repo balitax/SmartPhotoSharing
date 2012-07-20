@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
@@ -65,11 +66,14 @@ public class DrawableManager {
            }
 
            return b;
+       } catch (ConnectTimeoutException e) {
+    	   Log.e(this.getClass().getSimpleName(), "Connection timed out", e);
+    	   return null;
        } catch (MalformedURLException e) {
-           Log.e(this.getClass().getSimpleName(), "fetchDrawable failed", e);
+           Log.e(this.getClass().getSimpleName(), "FetchDrawable failed", e);
            return null;
        } catch (IOException e) {
-           Log.e(this.getClass().getSimpleName(), "fetchDrawable failed", e);
+           Log.e(this.getClass().getSimpleName(), "FetchDrawable failed", e);
            return null;
        }
    }

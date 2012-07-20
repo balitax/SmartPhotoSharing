@@ -39,6 +39,7 @@
     
     <string name="groups_http">http://sps.juursema.com/api.php?cmd=allgroups&amp;sid=%1$s</string>
     <string name="groups_http_gallery">http://sps.juursema.com/api.php?cmd=listpics&amp;sid=%1$s&amp;max=5&amp;gid=%2$s</string>
+    <string name="groups_http_create">http://sps.juursema.com/api.php?cmd=addgroup&amp;sid=%1$s&amp;name=%2$s&amp;desc=%3$s&amp;lat1=%4$s&amp;lon1=%5$s&amp;lat2=%6$s&amp;lon2=%7$s</string>
     <string name="group_create_name">Group name</string>
     <string name="group_create_description">Enter a description</string>
     <string name="group_create_button">Create Group</string>
@@ -49,7 +50,7 @@
     <string name="group_http_logo">http://sps.juursema.com/logodb/</string>
     <string name="group_http_detail">http://sps.juursema.com/api.php?cmd=group&amp;sid=%1$s&amp;gid=%2$s</string>
     <string name="group_http_detail_photos">http://sps.juursema.com/api.php?cmd=listpics&amp;sid=%1$s&amp;gid=%2$s</string>
-    <string name="group_detail_name">My Awesome Group</string>
+    <string name="group_detail_name">Loading group data..</string>
     <string name="group_detail_members">%1$d members</string>
     <string name="group_detail_photos">%1$d photos</string>
     

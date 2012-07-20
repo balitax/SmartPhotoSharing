@@ -12,6 +12,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -69,7 +70,7 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
         pic = (ImageView) findViewById(R.id.groups_icon);
         
         dm = new DrawableManager(this);
-        loadData();
+        loadData(true, true);
         
 		// Check the Android version and decide which album path settings to use
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
@@ -85,6 +86,14 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
         
 	}
 	
+    @Override
+    public void onResume() {
+      super.onResume();
+      
+      // Refresh groups list
+      loadData(false, true);
+    }  
+    
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
 	    MenuInflater inflater = getMenuInflater();
@@ -108,6 +117,9 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	            startActivity(intent);
 		        return true;
+	        case R.id.refresh:
+	        	loadData(false,true);
+		    	return true;
 	        case R.id.create_group:
 	        	intent = new Intent(this, GroupCreateActivity.class);
 	        	startActivityForResult(intent, CREATE_GROUP);
@@ -137,16 +149,20 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 		
 	}
 
-	private void loadData() {
+	private void loadData(boolean profile, boolean groups) {
 		
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
-        String profileUrl = String.format(getResources().getString(R.string.profile_http),hash);		
-        new FetchJSON(this,CODE_PROFILE).execute(profileUrl);
+		if (profile) {
+	        String profileUrl = String.format(getResources().getString(R.string.profile_http),hash);		
+	        new FetchJSON(this,CODE_PROFILE).execute(profileUrl);
+		}
 
-        String groupsUrl = String.format(getResources().getString(R.string.groups_http),hash);
-		new FetchJSON(this,CODE_GROUPS).execute(groupsUrl);
+		if (groups) {
+			String groupsUrl = String.format(getResources().getString(R.string.groups_http),hash);
+			new FetchJSON(this,CODE_GROUPS).execute(groupsUrl);
+		}
 
 	}
 		
@@ -207,19 +223,20 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 
 	private void parseGroups(String result) {
 		
-		Log.i("JSON parse", result);
 		Gson gson = new Gson();
 		GroupsResponse gr = gson.fromJson(result, GroupsResponse.class);
 		
-		List <Group> group_list = gr.getGroupsList();
-		if (group_list == null) group_list = new ArrayList<Group>();
-		
-		setListAdapter(new GroupAdapter(
-							this, 
-							R.layout.list_item, 
-							group_list.toArray(new Group[group_list.size()]),
-							dm
-						));			
+		if (gr != null) {
+			List <Group> group_list = gr.getGroupsList();
+			if (group_list == null) group_list = new ArrayList<Group>();
+			
+			setListAdapter(new GroupAdapter(
+								this, 
+								R.layout.list_item, 
+								group_list.toArray(new Group[group_list.size()]),
+								dm
+							));	
+		}
 	}
 	
 	/**

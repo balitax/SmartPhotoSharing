@@ -3,18 +3,18 @@ package com.hmi.smartphotosharing.groups;
 import java.util.List;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -23,10 +23,17 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
+import com.google.gson.Gson;
+import com.hmi.json.FetchJSON;
+import com.hmi.json.LoginResponse;
+import com.hmi.json.OnDownloadListener;
+import com.hmi.smartphotosharing.Login;
+import com.hmi.smartphotosharing.MapsListener;
 import com.hmi.smartphotosharing.MyItemizedOverlay;
+import com.hmi.smartphotosharing.MyMapView;
 import com.hmi.smartphotosharing.R;
 
-public class GroupCreateActivity extends MapActivity {
+public class GroupCreateActivity extends MapActivity implements MapsListener, OnDownloadListener {
 
     private MapController mc;
     private MapView mapView;
@@ -37,15 +44,14 @@ public class GroupCreateActivity extends MapActivity {
     private static final int TEN_SECONDS = 10000;
     private static final int TEN_METERS = 10;
     private static final int ZOOM_LEVEL = 16;
+	private static int STATUS_OK = 200;
+	private static int STATUS_FAIL = 500;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.group_create);
-        
-		Button createGroupBtn = (Button) findViewById(R.id.button1);	
-		createGroupBtn.setOnClickListener(mCreateGroupOnClickListener);
 		
         // MapView
         //------------------
@@ -79,24 +85,39 @@ public class GroupCreateActivity extends MapActivity {
         final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!gpsEnabled) {
-            // Build an alert dialog here that requests that the user enable
-            // the location services, then when the user clicks the "OK" button,
-            // call enableLocationSettings()
-        	// TODO
-            //new EnableGpsDialogFragment().show(getSupportFragmentManager(), "enableGpsDialog");
-        } else {
-        	
-        	setup();
-        	            	
-            addMyLocationToMap((int)(gpsLocation.getLongitude()*1E6),(int)(gpsLocation.getLatitude()*1E6));
-            
+        	createGpsDisabledAlert();
+        } else {        	
+        	setupGps();
         }
     }
     
+    @Override
+    public void onResume() {
+      super.onResume();
+      
+      mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                                  TEN_SECONDS, TEN_METERS,
+                                  listener);
+    }    
+    
+    @Override
+    public void onPause() {
+      super.onPause();
+      
+      mLocationManager.removeUpdates(listener);
+    }
+    
+	@Override
+    protected void onStop() {
+        super.onStop();
+        mLocationManager.removeUpdates(listener);
+    }  
+	
     private void addMyLocationToMap(int lng, int lat) {
     	List<Overlay> mapOverlays = mapView.getOverlays();
+    	mapOverlays.clear();
         Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-        MyItemizedOverlay itemizedoverlay = new MyItemizedOverlay(drawable);
+        MyItemizedOverlay itemizedoverlay = new MyItemizedOverlay(drawable,this);
 
         GeoPoint point = new GeoPoint(lng,lat);
         OverlayItem overlayitem = new OverlayItem(point, null, null);
@@ -109,34 +130,32 @@ public class GroupCreateActivity extends MapActivity {
         mapView.invalidate();
 		
 	}
+    
+	public void onCreateClick(View v) {
 
-	@Override
-    protected void onStop() {
-        super.onStop();
-        mLocationManager.removeUpdates(listener);
-    }
-    
-	Button.OnClickListener mCreateGroupOnClickListener = 
-		new Button.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				setResult(RESULT_OK); // TODO : cancel button
-				finish();
-			}
-	};	
-	
-    // Method to launch Settings
-    private void enableLocationSettings() {
-        Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(settingsIntent);
-    }    
-    
+		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+		String hash = settings.getString(Login.SESSION_HASH, null);
+		Log.d("Session ID", hash);
+		EditText nameView = (EditText) findViewById(R.id.group_create_name);
+		String name = nameView.getText().toString();
+
+		EditText descView = (EditText) findViewById(R.id.group_create_desc);
+		String desc = descView.getText().toString();
+		
+		double lat = gpsLocation.getLatitude();
+		double lon = gpsLocation.getLongitude();
+		
+    	// Get group info
+		String createUrl = String.format(getResources().getString(R.string.groups_http_create),hash,name,desc,lat,lon,0,0);
+		Log.d("SmarthPhotoSharing", "Create url: " + createUrl);
+		new FetchJSON(this).execute(createUrl);
+		
+	}
+
     // Set up fine and/or coarse location providers depending on whether the fine provider or
     // both providers button is pressed.
-    private void setup() { 
-        gpsLocation = null;
-        mLocationManager.removeUpdates(listener);
-        
+    private void setupGps() { 
+    	
         // Request updates from just the fine (gps) provider.
         gpsLocation = requestUpdatesFromProvider(
                 LocationManager.GPS_PROVIDER, R.string.not_support_gps);
@@ -169,9 +188,10 @@ public class GroupCreateActivity extends MapActivity {
 
         @Override
         public void onLocationChanged(Location location) {
-            // A new location update is received.  Do something useful with it.  Update the UI with
-            // the location update.
             gpsLocation = location;
+
+        	if (gpsLocation != null)            	
+        		addMyLocationToMap((int)(gpsLocation.getLongitude()*1E6),(int)(gpsLocation.getLatitude()*1E6));   
         }
 
         @Override
@@ -186,5 +206,57 @@ public class GroupCreateActivity extends MapActivity {
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
     };
+	
+	private void createGpsDisabledAlert(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Your GPS is disabled! Would you like to enable it?")
+		     .setCancelable(false)
+		     .setPositiveButton("Enable GPS",
+		          new DialogInterface.OnClickListener(){
+		          public void onClick(DialogInterface dialog, int id){
+		               showGpsOptions();
+		          }
+		     });
+		     builder.setNegativeButton("Do nothing",
+		          new DialogInterface.OnClickListener(){
+		          public void onClick(DialogInterface dialog, int id){
+		               dialog.cancel();
+		          }
+		     });
+		AlertDialog alert = builder.create();
+		alert.show();
+	}  
+	
+	private void showGpsOptions(){
+		Intent gpsOptionsIntent = new Intent(
+				android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+		startActivity(gpsOptionsIntent);
+	}
+
+	@Override
+	public void updateGPS(double lat, double lon) {
+		gpsLocation.setLatitude(lat);
+		gpsLocation.setLongitude(lon);	
+		Log.d(this.getClass().getSimpleName(), "Updated location: (" + lat + "; " + lon + ")");
+	}
+
+	@Override
+	public void parseJson(String json, int code) {
+		Gson gson = new Gson();
+		LoginResponse response = gson.fromJson(json, LoginResponse.class);
+		
+		Log.i("Json parse", json);
+		
+		if (response.status == STATUS_OK) {
+        	Toast.makeText(this, "Group created", Toast.LENGTH_SHORT).show();
+    		setResult(RESULT_OK);
+    		finish();
+		} else if (response.status == STATUS_FAIL) {
+        	Toast.makeText(this, "Group creation failed", Toast.LENGTH_SHORT).show();	
+		} else {
+        	Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();	
+		}
+		
+	}
 
 }
