@@ -1,6 +1,6 @@
 package com.hmi.json;
 
-public class LoginResponse {
+public class StringRepsonse {
 
 	public int status;
 	

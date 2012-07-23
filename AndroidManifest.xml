@@ -43,7 +43,9 @@
         <activity android:label="Groups" 
             android:name=".groups.GroupsActivity" />
         <activity android:label="Join Group" 
-            android:name=".groups.JoinGroupActivity" />
+            android:name=".groups.GroupJoinActivity" />
+        <activity android:label="Invite" 
+            android:name=".groups.GroupInviteActivity" />
         <activity android:label="Camera" 
             android:name=".camera.CameraActivity" />
         <activity android:label="Create Group" 

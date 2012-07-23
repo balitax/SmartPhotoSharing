@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -23,16 +24,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
-import com.hmi.json.GroupDetailResponse;
-import com.hmi.json.LoginResponse;
+import com.hmi.json.GroupResponse;
+import com.hmi.json.StringRepsonse;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.json.Photo;
-import com.hmi.json.PopularResponse;
+import com.hmi.json.PhotoListResponse;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyImageAdapter;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.SettingsActivity;
 
 public class GroupDetailActivity extends Activity implements OnDownloadListener {
 
@@ -40,6 +42,7 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 	private static final int CODE_GROUP_PHOTOS = 2;
 	private static final int CODE_JOIN = 3;
 	private static final int CODE_LEAVE = 4;
+	private static final int CODE_INVITE = 5;
 	
 	private static final int STATUS_OK = 200;
 	private static final int STATUS_FORBIDDEN = 403;
@@ -122,6 +125,21 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 	}	
 	
 	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+		
+        switch (item.getItemId()) {
+	        case R.id.invite:
+	        	intent = new Intent(this, GroupInviteActivity.class);
+	        	intent.putExtra("id", id);
+	        	startActivityForResult(intent, CODE_INVITE);
+	        	return true;
+	        default:
+	        	return super.onOptionsItemSelected(item);
+        }
+    }
+	
+	@Override
 	public void onStart() {
         super.onStart();
         
@@ -165,7 +183,7 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 	private void parseLeave(String json) {
 
 		Gson gson = new Gson();
-		LoginResponse response = gson.fromJson(json, LoginResponse.class);
+		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
 		if (response != null) {
 			switch(response.status) {
@@ -196,7 +214,7 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 	private void parseJoin(String json) {
 
 		Gson gson = new Gson();
-		LoginResponse response = gson.fromJson(json, LoginResponse.class);
+		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
 		if (response != null) {
 			switch(response.status) {
@@ -232,7 +250,7 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 	}
 	private void parsePhoto(String result) {
 		Gson gson = new Gson();
-		PopularResponse list = gson.fromJson(result, PopularResponse.class);
+		PhotoListResponse list = gson.fromJson(result, PhotoListResponse.class);
 		
 		List<Photo> photo_list = list.msg;
 		
@@ -259,7 +277,7 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 		Gson gson = new Gson();
 		
 		try {
-			GroupDetailResponse gdr = gson.fromJson(result, GroupDetailResponse.class);
+			GroupResponse gdr = gson.fromJson(result, GroupResponse.class);
 			Group g = gdr.msg;
 
 			groupName.setText(g.name);

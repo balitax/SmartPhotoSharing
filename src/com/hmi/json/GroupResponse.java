@@ -1,6 +1,6 @@
 package com.hmi.json;
 
-public class GroupDetailResponse {
+public class GroupResponse {
 
 	public int status;
 	

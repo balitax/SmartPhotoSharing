@@ -2,7 +2,7 @@ package com.hmi.json;
 
 import java.util.List;
 
-public class GroupsResponse {
+public class GroupListResponse {
 
 	public int status;
 	

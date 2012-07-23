@@ -43,6 +43,8 @@
     <string name="groups_http_public">http://sps.juursema.com/api.php?cmd=allgroups&amp;sid=%1$s&amp;notjoined=1</string>
     <string name="groups_http_join">http://sps.juursema.com/api.php?cmd=joingroup&amp;sid=%1$s&amp;gid=%2$s</string>
     <string name="groups_http_leave">http://sps.juursema.com/api.php?cmd=leavegroup&amp;sid=%1$s&amp;gid=%2$s</string>
+    <string name="groups_http_invite">http://sps.juursema.com/api.php?cmd=add2group&amp;sid=%1$s&amp;gid=%2$s&amp;member=%3$s</string>
+    <string name="groups_http_users">http://sps.juursema.com/api.php?cmd=allusers&amp;sid=%1$s&amp;gid=%2$s</string>
     
     <string name="group_create_name">Group name</string>
     <string name="group_create_description">Enter a description</string>
@@ -83,6 +85,7 @@
     <string name="menu_group_manage">Manage Group</string>
     <string name="menu_group_create">Create Group</string>
     <string name="menu_group_join">Join A Group</string>
+    <string name="menu_group_invite">Invite</string>
     
     <!-- Preferences -->
     

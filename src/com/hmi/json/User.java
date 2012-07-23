@@ -12,6 +12,10 @@ public class User {
 	public String fb_oauth;
 	public String picture;
 	
+	public long getId() {
+		return Long.parseLong(uid);
+	}
+	
 	public String getName() {
 		return rname;
 	}

@@ -42,8 +42,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
-import com.hmi.json.GroupsResponse;
-import com.hmi.json.LoginResponse;
+import com.hmi.json.GroupListResponse;
+import com.hmi.json.StringRepsonse;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.smartphotosharing.groups.GroupCreateActivity;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
@@ -253,7 +253,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 
     private void parseUpload(String json) {
 		Gson gson = new Gson();
-		LoginResponse response = gson.fromJson(json, LoginResponse.class);
+		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
 		if (response.status == STATUS_OK) {
         	Toast.makeText(this, "Upload successful", Toast.LENGTH_SHORT).show();
@@ -278,7 +278,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	private void parseGroups(String json) {
 
 		Gson gson = new Gson();
-		GroupsResponse gr = gson.fromJson(json, GroupsResponse.class);
+		GroupListResponse gr = gson.fromJson(json, GroupListResponse.class);
 		List<Group> list = gr. msg;
 		spinner.setAdapter(new MySpinnerAdapter(this,list));
 		

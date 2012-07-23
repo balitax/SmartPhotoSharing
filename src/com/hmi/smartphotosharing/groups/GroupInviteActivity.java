@@ -4,27 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
-import com.hmi.json.Group;
-import com.hmi.json.GroupsResponse;
-import com.hmi.json.LoginResponse;
 import com.hmi.json.OnDownloadListener;
+import com.hmi.json.StringRepsonse;
+import com.hmi.json.User;
+import com.hmi.json.UserListResponse;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
 
-public class JoinGroupActivity extends ListActivity implements OnDownloadListener, OnGroupClickListener {
+public class GroupInviteActivity extends ListActivity implements OnDownloadListener {
 
 	private DrawableManager dm;
-	private static final int CODE_GROUPS = 1;
-	private static final int CODE_JOIN = 2;
+	private long id;
+	
+	private static final int CODE_USERS = 1;
+	private static final int CODE_INVITE = 2;
 	
 	private static final int STATUS_OK = 200;
 	private static final int STATUS_FORBIDDEN = 403;
@@ -34,6 +38,10 @@ public class JoinGroupActivity extends ListActivity implements OnDownloadListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        id = intent.getLongExtra("id", 0);
+        
         setContentView(R.layout.join_group);
         dm = new DrawableManager(this);
     }
@@ -57,8 +65,8 @@ public class JoinGroupActivity extends ListActivity implements OnDownloadListene
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
-        String groupsUrl = String.format(getResources().getString(R.string.groups_http_public),hash);		
-        new FetchJSON(this, CODE_GROUPS).execute(groupsUrl);
+        String usersUrl = String.format(getResources().getString(R.string.groups_http_users),hash,id);		
+        new FetchJSON(this, CODE_USERS).execute(usersUrl);
 
 	}
 				
@@ -69,79 +77,66 @@ public class JoinGroupActivity extends ListActivity implements OnDownloadListene
 	@Override
 	public void parseJson(String result, int code) {
 		switch (code) {
-		case CODE_GROUPS:
-			parseGroups(result);
+		case CODE_USERS:
+			parseUsers(result);
 			break;
 			
-		case CODE_JOIN:
-			parseJoin(result);
+		case CODE_INVITE:
+			parseInvite(result);
 			break;
 			
 		default:
 		}
 	}
 	
-	private void parseJoin(String json) {
+	private void parseInvite(String json) {
 
 		Gson gson = new Gson();
-		LoginResponse response = gson.fromJson(json, LoginResponse.class);
+		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
 		if (response != null) {
 			switch(response.status) {
 			
 			case(STATUS_OK):
-				Toast.makeText(this, "Joined group", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "User invited to group", Toast.LENGTH_SHORT).show();
 	    		setResult(RESULT_OK);
 	    		finish();
 				break;
-				
-			case(STATUS_404):
-				Toast.makeText(this, "Group does not exist", Toast.LENGTH_SHORT).show();
-				break;
-				
-			case(STATUS_FORBIDDEN):
-				Toast.makeText(this, "This group is private, you need an invite", Toast.LENGTH_SHORT).show();
-				break;	
-				
-			case(STATUS_FAILED):
-				Toast.makeText(this, "You already are a member", Toast.LENGTH_SHORT).show();
-				break;	
-				
+								
 			default:
-				Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, response.msg, Toast.LENGTH_SHORT).show();
 			
 			}
 		}
 		
 	}
 
-	public void parseGroups(String json) {
+	public void parseUsers(String json) {
 
 		Gson gson = new Gson();
-		GroupsResponse gr = gson.fromJson(json, GroupsResponse.class);
+		UserListResponse response = gson.fromJson(json, UserListResponse.class);
 		
-		if (gr != null) {
-			List <Group> group_list = gr.getGroupsList();
-			if (group_list == null) group_list = new ArrayList<Group>();
+		if (response != null) {
+			List<User> userList = response.getUserList();
+			if (userList == null) userList = new ArrayList<User>();
 			
-			setListAdapter(new GroupAdapter(
+			setListAdapter(new UserAdapter(
 								this, 
 								R.layout.list_item, 
-								group_list.toArray(new Group[group_list.size()]),
-								dm,
-								this
+								userList,
+								dm
 							));	
 		}
 	}
 
 	@Override
-	public void OnGroupClick(long id) {
+	protected void onListItemClick (ListView l, View v, int position, long uid) {
 
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
-
-        String joinUrl = String.format(getResources().getString(R.string.groups_http_join),hash,id);		
-        new FetchJSON(this, CODE_JOIN).execute(joinUrl);
+		Log.d("GroupInvite", "User ID: " + uid);
+        String inviteUrl = String.format(getResources().getString(R.string.groups_http_invite),hash,id,uid);		
+        new FetchJSON(this, CODE_INVITE).execute(inviteUrl);
 		
 	}
 }

@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.hmi.json.FetchJSON;
-import com.hmi.json.LoginResponse;
+import com.hmi.json.StringRepsonse;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
 
@@ -78,7 +78,7 @@ public class Login extends Activity implements OnDownloadListener{
 	private void parseValidate(String json) {
 		
 		Gson gson = new Gson();
-		LoginResponse response = gson.fromJson(json, LoginResponse.class);
+		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
 		if (response.status == CORRECT) {
 			Intent intent = new Intent(this, GroupsActivity.class);
@@ -91,7 +91,7 @@ public class Login extends Activity implements OnDownloadListener{
 		Gson gson = new Gson();
 		Log.i("Json fetch", json);
 		try {
-			LoginResponse response = gson.fromJson(json, LoginResponse.class);
+			StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 	
 			if (response.status != INCORRECT) {
 				// Store the sessionhash in sharedpreferences

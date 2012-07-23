@@ -33,9 +33,9 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
-import com.hmi.json.GroupsResponse;
+import com.hmi.json.GroupListResponse;
 import com.hmi.json.OnDownloadListener;
-import com.hmi.json.ProfileResponse;
+import com.hmi.json.UserResponse;
 import com.hmi.json.User;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
@@ -128,7 +128,7 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener, 
 	        	startActivityForResult(intent, CREATE_GROUP);
 		    	return true;
 	        case R.id.join_group:
-	        	intent = new Intent(this, JoinGroupActivity.class);
+	        	intent = new Intent(this, GroupJoinActivity.class);
 	        	startActivityForResult(intent, JOIN_GROUP);
 	        	return true;
 	        default:
@@ -217,7 +217,7 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener, 
 
 	private void parseProfile(String result) {
 		Gson gson = new Gson();
-		ProfileResponse response = gson.fromJson(result, ProfileResponse.class);
+		UserResponse response = gson.fromJson(result, UserResponse.class);
 		User user = response.msg;
 		
 		// Set the user name
@@ -231,7 +231,7 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener, 
 	private void parseGroups(String result) {
 		
 		Gson gson = new Gson();
-		GroupsResponse gr = gson.fromJson(result, GroupsResponse.class);
+		GroupListResponse gr = gson.fromJson(result, GroupListResponse.class);
 		
 		if (gr != null) {
 			List <Group> group_list = gr.getGroupsList();

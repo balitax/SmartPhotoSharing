@@ -20,7 +20,7 @@ import com.hmi.json.FetchJSON;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.json.Photo;
 import com.hmi.json.PhotoResponse;
-import com.hmi.json.PopularResponse;
+import com.hmi.json.PhotoListResponse;
 
 public class PhotoDetailActivity extends Activity implements OnDownloadListener {
 

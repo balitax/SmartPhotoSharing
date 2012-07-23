@@ -25,7 +25,7 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
-import com.hmi.json.LoginResponse;
+import com.hmi.json.StringRepsonse;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MapsListener;
@@ -243,7 +243,7 @@ public class GroupCreateActivity extends MapActivity implements MapsListener, On
 	@Override
 	public void parseJson(String json, int code) {
 		Gson gson = new Gson();
-		LoginResponse response = gson.fromJson(json, LoginResponse.class);
+		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
 		Log.i("Json parse", json);
 		
