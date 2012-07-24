@@ -229,6 +229,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     	Bitmap myBitmap = BitmapFactory.decodeFile(imgPath,o);
     	imageView.setImageBitmap(myBitmap);
 	}	
+	
 	public String getRealPathFromURI(Uri contentUri) {
         String[] proj = { MediaStore.Images.Media.DATA };
         Cursor cursor = managedQuery(contentUri, proj, null, null, null);

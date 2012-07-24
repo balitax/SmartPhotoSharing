@@ -54,18 +54,6 @@ public class CameraActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.camera);
-
-		// Find the ImageView from the xml file
-		mImageView = (ImageView) findViewById(R.id.imageView1);
-		mImageBitmap = null;
-
-		// Disable the button if the Intent is not available
-		Button picBtn = (Button) findViewById(R.id.btnIntend);
-		setBtnListenerOrDisable( 
-				picBtn, 
-				mTakePicOnClickListener,
-				MediaStore.ACTION_IMAGE_CAPTURE
-		);
 		
 		// Check the Android version and decide which album path settings to use
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
@@ -73,9 +61,32 @@ public class CameraActivity extends Activity {
 		} else {
 			mAlbumStorageDirFactory = new BaseAlbumDirFactory();
 		}
+
+		dispatchTakePhoto();
     }
 
 	
+	private void dispatchTakePhoto() {
+			Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+			File f = null;
+			
+			try {
+				f = setUpPhotoFile();
+				mCurrentPhotoPath = f.getAbsolutePath();
+				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+			} catch (IOException e) {
+				e.printStackTrace();
+				f = null;
+				mCurrentPhotoPath = null;
+			}
+
+			// Handle the result of the Intent
+			startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
+			
+	}
+
+
 	/**
 	 * Method that handles the result of the Intent.
 	 */
@@ -84,6 +95,9 @@ public class CameraActivity extends Activity {
 		
 		if (requestCode == ACTION_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
 			handleCameraPhoto();
+
+    		setResult(RESULT_OK);
+    		finish();
 		}
 
 	}
@@ -107,25 +121,24 @@ public class CameraActivity extends Activity {
 						ImageView.VISIBLE : ImageView.INVISIBLE
 		);
 	}
-	
+			
 	/**
-	 * OnClickListener that responds to the Take Photo button being clicked.
-	 * Dispatches the capturing of the photo to another app.
+	 * Binds the bitmap image to the View and adds it to the gallery.
 	 */
-	Button.OnClickListener mTakePicOnClickListener = 
-		new Button.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				dispatchTakePictureIntent(ACTION_TAKE_PHOTO);
-			}
-	};
-	
-	/**
-	 * OnClickListener that responds to the Share button being clicked.
-	 * Simply sends the current picture to the share page.
-	 */
+	private void handleCameraPhoto() {
 
-	public void onShareClick(View v) {
+		if (mCurrentPhotoPath != null) {
+						
+			//setPic();
+			galleryAddPic();
+			sharePic();
+			//mCurrentPhotoPath = null;
+		}
+
+	}	
+	
+	private void sharePic() {
+
 		// Send the intent to the class that can handle incoming photos
 		Intent intent = new Intent(this,SharePhotoActivity.class);
 		intent.setType("image/jpeg");
@@ -135,23 +148,10 @@ public class CameraActivity extends Activity {
 		
 		// Create and start the chooser
 		startActivity(intent);
+		
 	}
 
-	
-	/**
-	 * Binds the bitmap image to the View and adds it to the gallery.
-	 */
-	private void handleCameraPhoto() {
 
-		if (mCurrentPhotoPath != null) {
-						
-			setPic();
-			galleryAddPic();
-			//mCurrentPhotoPath = null;
-		}
-
-	}	
-	
 	/**
 	 *  Photo album for this application 
 	 */
@@ -262,41 +262,6 @@ public class CameraActivity extends Activity {
 		    mediaScanIntent.setData(contentUri);
 		    sendBroadcast(mediaScanIntent);
 	}
-
-	/**
-	 * This method handles the actual taking of a picture.
-	 * It creates an Intent to capture an image, sets up the resulting file path
-	 * and calls the method for handling the Intent result.
-	 * @param actionCode
-	 */
-	private void dispatchTakePictureIntent(int actionCode) {
-
-		// Create a new intent to let another app capture a picture
-		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-		// Prepare the file path
-		switch(actionCode) {
-			case ACTION_TAKE_PHOTO:
-				File f = null;
-				
-				try {
-					f = setUpPhotoFile();
-					mCurrentPhotoPath = f.getAbsolutePath();
-					takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-				} catch (IOException e) {
-					e.printStackTrace();
-					f = null;
-					mCurrentPhotoPath = null;
-				}
-				break;
-	
-			default:
-				break;			
-		}
-
-		// Handle the result of the Intent
-		startActivityForResult(takePictureIntent, actionCode);
-	}
 	
 	/**
 	 * Indicates whether the specified action can be used as an intent. This
@@ -320,22 +285,4 @@ public class CameraActivity extends Activity {
 		return list.size() > 0;
 	}
 
-	/**
-	 * Disables the button when the Intent for taking a picture is not available (no camera on the device).
-	 * @param btn The button that was clicked
-	 * @param onClickListener The listener that handles the button click
-	 * @param intentName Name of the Intent
-	 */
-	private void setBtnListenerOrDisable( 
-			Button btn, 
-			Button.OnClickListener onClickListener,
-			String intentName) {
-		if (isIntentAvailable(this, intentName)) {
-			btn.setOnClickListener(onClickListener);        	
-		} else {
-			btn.setText( 
-				getText(R.string.cannot).toString() + " " + btn.getText());
-			btn.setClickable(false);
-		}
-	}
 }

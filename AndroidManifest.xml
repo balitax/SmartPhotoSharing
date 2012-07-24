@@ -4,7 +4,7 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="4"
+    <uses-sdk android:minSdkVersion="8"
               android:targetSdkVersion="13" /> 
     
 	<uses-feature android:name="android.hardware.camera" />
@@ -76,7 +76,9 @@
         </activity>
         
 		<!--  GCM -->
-		<receiver android:name="com.google.android.gcm.GCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
+		<receiver 
+		    android:name="com.google.android.gcm.GCMBroadcastReceiver" 
+		    android:permission="com.google.android.c2dm.permission.SEND" >
 		  <intent-filter>
 		    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 		    <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
@@ -84,7 +86,9 @@
 		  </intent-filter>
 		</receiver>
 		
-		<service android:name=".GCMIntentService" />
+		<service 
+		    android:name="com.hmi.smartphotosharing.GCMIntentService"
+		    android:enabled="true" />
     </application>
 
 </manifest>

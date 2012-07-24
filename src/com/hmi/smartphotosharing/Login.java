@@ -1,21 +1,23 @@
 package com.hmi.smartphotosharing;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gcm.GCMRegistrar;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.hmi.json.FetchJSON;
-import com.hmi.json.StringRepsonse;
 import com.hmi.json.OnDownloadListener;
+import com.hmi.json.StringRepsonse;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
-import com.google.android.gcm.GCMRegistrar;
 
 public class Login extends Activity implements OnDownloadListener{
 	
@@ -26,6 +28,8 @@ public class Login extends Activity implements OnDownloadListener{
 	
 	public static final int CODE_VALIDATE = 1;
 	public static final int CODE_LOGIN = 2;
+
+	private static final int CODE_REGISTER = 3;
 	
 	public static String SENDER_ID = "748116297344";
 	
@@ -42,9 +46,22 @@ public class Login extends Activity implements OnDownloadListener{
 		GCMRegistrar.checkManifest(this);
 		final String regId = GCMRegistrar.getRegistrationId(this);
 		if (regId.equals("")) {
-		  GCMRegistrar.register(this, SENDER_ID);
+			GCMRegistrar.register(this, SENDER_ID);
 		} else {
-		  Log.v("GCM", "Already registered");
+		  
+			if (GCMRegistrar.isRegisteredOnServer(this)) {
+				// Skips registration.
+				Log.v("GCM", "Already registered final");
+			} else {
+				
+				// Register with the server by sending the SENDER_ID
+				Log.v("GCM", "Registering with server");
+				SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+				String hash = settings.getString(Login.SESSION_HASH, null);
+			
+				String registerUrl = String.format(getResources().getString(R.string.gcm_register),hash,regId);		
+				new FetchJSON(this, CODE_REGISTER).execute(registerUrl);
+			}
 		}
 		
 		setContentView(R.layout.login);
@@ -84,8 +101,21 @@ public class Login extends Activity implements OnDownloadListener{
 		case CODE_LOGIN:
 			parseLogin(json);
 			break;
+		case CODE_REGISTER:
+			parseRegister(json);
+			break;
 		default:
 			
+		}
+	}
+
+	private void parseRegister(String json) {
+		Gson gson = new Gson();
+		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
+		Toast.makeText(this, response.msg, Toast.LENGTH_SHORT).show();
+		
+		if (response.status != CORRECT) {
+			GCMRegistrar.unregister(this);			
 		}
 	}
 
