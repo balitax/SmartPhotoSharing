@@ -25,16 +25,15 @@ import com.google.gson.JsonSyntaxException;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
 import com.hmi.json.GroupResponse;
-import com.hmi.json.StringRepsonse;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.json.Photo;
 import com.hmi.json.PhotoListResponse;
+import com.hmi.json.StringRepsonse;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyImageAdapter;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.SettingsActivity;
 
 public class GroupDetailActivity extends Activity implements OnDownloadListener {
 
@@ -45,9 +44,6 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 	private static final int CODE_INVITE = 5;
 	
 	private static final int STATUS_OK = 200;
-	private static final int STATUS_FORBIDDEN = 403;
-	private static final int STATUS_404 = 404;
-	private static final int STATUS_FAILED = 500;
 	
 	//gallery object
 	private GridView gridView;
@@ -189,22 +185,13 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 			switch(response.status) {
 			
 			case(STATUS_OK):
-				// TODO
 				Toast.makeText(this, "Group left", Toast.LENGTH_SHORT).show();
 		    	Intent intent = new Intent(this, GroupsActivity.class);
 		    	startActivity(intent);
 				break;
 				
-			case(STATUS_404):
-				Toast.makeText(this, "Group does not exist", Toast.LENGTH_SHORT).show();
-				break;
-								
-			case(STATUS_FAILED):
-				Toast.makeText(this, "You can't leave since you are the owner", Toast.LENGTH_SHORT).show();
-				break;	
-				
 			default:
-				Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, response.msg, Toast.LENGTH_SHORT).show();
 			
 			}
 		}
@@ -229,20 +216,8 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 				}
 				break;
 				
-			case(STATUS_404):
-				Toast.makeText(this, "Group does not exist", Toast.LENGTH_SHORT).show();
-				break;
-				
-			case(STATUS_FORBIDDEN):
-				Toast.makeText(this, "This group is private, you need an invite", Toast.LENGTH_SHORT).show();
-				break;	
-				
-			case(STATUS_FAILED):
-				Toast.makeText(this, "You already are a member", Toast.LENGTH_SHORT).show();
-				break;	
-				
 			default:
-				Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, response.msg, Toast.LENGTH_SHORT).show();
 			
 			}
 		}

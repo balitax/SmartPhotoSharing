@@ -61,7 +61,6 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	private static final int CODE_GROUPS = 2;
 	private static final int CODE_UPLOAD = 3;
 	private static int STATUS_OK = 200;
-	private static int STATUS_FAIL = 500;
 	
 	private boolean isExternal;
 	
@@ -240,6 +239,9 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 
 	@Override
 	public void parseJson(String json, int code) {
+
+		Log.d("Json parse",json);
+		
 		switch(code){
 		case(CODE_GROUPS):
 			parseGroups(json);
@@ -267,10 +269,8 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     			// Create and start the chooser
     			startActivity(intent);
         	}
-		} else if (response.status == STATUS_FAIL) {
-        	Toast.makeText(this, "Upload failed", Toast.LENGTH_SHORT).show();	
 		} else {
-        	Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();	
+        	Toast.makeText(this, response.msg, Toast.LENGTH_SHORT).show();	
 		}
 		
 	}

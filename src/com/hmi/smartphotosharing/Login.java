@@ -15,6 +15,7 @@ import com.hmi.json.FetchJSON;
 import com.hmi.json.StringRepsonse;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
+import com.google.android.gcm.GCMRegistrar;
 
 public class Login extends Activity implements OnDownloadListener{
 	
@@ -26,6 +27,8 @@ public class Login extends Activity implements OnDownloadListener{
 	public static final int CODE_VALIDATE = 1;
 	public static final int CODE_LOGIN = 2;
 	
+	public static String SENDER_ID = "748116297344";
+	
 	EditText username;
 	EditText password;
 	
@@ -33,6 +36,17 @@ public class Login extends Activity implements OnDownloadListener{
 	public void onCreate(Bundle bundle) {
 		
 		super.onCreate(bundle);
+		
+		// Google Cloud Messaging 
+		GCMRegistrar.checkDevice(this);
+		GCMRegistrar.checkManifest(this);
+		final String regId = GCMRegistrar.getRegistrationId(this);
+		if (regId.equals("")) {
+		  GCMRegistrar.register(this, SENDER_ID);
+		} else {
+		  Log.v("GCM", "Already registered");
+		}
+		
 		setContentView(R.layout.login);
 
 		username = (EditText) findViewById(R.id.login_username);
@@ -47,7 +61,7 @@ public class Login extends Activity implements OnDownloadListener{
 		
 		String validateUrl = String.format(getResources().getString(R.string.login_validate), hash);
 
-        new FetchJSON(this, CODE_VALIDATE).execute(validateUrl);
+        //new FetchJSON(this, CODE_VALIDATE).execute(validateUrl);
 	}
 		
 	public void onClickLogin(View v) {
@@ -57,7 +71,7 @@ public class Login extends Activity implements OnDownloadListener{
 				username.getText().toString(), 
 				password.getText().toString()
 				);
-		Log.i("Json fetch",url);
+		Log.d("Json fetch",url);
         new FetchJSON(this,CODE_LOGIN).execute(url);
 	}
 

@@ -16,6 +16,10 @@
     <string name="enable_gps_dialog">GPS provider not enabled. Would you like to enable it?</string>
     <string name="not_support_gps">GPS provider not supported</string>
     
+    <!--  Google Cloud Messaging -->
+    <string name="gcm_register">http://sps.juursema.com/api.php?cmd=registercd2m&amp;sid=%1$s&amp;key=%2$s</string> 
+    <string name="gcm_unregister">http://sps.juursema.com/api.php?cmd=unregistercd2m&amp;sid=%1$s&amp;key=%2$s</string> 
+        
     <!--  Login -->
     
     <string name="login_intro">Please log in to continue</string>

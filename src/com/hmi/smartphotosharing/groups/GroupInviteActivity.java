@@ -31,9 +31,6 @@ public class GroupInviteActivity extends ListActivity implements OnDownloadListe
 	private static final int CODE_INVITE = 2;
 	
 	private static final int STATUS_OK = 200;
-	private static final int STATUS_FORBIDDEN = 403;
-	private static final int STATUS_404 = 404;
-	private static final int STATUS_FAILED = 500;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
