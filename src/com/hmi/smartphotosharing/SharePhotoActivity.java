@@ -18,6 +18,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -63,6 +64,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	private static int STATUS_OK = 200;
 	
 	private boolean isExternal;
+	private ProgressDialog pd;
 	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -158,6 +160,14 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		String commentTxt = comment.getText().toString();
     		
     		String shareUrl = getResources().getString(R.string.url_upload);
+    		
+    		pd = new ProgressDialog(SharePhotoActivity.this);
+    		pd.setMessage("Uploading photo...");
+    		pd.setCancelable(false);
+    		pd.setIndeterminate(true);
+    		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+    		pd.show();
+    		
 			new UploadImage().execute(shareUrl,hash,group,lat,lon,commentTxt);
 		} else {
 			
@@ -287,12 +297,12 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 
 		Gson gson = new Gson();
 		GroupListResponse gr = gson.fromJson(json, GroupListResponse.class);
-		List<Group> list = gr. msg;
+		List<Group> list = gr.getObject();
 		spinner.setAdapter(new MySpinnerAdapter(this,list));
 		
 	}
 
-	private class UploadImage extends AsyncTask<String,Void,String> {
+	private class UploadImage extends AsyncTask<String,Integer,String> {
         
     	@Override
     	protected String doInBackground(String... args) {
@@ -308,11 +318,17 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 				return null;
 			}
     	}
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {     
+            pd.setProgress(progress[0]);
+        }
     	
     	@Override
     	protected void onPostExecute(String result) {
     		Log.i("JSON parse", result);
     		parseJson(result, CODE_UPLOAD);
+    		pd.dismiss();
     	}
     	
     	public String sendPost(String url, String sid, String group, String lat, String lon, String comment) throws IOException, ClientProtocolException  {
@@ -320,7 +336,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 
     		HttpPost httppost = new HttpPost(url);
     		File file = new File(imgPath);
-
+    		    		
     		MultipartEntity mpEntity = new MultipartEntity();
     		mpEntity.addPart("sid", new StringBody(sid));
     		mpEntity.addPart("group", new StringBody(group));
