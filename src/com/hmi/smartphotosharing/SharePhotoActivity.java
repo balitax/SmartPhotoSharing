@@ -146,8 +146,15 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		String group = Long.toString(spinner.getSelectedItemId());
     		
     		// TODO fix gps
-    		String lat = Double.toString(location.getLatitude());
-    		String lon = Double.toString(location.getLongitude());
+    		String lat, lon;
+    		
+    		if (location != null) {
+	    		lat = Double.toString(location.getLatitude());
+	    		lon = Double.toString(location.getLongitude());
+    		} else {
+    			lat = "0";
+    			lon = "0";
+    		}
     		String commentTxt = comment.getText().toString();
     		
     		String shareUrl = getResources().getString(R.string.url_upload);

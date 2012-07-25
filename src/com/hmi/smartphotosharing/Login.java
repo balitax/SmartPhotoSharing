@@ -78,7 +78,7 @@ public class Login extends Activity implements OnDownloadListener{
 		
 		String validateUrl = String.format(getResources().getString(R.string.login_validate), hash);
 
-        //new FetchJSON(this, CODE_VALIDATE).execute(validateUrl);
+        new FetchJSON(this, CODE_VALIDATE).execute(validateUrl);
 	}
 		
 	public void onClickLogin(View v) {

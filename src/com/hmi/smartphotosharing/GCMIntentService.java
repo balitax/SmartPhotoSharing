@@ -1,7 +1,9 @@
 package com.hmi.smartphotosharing;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,7 +25,6 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
     
 	public GCMIntentService(){
 		super(SENDER_ID);
-        Log.i( LOG_TAG, "GCMIntentService constructor called" );
 
 	}
 		
@@ -36,11 +37,14 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 
 	@Override
 	protected void onMessage(Context context, Intent intent) {
-
-        Log.i( LOG_TAG, "GCMIntentService onMessage called" );
-        Log.i( LOG_TAG, "Message is: " + intent.getStringExtra( "message" ) );
-
+		
+		String msg = intent.getStringExtra( "msg" );
+		
+		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        Log.i( LOG_TAG, "Message is: " + msg );
+        
 	}
+	
 
 	@Override
 	protected void onRegistered(Context context, String regId) {

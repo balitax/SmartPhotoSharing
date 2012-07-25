@@ -3,6 +3,7 @@ package com.hmi.smartphotosharing.groups;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -123,6 +124,12 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener, 
 
 	}
 		
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CREATE_GROUP && resultCode == Activity.RESULT_OK) {
+            loadData(false,true);
+        }
+    }	
+
 	/**
 	 * Checks whether there is a network connection available
 	 * @return true if the device is connected to a network

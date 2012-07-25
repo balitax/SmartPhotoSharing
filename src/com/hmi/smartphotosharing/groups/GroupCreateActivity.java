@@ -57,7 +57,6 @@ public class GroupCreateActivity extends MapActivity implements MapsListener, On
         //------------------
         
         mapView = (MapView) findViewById(R.id.mapview);
-        mapView.setBuiltInZoomControls(true);
 
         mc = mapView.getController();
                 
@@ -113,13 +112,13 @@ public class GroupCreateActivity extends MapActivity implements MapsListener, On
         mLocationManager.removeUpdates(listener);
     }  
 	
-    private void addMyLocationToMap(int lng, int lat) {
+    private void addMyLocationToMap(int lat, int lon) {
     	List<Overlay> mapOverlays = mapView.getOverlays();
     	mapOverlays.clear();
         Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
         MyItemizedOverlay itemizedoverlay = new MyItemizedOverlay(drawable,this);
 
-        GeoPoint point = new GeoPoint(lng,lat);
+        GeoPoint point = new GeoPoint(lat,lon);
         OverlayItem overlayitem = new OverlayItem(point, null, null);
         itemizedoverlay.addOverlay(overlayitem);
         
@@ -159,7 +158,9 @@ public class GroupCreateActivity extends MapActivity implements MapsListener, On
         // Request updates from just the fine (gps) provider.
         gpsLocation = requestUpdatesFromProvider(
                 LocationManager.GPS_PROVIDER, R.string.not_support_gps);
-        
+    	
+        if (gpsLocation != null)            	
+    		addMyLocationToMap((int)(gpsLocation.getLatitude()*1E6),(int)(gpsLocation.getLongitude()*1E6));   
     }
     
     /**
@@ -191,7 +192,7 @@ public class GroupCreateActivity extends MapActivity implements MapsListener, On
             gpsLocation = location;
 
         	if (gpsLocation != null)            	
-        		addMyLocationToMap((int)(gpsLocation.getLongitude()*1E6),(int)(gpsLocation.getLatitude()*1E6));   
+        		addMyLocationToMap((int)(gpsLocation.getLatitude()*1E6),(int)(gpsLocation.getLongitude()*1E6));   
         }
 
         @Override
