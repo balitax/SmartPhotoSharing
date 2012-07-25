@@ -40,7 +40,13 @@ public class Login extends Activity implements OnDownloadListener{
 	public void onCreate(Bundle bundle) {
 		
 		super.onCreate(bundle);
-		
+		try {
+			Class.forName("android.os.AsyncTask");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		// Google Cloud Messaging 
 		GCMRegistrar.checkDevice(this);
 		GCMRegistrar.checkManifest(this);
