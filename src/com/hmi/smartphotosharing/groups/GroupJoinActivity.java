@@ -121,7 +121,7 @@ public class GroupJoinActivity extends ListActivity implements OnDownloadListene
 		GroupListResponse gr = gson.fromJson(json, GroupListResponse.class);
 		
 		if (gr != null) {
-			List <Group> group_list = gr.getGroupsList();
+			List <Group> group_list = gr.getObject();
 			if (group_list == null) group_list = new ArrayList<Group>();
 			
 			setListAdapter(new GroupAdapter(

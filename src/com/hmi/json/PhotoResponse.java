@@ -1,9 +1,17 @@
 package com.hmi.json;
 
-import java.util.List;
-
 public class PhotoResponse {
 	public int status;
 	
-	public Photo msg;
+	public String msg;
+	
+	public Photo obj;
+
+	public Photo getObject() {
+		return obj;
+	}
+
+	public String getMessage() {
+		return msg;
+	}
 }

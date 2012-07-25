@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
@@ -86,36 +87,42 @@ public class PhotoDetailActivity extends Activity implements OnDownloadListener 
 		
 		PhotoResponse pr = gson.fromJson(json, PhotoResponse.class);
 		
-		Photo p = pr.msg;
-		
-		String uri = p.getUrl();
-		        
-        dm = new DrawableManager(this);
-        dm.fetchDrawableOnThread(uri, imgView);
-        
-        // Update user icon
-        ImageView pic = (ImageView) findViewById(R.id.photo_detail_icon);
-		String userPic = getResources().getString(R.string.group_http_logo) + p.picture;
-		dm.fetchDrawableOnThread(userPic, pic);
-        
-		// Update the 'Taken by' text
-        TextView by = (TextView)findViewById(R.id.photo_detail_name);
-        String byTxt = getResources().getString(R.string.photo_detail_name);
-        by.setText(String.format(byTxt, p.rname));
-
-        // Update the timestamp
-        TextView date = (TextView)findViewById(R.id.photo_detail_date);
-        // Convert Unix timestamp to Date
-        Date time = new Date(Long.parseLong(p.time)*1000);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        String datum = sdf.format(time);
-        date.setText(datum);
-        
-        // Update the group text
-        TextView group = (TextView)findViewById(R.id.photo_detail_group);
-        String groupTxt = getResources().getString(R.string.photo_detail_group);
-        group.setText(String.format(groupTxt, p.groupname));
-        
+		if (pr.status == Util.STATUS_OK) {
+			Photo p = pr.getObject();
+			
+			String uri = p.getUrl();
+			        
+	        dm = new DrawableManager(this);
+	        dm.fetchDrawableOnThread(uri, imgView);
+	        
+	        // Update user icon
+	        ImageView pic = (ImageView) findViewById(R.id.photo_detail_icon);
+			String userPic = getResources().getString(R.string.group_http_logo) + p.picture;
+			dm.fetchDrawableOnThread(userPic, pic);
+	        
+			// Update the 'Taken by' text
+	        TextView by = (TextView)findViewById(R.id.photo_detail_name);
+	        String byTxt = getResources().getString(R.string.photo_detail_name);
+	        by.setText(String.format(byTxt, p.rname));
+	
+	        // Update the timestamp
+	        TextView date = (TextView)findViewById(R.id.photo_detail_date);
+	        // Convert Unix timestamp to Date
+	        Date time = new Date(Long.parseLong(p.time)*1000);
+	        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	        String datum = sdf.format(time);
+	        date.setText(datum);
+	        
+	        // Update the group text
+	        TextView group = (TextView)findViewById(R.id.photo_detail_group);
+	        String groupTxt = getResources().getString(R.string.photo_detail_group);
+	        group.setText(String.format(groupTxt, p.groupname));
+		} else if (pr.status == Util.STATUS_LOGIN){
+			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
+			
+		}
         
 	}	
 

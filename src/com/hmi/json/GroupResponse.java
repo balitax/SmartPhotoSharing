@@ -4,5 +4,7 @@ public class GroupResponse {
 
 	public int status;
 	
-	public Group msg;
+	public String msg;
+	
+	public Group obj;
 }

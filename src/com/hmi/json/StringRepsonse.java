@@ -5,4 +5,6 @@ public class StringRepsonse {
 	public int status;
 	
 	public String msg;
+	
+	public Object obj;
 }

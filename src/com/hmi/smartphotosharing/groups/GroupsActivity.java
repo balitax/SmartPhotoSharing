@@ -166,10 +166,10 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener, 
 	private void parseProfile(String result) {
 		Gson gson = new Gson();
 		UserResponse response = gson.fromJson(result, UserResponse.class);
-		User user = response.msg;
+		User user = response.getObject();
 		
 		// Set the user name
-		name.setText(response.msg.getName());
+		name.setText(user.getName());
 		
 		// Set the user icon
 		String userPic = getResources().getString(R.string.group_http_logo) + user.picture;
@@ -182,7 +182,7 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener, 
 		GroupListResponse gr = gson.fromJson(result, GroupListResponse.class);
 		
 		if (gr != null) {
-			List <Group> group_list = gr.getGroupsList();
+			List <Group> group_list = gr.getObject();
 			if (group_list == null) group_list = new ArrayList<Group>();
 			
 			setListAdapter(new GroupAdapter(

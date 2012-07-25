@@ -7,9 +7,11 @@ public class UserListResponse {
 
 	public int status;
 	
-	public List<User> msg;
+	public String msg;
+	
+	public List<User> obj;
 	
 	public List<User> getUserList() {
-		return msg;
+		return obj;
 	}
 }

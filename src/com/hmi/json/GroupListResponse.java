@@ -6,9 +6,15 @@ public class GroupListResponse {
 
 	public int status;
 	
-	public List<Group> msg;
+	public String msg;
 	
-	public List<Group> getGroupsList() {
+	public List<Group> obj;
+	
+	public List<Group> getObject() {
+		return obj;
+	}
+
+	public String getMessage() {
 		return msg;
 	}
 }

@@ -227,7 +227,7 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 		Gson gson = new Gson();
 		PhotoListResponse list = gson.fromJson(result, PhotoListResponse.class);
 		
-		List<Photo> photo_list = list.msg;
+		List<Photo> photo_list = list.obj;
 		
 		// JSON will return null if there are no photos in this group
 		if (photo_list == null)
@@ -251,14 +251,15 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 	private void parseGroup(String result) {
 		Gson gson = new Gson();
 		
-		try {
-			GroupResponse gdr = gson.fromJson(result, GroupResponse.class);
-			Group g = gdr.msg;
-
+		GroupResponse gdr = gson.fromJson(result, GroupResponse.class);
+		
+		if (gdr.status == STATUS_OK) {
+			Group g = gdr.obj;
+	
 			groupName.setText(g.name);
 			String logoUrl = getResources().getString(R.string.group_http_logo) + g.logo;
 			dm.fetchDrawableOnThread(logoUrl, groupIcon);
-
+	
 			// Set the button text join/leave group
 			if (g.member == 0) {
 				groupJoinBtn.setText("Join group");
@@ -271,10 +272,10 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 			// Set the string telling how many members the group has
 			String photos = String.format(getResources().getString(R.string.group_detail_members), g.members);
 			groupMembers.setText(photos);
-		} catch (JsonSyntaxException e) {
-			Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, gdr.msg, Toast.LENGTH_SHORT).show();
+			finish();
 		}
-
 		
 	}
 }

@@ -5,5 +5,7 @@ import java.util.List;
 public class PhotoListResponse {
 	public int status;
 	
-	public List<Photo> msg;
+	public String msg;
+	
+	public List<Photo> obj;
 }
