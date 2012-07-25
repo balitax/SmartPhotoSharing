@@ -248,11 +248,11 @@ public class GroupCreateActivity extends MapActivity implements MapsListener, On
 		
 		Log.i("Json parse", json);
 		
-		if (response.status == STATUS_OK) {
+		if (response.getStatus() == STATUS_OK) {
         	Toast.makeText(this, "Group created", Toast.LENGTH_SHORT).show();
     		setResult(RESULT_OK);
     		finish();
-		} else if (response.status == STATUS_FAIL) {
+		} else if (response.getStatus() == STATUS_FAIL) {
         	Toast.makeText(this, "Group creation failed", Toast.LENGTH_SHORT).show();	
 		} else {
         	Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();	

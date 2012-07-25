@@ -275,7 +275,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		Gson gson = new Gson();
 		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
-		if (response.status == STATUS_OK) {
+		if (response.getStatus() == STATUS_OK) {
         	Toast.makeText(this, "Upload successful", Toast.LENGTH_SHORT).show();
         	
         	if (isExternal) {
@@ -288,7 +288,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     			startActivity(intent);
         	}
 		} else {
-        	Toast.makeText(this, response.msg, Toast.LENGTH_SHORT).show();	
+        	Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();	
 		}
 		
 	}

@@ -1,17 +1,11 @@
 package com.hmi.json;
 
-public class PhotoResponse {
-	public int status;
-	
-	public String msg;
-	
-	public Photo obj;
+public class PhotoResponse extends Response {
 
+	private Photo obj;
+	
+	@Override
 	public Photo getObject() {
 		return obj;
-	}
-
-	public String getMessage() {
-		return msg;
 	}
 }

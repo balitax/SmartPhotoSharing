@@ -2,10 +2,14 @@ package com.hmi.json;
 
 import java.util.List;
 
-public class PhotoListResponse {
-	public int status;
+public class PhotoListResponse extends Response {
 	
-	public String msg;
+	private List<Photo> obj;
+
+	@Override
+	public List<Photo> getObject() {
+		return obj;
+	}
 	
-	public List<Photo> obj;
+	
 }

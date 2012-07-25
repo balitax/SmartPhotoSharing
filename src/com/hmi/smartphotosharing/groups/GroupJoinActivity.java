@@ -87,7 +87,7 @@ public class GroupJoinActivity extends ListActivity implements OnDownloadListene
 		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
 		if (response != null) {
-			switch(response.status) {
+			switch(response.getStatus()) {
 			
 			case(STATUS_OK):
 				Toast.makeText(this, "Joined group", Toast.LENGTH_SHORT).show();

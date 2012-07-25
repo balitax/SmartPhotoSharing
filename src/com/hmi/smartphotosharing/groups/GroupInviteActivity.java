@@ -92,7 +92,7 @@ public class GroupInviteActivity extends ListActivity implements OnDownloadListe
 		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
 		if (response != null) {
-			switch(response.status) {
+			switch(response.getStatus()) {
 			
 			case(STATUS_OK):
 				Toast.makeText(this, "User invited to group", Toast.LENGTH_SHORT).show();
@@ -101,7 +101,7 @@ public class GroupInviteActivity extends ListActivity implements OnDownloadListe
 				break;
 								
 			default:
-				Toast.makeText(this, response.msg, Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			
 			}
 		}
@@ -114,7 +114,7 @@ public class GroupInviteActivity extends ListActivity implements OnDownloadListe
 		UserListResponse response = gson.fromJson(json, UserListResponse.class);
 		
 		if (response != null) {
-			List<User> userList = response.getUserList();
+			List<User> userList = response.getObject();
 			if (userList == null) userList = new ArrayList<User>();
 			
 			setListAdapter(new UserAdapter(

@@ -118,9 +118,9 @@ public class Login extends Activity implements OnDownloadListener{
 	private void parseRegister(String json) {
 		Gson gson = new Gson();
 		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
-		Toast.makeText(this, response.msg, Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 		
-		if (response.status != CORRECT) {
+		if (response.getStatus() != CORRECT) {
 			GCMRegistrar.unregister(this);			
 		}
 	}
@@ -130,7 +130,7 @@ public class Login extends Activity implements OnDownloadListener{
 		Gson gson = new Gson();
 		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
-		if (response.status == CORRECT) {
+		if (response.getStatus() == CORRECT) {
 			Intent intent = new Intent(this, GroupsActivity.class);
 		    startActivity(intent);				
 		}
@@ -143,21 +143,21 @@ public class Login extends Activity implements OnDownloadListener{
 		try {
 			StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 	
-			if (response.status != INCORRECT) {
+			if (response.getStatus() != INCORRECT) {
 				// Store the sessionhash in sharedpreferences
 				SharedPreferences settings = getSharedPreferences(SESSION_PREFS,MODE_PRIVATE);
 				SharedPreferences.Editor editor = settings.edit();
-				editor.putString(SESSION_HASH, response.msg);
+				editor.putString(SESSION_HASH, response.getMessage());
 				editor.commit();
 				
 				Intent intent = new Intent(this, GroupsActivity.class);
 			    startActivity(intent);	
 			} else {
-				Toast.makeText(this, "Login incorrect", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			}
 	
 		} catch (JsonSyntaxException e) {
-			Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Something went wrong with JSON", Toast.LENGTH_SHORT).show();
 			Log.e("JSON", e.getMessage());
 		}
 		

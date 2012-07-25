@@ -134,13 +134,13 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		switch(code){
 		
 		case CODE_REGISTER:
-			Toast.makeText(this, response.msg, Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			break;
 		case CODE_UNREGISTER:
-			Toast.makeText(this, response.msg, Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			break;
 		default:
-			Toast.makeText(this, response.msg, Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			
 		}
 		

@@ -87,7 +87,7 @@ public class PhotoDetailActivity extends Activity implements OnDownloadListener 
 		
 		PhotoResponse pr = gson.fromJson(json, PhotoResponse.class);
 		
-		if (pr.status == Util.STATUS_OK) {
+		if (pr.getStatus() == Util.STATUS_OK) {
 			Photo p = pr.getObject();
 			
 			String uri = p.getUrl();
@@ -117,7 +117,7 @@ public class PhotoDetailActivity extends Activity implements OnDownloadListener 
 	        TextView group = (TextView)findViewById(R.id.photo_detail_group);
 	        String groupTxt = getResources().getString(R.string.photo_detail_group);
 	        group.setText(String.format(groupTxt, p.groupname));
-		} else if (pr.status == Util.STATUS_LOGIN){
+		} else if (pr.getStatus() == Util.STATUS_LOGIN){
 			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
 		} else {
 			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();

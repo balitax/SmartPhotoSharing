@@ -182,7 +182,7 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
 		if (response != null) {
-			switch(response.status) {
+			switch(response.getStatus()) {
 			
 			case(STATUS_OK):
 				Toast.makeText(this, "Group left", Toast.LENGTH_SHORT).show();
@@ -191,7 +191,7 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 				break;
 				
 			default:
-				Toast.makeText(this, response.msg, Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			
 			}
 		}
@@ -204,7 +204,7 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
 		if (response != null) {
-			switch(response.status) {
+			switch(response.getStatus()) {
 			
 			case(STATUS_OK):
 				if (isMember) { // If user PREVIOUSLY was a member...
@@ -217,7 +217,7 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 				break;
 				
 			default:
-				Toast.makeText(this, response.msg, Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			
 			}
 		}
@@ -227,7 +227,7 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 		Gson gson = new Gson();
 		PhotoListResponse list = gson.fromJson(result, PhotoListResponse.class);
 		
-		List<Photo> photo_list = list.obj;
+		List<Photo> photo_list = list.getObject();
 		
 		// JSON will return null if there are no photos in this group
 		if (photo_list == null)
@@ -253,8 +253,8 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 		
 		GroupResponse gdr = gson.fromJson(result, GroupResponse.class);
 		
-		if (gdr.status == STATUS_OK) {
-			Group g = gdr.obj;
+		if (gdr.getStatus() == STATUS_OK) {
+			Group g = gdr.getObject();
 	
 			groupName.setText(g.name);
 			String logoUrl = getResources().getString(R.string.group_http_logo) + g.logo;
@@ -273,7 +273,7 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 			String photos = String.format(getResources().getString(R.string.group_detail_members), g.members);
 			groupMembers.setText(photos);
 		} else {
-			Toast.makeText(this, gdr.msg, Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, gdr.getMessage(), Toast.LENGTH_SHORT).show();
 			finish();
 		}
 		

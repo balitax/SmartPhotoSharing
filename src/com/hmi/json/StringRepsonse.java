@@ -1,10 +1,11 @@
 package com.hmi.json;
 
-public class StringRepsonse {
+public class StringRepsonse extends Response {
 
-	public int status;
+	@Override
+	public Object getObject() {
+		return null;
+	}
 	
-	public String msg;
 	
-	public Object obj;
 }

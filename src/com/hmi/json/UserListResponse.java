@@ -3,15 +3,11 @@ package com.hmi.json;
 import java.util.List;
 
 
-public class UserListResponse {
+public class UserListResponse extends Response {
 
-	public int status;
-	
-	public String msg;
-	
 	public List<User> obj;
 	
-	public List<User> getUserList() {
+	public List<User> getObject() {
 		return obj;
 	}
 }
