@@ -11,12 +11,24 @@
 	    android:contentDescription="@string/icon_unknown"
 	    android:layout_width="80dp"
 	    android:layout_height="80dp"
+       	android:layout_alignParentLeft="true"
 	  	android:adjustViewBounds="true"  
 	  	android:scaleType="fitCenter"  
     	android:padding="2dp"
-       	android:layout_alignParentLeft="true"
 	    android:src="@drawable/ic_unknown" />
-		    
+	
+	<TextView
+        android:id="@+id/total_new"
+	    android:background="#fff"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+       	android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
+	    android:textSize="16sp"
+	    android:padding="2dp" 
+    	android:singleLine="true"
+    	android:textColor="#f00" /> 
+    	  
 	<TextView 
 	    android:id="@+id/item_text"
 	    android:layout_width="wrap_content"

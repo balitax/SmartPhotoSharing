@@ -61,10 +61,17 @@
 	    android:verticalSpacing="2dp"
 	    android:horizontalSpacing="2dp"
 	    android:numColumns="auto_fit"
-	    android:columnWidth="90dp"
+	    android:columnWidth="50dp"
 	    android:stretchMode="columnWidth"
 	    android:gravity="center"
         android:layout_below="@+id/group_detail_icon"
+        android:layout_marginBottom="50dp"
 	/>
    
+     <include
+         android:id="@+id/navbar"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         layout="@layout/navbar" />
 </RelativeLayout>

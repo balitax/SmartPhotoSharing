@@ -49,14 +49,4 @@ public class MySpinnerAdapter extends BaseAdapter {
         return t;
     }
     
-    public View getEmptyView() {
-    	LayoutInflater inflater = (LayoutInflater)mContext.getSystemService
-        (Context.LAYOUT_INFLATER_SERVICE);
-    	View view = inflater.inflate(R.layout.popular, null);
-    	
-    	TextView textView = (TextView) view.findViewById(R.id.empty_list_view);
-    	
-    	return textView;
-    }
-    
 }

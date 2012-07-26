@@ -3,7 +3,6 @@ package com.hmi.smartphotosharing.groups;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
 import com.hmi.json.GroupResponse;
@@ -32,10 +30,11 @@ import com.hmi.json.StringRepsonse;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyImageAdapter;
+import com.hmi.smartphotosharing.NavBarActivity;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 
-public class GroupDetailActivity extends Activity implements OnDownloadListener {
+public class GroupDetailActivity extends NavBarActivity implements OnDownloadListener {
 
 	private static final int CODE_GROUP_DETAILS = 1;
 	private static final int CODE_GROUP_PHOTOS = 2;
@@ -62,8 +61,8 @@ public class GroupDetailActivity extends Activity implements OnDownloadListener 
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.group_detail);
+        super.onCreate(savedInstanceState);
 
         dm = new DrawableManager(this);
         

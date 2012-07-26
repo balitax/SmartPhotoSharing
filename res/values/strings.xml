@@ -37,8 +37,7 @@
     <string name="popular_http">http://www.skybox.utwente.nl/test/image_list.php</string>
     
     <string name="profile_http">http://sps.juursema.com/api.php?cmd=userinfo&amp;sid=%1$s</string>
-    <string name="help">This is the Help page.</string>
-    
+     
     <!--  Groups -->
     
     <string name="groups_http">http://sps.juursema.com/api.php?cmd=allgroups&amp;sid=%1$s&amp;joined=1</string>
@@ -73,10 +72,7 @@
     
     <!--  Profile -->
     
-    <string name="profile_intro">This is the Profile tab.</string>
-    <string name="profile_name">Name goes here.</string>
-    <string name="profile_line2">This is another line.</string>
-    <string name="profile_line3">Even more text</string>
+    <string name="profile_name">Loading user data.</string>
             
     <!--  Menu -->
     

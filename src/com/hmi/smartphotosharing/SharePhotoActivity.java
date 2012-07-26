@@ -41,6 +41,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
 import com.hmi.json.GroupListResponse;
@@ -168,7 +169,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     		pd.show();
     		
-			new UploadImage().execute(shareUrl,hash,group,lat,lon,commentTxt);
+			new UploadImage(this).execute(shareUrl,hash,group,lat,lon,commentTxt);
 		} else {
 			
 			setResult(RESULT_CANCELED);
@@ -304,6 +305,12 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 
 	private class UploadImage extends AsyncTask<String,Integer,String> {
         
+		private Context context;
+		
+		public UploadImage(Context c) {
+			this.context = c;
+			
+		}
     	@Override
     	protected String doInBackground(String... args) {
              
@@ -327,7 +334,13 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     	@Override
     	protected void onPostExecute(String result) {
     		Log.i("JSON parse", result);
-    		parseJson(result, CODE_UPLOAD);
+    		
+    		try {
+    			parseJson(result, CODE_UPLOAD);
+    		} catch (JsonSyntaxException e) {
+    			Toast.makeText(context, "Something went wrong with the server, please try again later", Toast.LENGTH_SHORT).show();
+    			Log.e("JSON", "Json syntax exception: " + e.getMessage());
+    		}
     		pd.dismiss();
     	}
     	

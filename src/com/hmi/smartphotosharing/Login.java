@@ -140,26 +140,23 @@ public class Login extends Activity implements OnDownloadListener{
 	private void parseLogin(String json) {
 		Gson gson = new Gson();
 		Log.i("Json fetch", json);
-		try {
-			StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
-	
-			if (response.getStatus() != INCORRECT) {
-				// Store the sessionhash in sharedpreferences
-				SharedPreferences settings = getSharedPreferences(SESSION_PREFS,MODE_PRIVATE);
-				SharedPreferences.Editor editor = settings.edit();
-				editor.putString(SESSION_HASH, response.getMessage());
-				editor.commit();
-				
-				Intent intent = new Intent(this, GroupsActivity.class);
-			    startActivity(intent);	
-			} else {
-				Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
-			}
-	
-		} catch (JsonSyntaxException e) {
-			Toast.makeText(this, "Something went wrong with JSON", Toast.LENGTH_SHORT).show();
-			Log.e("JSON", e.getMessage());
+		
+		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
+
+		if (response.getStatus() != INCORRECT) {
+			// Store the sessionhash in sharedpreferences
+			SharedPreferences settings = getSharedPreferences(SESSION_PREFS,MODE_PRIVATE);
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putString(SESSION_HASH, response.getMessage());
+			editor.commit();
+			
+			Intent intent = new Intent(this, GroupsActivity.class);
+		    startActivity(intent);	
+		} else {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 		}
+	
+		
 		
 	}	
 

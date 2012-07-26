@@ -9,17 +9,23 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-
+import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.gson.JsonSyntaxException;
 
 public class FetchJSON extends AsyncTask<String,Void,String> {
     
-	private OnDownloadListener dl;
+	private Context c;
 	private int code;
-
-	public FetchJSON(OnDownloadListener dl) {
-		this.dl = dl;
+	private OnDownloadListener dl;
+	
+	public FetchJSON(Context c) {
+		this.c = c;
 		this.code = 0;
+		this.dl = (OnDownloadListener) c;
 	}
 	
 	/**
@@ -29,9 +35,10 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 	 * @param dl The listener object
 	 * @param code The request code
 	 */
-	public FetchJSON(OnDownloadListener dl, int code) {
-		this.dl = dl;
+	public FetchJSON(Context c, int code) {
+		this.c = c;
 		this.code = code;
+		this.dl = (OnDownloadListener) c;
 		
 	}
 	
@@ -48,7 +55,12 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 	
 	@Override
 	protected void onPostExecute(String result) {
-		dl.parseJson(result, code);
+		try {
+			dl.parseJson(result, code);
+		} catch (JsonSyntaxException e) {
+			Toast.makeText(c, "Something went wrong with the server, please try again later", Toast.LENGTH_SHORT).show();
+			Log.e("JSON", "Json syntax exception: " + e.getMessage());
+		}
 	}
 	
 	// Given a URL, establishes an HttpUrlConnection and retrieves

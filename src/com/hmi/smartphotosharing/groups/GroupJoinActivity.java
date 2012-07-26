@@ -128,8 +128,7 @@ public class GroupJoinActivity extends ListActivity implements OnDownloadListene
 								this, 
 								R.layout.list_item, 
 								group_list.toArray(new Group[group_list.size()]),
-								dm,
-								this
+								dm
 							));	
 		}
 	}

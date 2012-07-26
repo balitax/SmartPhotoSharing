@@ -14,6 +14,9 @@ import android.widget.TextView;
 import com.hmi.json.Photo;
 
 public class MyImageAdapter extends BaseAdapter {
+	
+	private static int DIM = 46;
+	
 	private Context mContext;
 	private DrawableManager dm;
 	private List<Photo> data;
@@ -45,32 +48,37 @@ public class MyImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
+        View v = convertView;
+        ViewHolder holder;
         
-        if (convertView == null) {  // if it's not recycled, initialize some attributes
-            imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        if (v == null) {  // if it's not recycled, initialize some attributes
+        	LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        	v = vi.inflate(R.layout.gridview_item, null);
+            
+            holder = new ViewHolder();
+            holder.img = (ImageView) v.findViewById(R.id.icon);
+            
+            v.setTag(holder);
         } else {
-            imageView = (ImageView) convertView;
+        	holder = (ViewHolder) v.getTag();
         }
 
+        holder.img.setLayoutParams(new GridView.LayoutParams(DIM, DIM));
+        holder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        
+        if (getItem(position).isNew)
+        	holder.img.setBackgroundColor(0xFFFF0000);
+        
         Photo photo = data.get(position);
         
         String url = photo.thumb;
-        dm.fetchDrawableOnThread(url, imageView);
+        dm.fetchDrawableOnThread(url, holder.img);
         
-        return imageView;
+        return v;
     }
     
-    public View getEmptyView() {
-    	LayoutInflater inflater = (LayoutInflater)mContext.getSystemService
-        (Context.LAYOUT_INFLATER_SERVICE);
-    	View view = inflater.inflate(R.layout.popular, null);
-    	
-    	TextView textView = (TextView) view.findViewById(R.id.empty_list_view);
-    	
-    	return textView;
+    static class ViewHolder {
+    	ImageView img;
     }
-    
+        
 }

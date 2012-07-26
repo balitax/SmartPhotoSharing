@@ -3,8 +3,10 @@
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          android:paddingLeft="8dp"
-         android:paddingRight="8dp">
+         android:paddingRight="8dp">  
 
+    <!-- HEADER -->
+    
     <ImageView 
         android:id="@+id/groups_icon"
         android:src="@drawable/ic_unknown"
@@ -20,26 +22,45 @@
     	android:layout_height="wrap_content"
         android:layout_toRightOf="@id/groups_icon"
         android:textSize="20sp" />
+         
+     <!-- NAV BUTTONS -->
+     
+    <ImageView 
+	    android:id="@+id/group_add"
+	    android:contentDescription="@string/icon_unknown"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_toLeftOf="@+id/all_groups"
+	    android:src="@drawable/ic_menu_add" />	    
+	    
+	<ImageView 
+	    android:id="@+id/all_groups"
+	    android:contentDescription="@string/icon_unknown"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentRight="true"
+	    android:src="@drawable/ic_menu_groups" />
     
-    <TextView
-    	android:id="@+id/groups_line2"
-    	android:text="@string/profile_line2"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/groups_icon"
-        android:layout_below="@+id/groups_name"
-        android:textSize="10sp" />
-                            
+    <!-- GROUPS LIST -->
+    
      <ListView android:id="@id/android:list"
 	     android:layout_width="match_parent"
 	     android:layout_height="wrap_content"
 	     android:drawSelectorOnTop="false"
-         android:layout_below="@+id/groups_icon" />
+         android:layout_below="@+id/groups_icon"
+         android:layout_marginBottom="50dp" />
 
      <TextView android:id="@id/android:empty"
 	     android:layout_width="match_parent"
 	     android:layout_height="match_parent"
 	     android:text="@string/no_data"
-         android:layout_below="@+id/join_group" /> 
-            
+         android:layout_below="@+id/groups_icon" /> 
+         
+     <include
+         android:id="@+id/navbar"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         layout="@layout/navbar" />
+          
 </RelativeLayout>

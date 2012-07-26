@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,8 +28,10 @@ import com.hmi.json.User;
 import com.hmi.json.UserResponse;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
+import com.hmi.smartphotosharing.NavBarListener;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SettingsActivity;
+import com.hmi.smartphotosharing.Util;
 import com.hmi.smartphotosharing.camera.CameraActivity;
 public class GroupsActivity extends ListActivity implements OnDownloadListener, OnGroupClickListener {
 	
@@ -43,19 +47,57 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener, 
 	private TextView name;
 	private ImageView pic;
 	
+	private ImageView add,groups;
+	private ImageView camera,archive,settings;
+	
+	 // Nav bar listeners
+    private OnClickListener cameraListener = new NavBarListener(this, Util.ACTION_CAMERA);
+    private OnClickListener archiveListener = new NavBarListener(this, Util.ACTION_ARCHIVE);
+    private OnClickListener settingsListener = new NavBarListener(this, Util.ACTION_SETTINGS);
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.groups);
         
+        add = (ImageView) findViewById(R.id.group_add);
+        add.setOnClickListener(new MyClickListener(this,GroupCreateActivity.class));
+        groups = (ImageView) findViewById(R.id.all_groups);
+        groups.setOnClickListener(new MyClickListener(this,GroupJoinActivity.class));
+        
         name = (TextView) findViewById(R.id.groups_name);
         pic = (ImageView) findViewById(R.id.groups_icon);
+        
+        // Nav bar
+        camera = (ImageView) findViewById(R.id.camera);
+        camera.setOnClickListener(cameraListener);
+        archive = (ImageView) findViewById(R.id.archive);
+        archive.setOnClickListener(archiveListener);
+        settings = (ImageView) findViewById(R.id.settings);
+        settings.setOnClickListener(settingsListener);
         
         dm = new DrawableManager(this);
         loadData(true, true);
         
     }
+    
+    public class MyClickListener implements OnClickListener {
+    	private Context c;
+    	private Class<? extends Activity> cls;
     	
+    	public MyClickListener(Context c, Class<? extends Activity> cls) {
+    		this.c = c;
+    		this.cls = cls;
+    	}
+    	
+    	@Override
+    	public void onClick(View v) {	
+    		Intent intent = new Intent(c,cls);
+    		c.startActivity(intent);
+    	}
+
+    }
+    
 	@Override
 	public void onStart() {
         super.onStart();
@@ -189,8 +231,7 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener, 
 								this, 
 								R.layout.list_item, 
 								group_list.toArray(new Group[group_list.size()]),
-								dm,
-								this
+								dm
 							));	
 		}
 	}

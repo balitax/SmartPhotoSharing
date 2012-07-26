@@ -79,7 +79,6 @@ public class DrawableManager {
    }
 
    public void fetchDrawableOnThread(final String urlString, final ImageView imageView) {
-	   
        if (bitmaps.containsKey(urlString)) {
            imageView.setImageBitmap(bitmaps.get(urlString));
            Log.i("DrawableManager", "Image loaded from cache");

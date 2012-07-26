@@ -1,6 +1,5 @@
 package com.hmi.smartphotosharing.groups;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.GestureDetector;
@@ -42,17 +41,15 @@ public class GroupAdapter extends ArrayAdapter<Group> {
 	int layoutResourceId;	// The xml layout file for each ListView item
 	Group data[] = null;	// A Group array that contains all list items
 	DrawableManager dm;
-
-	private Gallery picGallery;
 		
-	public GroupAdapter(Context context, int resource, Group[] objects, DrawableManager dm, OnGroupClickListener groupClickListener) {
+	public GroupAdapter(Context context, int resource, Group[] objects, DrawableManager dm) {
 		super(context, resource, objects);
 		
         this.layoutResourceId = resource;
         this.context = context;
         this.data = objects;
         this.dm = dm;
-        this.groupClickListener = groupClickListener;
+        this.groupClickListener = (OnGroupClickListener)context;
 	}
 	
     @Override
@@ -78,26 +75,32 @@ public class GroupAdapter extends ArrayAdapter<Group> {
 	@Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View row = convertView;
+        View v = convertView;
         GroupHolder holder = null;
        
-        if(row == null) {
+        if(v == null) {
         	
         	// Inflater used to parse the xml file
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            row = inflater.inflate(layoutResourceId, parent, false);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = inflater.inflate(layoutResourceId, null);
            
             holder = new GroupHolder();
-            holder.imgIcon = (ImageView)row.findViewById(R.id.icon);
-            holder.txtTitle = (TextView)row.findViewById(R.id.item_text);
-           
-            row.setTag(holder);
+            holder.imgIcon = (ImageView)v.findViewById(R.id.icon);
+            holder.txtTitle = (TextView)v.findViewById(R.id.item_text);
+            holder.totalNew = (TextView)v.findViewById(R.id.total_new);
+            holder.picGallery = (Gallery) v.findViewById(R.id.gallery);
+            v.setTag(holder);
         } else {
-            holder = (GroupHolder)row.getTag();
+            holder = (GroupHolder)v.getTag();
         }
                         
         Group group = data[position];
         holder.txtTitle.setText(group.name);
+        
+        if (group.totalnew == 0) 
+        	holder.totalNew.setVisibility(View.GONE);
+        else
+        	holder.totalNew.setText(Integer.toString(group.totalnew));
         
         // Set the icon for this list item
         String url = context.getResources().getString(R.string.group_http_logo) + group.logo;
@@ -105,11 +108,11 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         
         // We need to set the onClickListener here to make sure that
         // the row can also be clicked, in addition to the gallery photos
-        row.setOnClickListener(new MyOnClickListener(context,position));
+        v.setOnClickListener(new MyOnClickListener(position));
 
         // Set the adapter for the gallery
-        picGallery = (Gallery) row.findViewById(R.id.gallery);
-		picGallery.setAdapter(
+        
+		holder.picGallery.setAdapter(
 				new MyGalleryAdapter(
 						context, 
 						group.photos,
@@ -125,16 +128,16 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         };
         
         // Detect clicking an image
-        picGallery.setOnItemClickListener(new MyOnItemClickListener(context));
+        holder.picGallery.setOnItemClickListener(new MyOnItemClickListener(context));
         
         // Detect swipes
-        picGallery.setOnTouchListener(gestureListener);
+        holder.picGallery.setOnTouchListener(gestureListener);
         
-        return row;
+        return v;
     }
 	
 	/**
-	 * The Groupholder class is used to cache the ImageView and Textview
+	 * The Groupholder class is used to cache the Views
 	 * so they can be reused for every row in the ListView.
 	 * Mainly a performance improvement by recycling the Views.
 	 * @author Edwin
@@ -143,15 +146,15 @@ public class GroupAdapter extends ArrayAdapter<Group> {
     static class GroupHolder {
         ImageView imgIcon;
         TextView txtTitle;
+        TextView totalNew;
+        Gallery picGallery;
     }	
     
     private class MyOnClickListener implements OnClickListener{       
         private int mPosition;
-        private Context context;
         
-        public MyOnClickListener(Context context, int position){
+        public MyOnClickListener(int position){
             mPosition = position;
-            this.context = context;
         }
         
         @Override

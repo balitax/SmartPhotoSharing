@@ -23,7 +23,7 @@ import com.hmi.json.Photo;
 import com.hmi.json.PhotoResponse;
 import com.hmi.json.PhotoListResponse;
 
-public class PhotoDetailActivity extends Activity implements OnDownloadListener {
+public class PhotoDetailActivity extends NavBarActivity implements OnDownloadListener {
 
 	private ImageView imgView;
 	
@@ -32,8 +32,8 @@ public class PhotoDetailActivity extends Activity implements OnDownloadListener 
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.photo_detail);
+        super.onCreate(savedInstanceState);
 
         imgView = (ImageView) findViewById(R.id.picture);
 

@@ -23,6 +23,7 @@ public class Group {
 	
 	public int members;
 	public int member;
+	public int totalnew;
 	
 	@SerializedName("private")
 	public String private_group;
@@ -35,6 +36,4 @@ public class Group {
 	public long getId() {
 		return Long.parseLong(gid);
 	}	
-			
-	
 }

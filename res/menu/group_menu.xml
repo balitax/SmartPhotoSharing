@@ -7,13 +7,7 @@
     <item android:id="@+id/join_group"
           android:icon="@drawable/ic_menu_groups"
           android:title="@string/menu_group_join" />
-    <item android:id="@+id/camera"
-          android:icon="@drawable/ic_menu_camera"
-          android:title="@string/menu_camera" />
     <item android:id="@+id/refresh"
           android:icon="@drawable/ic_menu_refresh"
           android:title="@string/menu_refresh" />
-    <item android:id="@+id/settings"
-          android:icon="@drawable/ic_menu_preferences"
-          android:title="@string/menu_settings" />
 </menu> 

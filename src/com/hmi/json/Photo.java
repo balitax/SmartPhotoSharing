@@ -18,6 +18,8 @@ public class Photo {
 	
 	public String picname;
 	
+	public boolean isNew;
+	
 	// Group attributes
 	public String groupname;
 	
