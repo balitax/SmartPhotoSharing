@@ -65,12 +65,14 @@ public class MyGalleryAdapter extends BaseAdapter {
     	//create the view
         ImageView imageView = new ImageView(context);
         //specify the bitmap at this position in the array
-
+        imageView.setMaxWidth(50);
+        imageView.setMaxHeight(50);
+        
         Photo photo = data.get(position);
         dm.fetchDrawableOnThread(photo.thumb, imageView);
         
         //set layout options
-        imageView.setLayoutParams(new Gallery.LayoutParams(150, 100));
+        imageView.setLayoutParams(new Gallery.LayoutParams(50, 50));
         //scale type within view area
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         //set default gallery item background

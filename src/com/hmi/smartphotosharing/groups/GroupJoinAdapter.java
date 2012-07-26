@@ -2,6 +2,7 @@ package com.hmi.smartphotosharing.groups;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
@@ -17,8 +18,10 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
 import com.hmi.smartphotosharing.DrawableManager;
+import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyGalleryAdapter;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
@@ -29,7 +32,7 @@ import com.hmi.smartphotosharing.R;
  * @author Edwin
  *
  */
-public class GroupAdapter extends ArrayAdapter<Group> {
+public class GroupJoinAdapter extends ArrayAdapter<Group> {
 
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private GestureDetector gestureDetector;
@@ -41,7 +44,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
 	Group data[] = null;	// A Group array that contains all list items
 	DrawableManager dm;
 		
-	public GroupAdapter(Context context, int resource, Group[] objects, DrawableManager dm) {
+	public GroupJoinAdapter(Context context, int resource, Group[] objects, DrawableManager dm) {
 		super(context, resource, objects);
 		
         this.layoutResourceId = resource;
@@ -94,7 +97,12 @@ public class GroupAdapter extends ArrayAdapter<Group> {
                         
         Group group = data[position];
         holder.txtTitle.setText(group.name);
-                
+        
+        if (group.totalnew == 0) 
+        	holder.totalNew.setVisibility(View.GONE);
+        else
+        	holder.totalNew.setText(Integer.toString(group.totalnew));
+        
         // Set the icon for this list item
         String url = context.getResources().getString(R.string.group_http_logo) + group.logo;
         dm.fetchDrawableOnThread(url, holder.imgIcon);
@@ -102,15 +110,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         // We need to set the onClickListener here to make sure that
         // the row can also be clicked, in addition to the gallery photos
         v.setOnClickListener(new MyOnClickListener(position));
-        
-        
-        if (group.totalnew == 0) {
-        	holder.totalNew.setVisibility(TextView.INVISIBLE);
-        } else {
-            holder.totalNew.setVisibility(TextView.VISIBLE); // Needed because of the holder pattern
-            holder.totalNew.setText(Integer.toString(group.totalnew));
-        }
-        
+
         // Set the adapter for the gallery
         
 		holder.picGallery.setAdapter(
@@ -161,9 +161,11 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         @Override
         public void onClick(View arg0) {
         	//groupClickListener.OnGroupClick(getItemId(mPosition));
-        	Intent intent = new Intent(context, GroupDetailActivity.class);
-        	intent.putExtra("id", getItemId(mPosition));
-        	context.startActivity(intent);
+        	SharedPreferences settings = context.getSharedPreferences(Login.SESSION_PREFS, context.MODE_PRIVATE);
+    		String hash = settings.getString(Login.SESSION_HASH, null);
+
+            String joinUrl = String.format(context.getResources().getString(R.string.groups_http_join),hash,getItemId(mPosition));		
+            new FetchJSON(context, GroupJoinActivity.CODE_JOIN).execute(joinUrl);
         }       
     }
 	

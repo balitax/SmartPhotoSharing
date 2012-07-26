@@ -53,10 +53,11 @@
     <string name="group_create_description">Enter a description</string>
     <string name="group_create_button">Create Group</string>
     <string name="group_create_location">Please choose a location</string>
-    <string name="join_group">Join Group</string>
+    <string name="join_group">Join Group</string> 
     
     <!--  Group Detail -->
     
+    <string name="user_http_logo">http://sps.juursema.com/profilepicdb/</string>
     <string name="group_http_logo">http://sps.juursema.com/logodb/</string>
     <string name="group_http_detail">http://sps.juursema.com/api.php?cmd=group&amp;sid=%1$s&amp;gid=%2$s</string>
     <string name="group_http_detail_photos">http://sps.juursema.com/api.php?cmd=listpics&amp;sid=%1$s&amp;gid=%2$s</string>
@@ -69,6 +70,8 @@
     <string name="photo_detail_name">By %1$s</string>
     <string name="photo_detail_group">Posted in group %1$s</string>
     <string name="photo_detail_url">http://sps.juursema.com/api.php?cmd=pic&amp;sid=%1$s&amp;iid=%2$s</string>
+    <string name="photo_detail_addcomment">http://sps.juursema.com/api.php?cmd=addcomment&amp;sid=%1$s&amp;iid=%2$s&amp;comment=%3$s</string>
+    <string name="photo_detail_comments">http://sps.juursema.com/api.php?cmd=comments&amp;sid=%1$s&amp;iid=%2$s</string>
     
     <!--  Profile -->
     

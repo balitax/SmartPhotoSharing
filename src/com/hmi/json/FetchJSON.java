@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -21,6 +22,7 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 	private Context c;
 	private int code;
 	private OnDownloadListener dl;
+	private ProgressDialog pd;
 	
 	public FetchJSON(Context c) {
 		this.c = c;
@@ -40,6 +42,12 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 		this.code = code;
 		this.dl = (OnDownloadListener) c;
 		
+		pd = new ProgressDialog(c);
+		pd.setMessage("Loading...");
+		pd.setCancelable(false);
+		pd.setIndeterminate(true);
+		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		pd.show();
 	}
 	
 	@Override
@@ -61,6 +69,7 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 			Toast.makeText(c, "Something went wrong with the server, please try again later", Toast.LENGTH_SHORT).show();
 			Log.e("JSON", "Json syntax exception: " + e.getMessage());
 		}
+		if (pd != null) pd.dismiss();
 	}
 	
 	// Given a URL, establishes an HttpUrlConnection and retrieves
@@ -80,7 +89,6 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 	        conn.setDoInput(true);
 	        // Starts the query
 	        conn.connect();
-	        int response = conn.getResponseCode();
 	        is = conn.getInputStream();
 
 	        // Convert the InputStream into a string

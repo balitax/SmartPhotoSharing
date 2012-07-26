@@ -179,13 +179,9 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	
 	protected void onActivityResult(int requestCode, int resultCode,
             Intent data) {
-        if (requestCode == CREATE_GROUP) {
-            if (resultCode == RESULT_OK) {
-                // A contact was picked.  Here we will just display it
-                // to the user.
-            	// TODO : refresh group list
-            	Toast.makeText(this, "Group Created", Toast.LENGTH_SHORT).show();
-            }
+        if (requestCode == CREATE_GROUP && resultCode == RESULT_OK) {
+        	Toast.makeText(this, "Group Created", Toast.LENGTH_SHORT).show();
+        	loadData();
         }
     }	
 	
@@ -238,6 +234,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		if ((targetW > 0) || (targetH > 0)) {
 			scaleFactor = photoW/targetW;	
 		}
+		imageView.setMaxHeight(photoH*scaleFactor);
 		
 		// Set bitmap options to scale the image decode target
 		o.inJustDecodeBounds = false;

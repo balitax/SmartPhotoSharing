@@ -2,33 +2,46 @@ package com.hmi.smartphotosharing;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.hmi.json.Comment;
+import com.hmi.json.CommentListResponse;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.json.Photo;
 import com.hmi.json.PhotoResponse;
-import com.hmi.json.PhotoListResponse;
 
 public class PhotoDetailActivity extends NavBarActivity implements OnDownloadListener {
+
+	private static final int CODE_PHOTO = 1;
+	private static final int CODE_COMMENT_ADD = 2;
+	private static final int CODE_COMMENT_LOAD = 3;
 
 	private ImageView imgView;
 	
 	private long id;
 	private DrawableManager dm;
+	private EditText commentInput;
+	
+	private LinearLayout list;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,17 +49,15 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         super.onCreate(savedInstanceState);
 
         imgView = (ImageView) findViewById(R.id.picture);
-
+        commentInput = (EditText) findViewById(R.id.edit_message);
+        list = (LinearLayout) findViewById(R.id.comments);
+        
         Intent intent = getIntent();
         id = intent.getLongExtra("id", 0);
-        
+
+        dm = new DrawableManager(this);
         if (id != 0) {
-			SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
-			String hash = settings.getString(Login.SESSION_HASH, null);
-	        
-	        String photoUrl = String.format(getResources().getString(R.string.photo_detail_url),hash,id);
-	        Log.i("JSON parse", photoUrl);
-			new FetchJSON(this).execute(photoUrl);
+			loadData(true,true);
         } else {
         	Log.e("SmartPhotoSharing", "Photo id was 0, url was probably incorrect");
         }
@@ -73,6 +84,15 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         }
     }
 
+	public void onCommentClick(View v) {
+		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+		String hash = settings.getString(Login.SESSION_HASH, null);
+
+		String commentTxt = commentInput.getText().toString();
+        String commentUrl = String.format(getResources().getString(R.string.photo_detail_addcomment),hash,id,commentTxt);		
+        new FetchJSON(this, CODE_COMMENT_ADD).execute(commentUrl);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
     	MenuInflater inflater = getMenuInflater();
@@ -80,11 +100,108 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 	    return true;
 	}
 
+	public void loadData(boolean photo, boolean comments) {
+		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+		String hash = settings.getString(Login.SESSION_HASH, null);
+        
+		if (photo) {
+	        String photoUrl = String.format(getResources().getString(R.string.photo_detail_url),hash,id);
+	        
+			new FetchJSON(this,CODE_PHOTO).execute(photoUrl);
+		}
+		
+		if (comments) {
+	        String commentsUrl = String.format(getResources().getString(R.string.photo_detail_comments),hash,id);
+	        
+			new FetchJSON(this,CODE_COMMENT_LOAD).execute(commentsUrl);
+		}
+	}
+	
 	@Override
 	public void parseJson(String json, int code) {
-		Gson gson = new Gson();
+		
 		Log.i("JSON parse", json);
 		
+		switch(code){
+		case(CODE_PHOTO):
+			parsePhoto(json);
+			break;
+		case(CODE_COMMENT_ADD):
+			parseCommentAdd(json);
+			break;
+		case(CODE_COMMENT_LOAD):
+			parseCommentLoad(json);
+			break;
+		default:
+		}
+        
+	}
+
+	private void parseCommentLoad(String json) {
+		Gson gson = new Gson();
+		CommentListResponse response = gson.fromJson(json, CommentListResponse.class);
+		
+		if (response.getStatus() == Util.STATUS_OK) {
+			
+			List<Comment> comments = response.getObject();
+			LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			
+			
+			if (comments != null) {
+				for (int i=0; i<comments.size(); i++) {
+				  View vi = inflater.inflate(R.layout.comment, null);
+				  Comment comment = comments.get(i);
+				  
+				  //Icon
+				  ImageView img = (ImageView)vi.findViewById(R.id.comment_icon);
+				  String userPic = getResources().getString(R.string.user_http_logo) + comment.picture;
+				  dm.fetchDrawableOnThread(userPic, img);
+
+				  // Comment text
+				  TextView txt = (TextView)vi.findViewById(R.id.comment_txt);
+				  txt.setText(comment.comment);
+				  
+				  
+				  // Get the timestamp
+		          Date time = new Date(Long.parseLong(comment.time)*1000);
+		          SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		          String datum = sdf.format(time);
+		          				  
+				  // Comment username
+				  TextView user = (TextView)vi.findViewById(R.id.comment_user);
+				  user.setText(comment.rname + " (" + datum + ")");
+				  
+				  
+				  list.addView(vi);
+				}
+			} else {
+
+				TextView txt = new TextView(this);
+				txt.setText("No comments for this photo");
+				list.addView(txt);
+			}
+		} else {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();			
+		}
+	}
+
+	private void parseCommentAdd(String json) {
+		Gson gson = new Gson();
+		PhotoResponse pr = gson.fromJson(json, PhotoResponse.class);
+		
+		if (pr.getStatus() == Util.STATUS_OK) {
+			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
+			loadData(false,true);
+		} else if (pr.getStatus() == Util.STATUS_LOGIN){
+			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+		
+	}
+
+	private void parsePhoto(String json) {
+		Gson gson = new Gson();
 		PhotoResponse pr = gson.fromJson(json, PhotoResponse.class);
 		
 		if (pr.getStatus() == Util.STATUS_OK) {
@@ -92,12 +209,11 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 			
 			String uri = p.getUrl();
 			        
-	        dm = new DrawableManager(this);
 	        dm.fetchDrawableOnThread(uri, imgView);
 	        
 	        // Update user icon
 	        ImageView pic = (ImageView) findViewById(R.id.photo_detail_icon);
-			String userPic = getResources().getString(R.string.group_http_logo) + p.picture;
+			String userPic = getResources().getString(R.string.user_http_logo) + p.picture;
 			dm.fetchDrawableOnThread(userPic, pic);
 	        
 			// Update the 'Taken by' text
@@ -123,7 +239,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
 			
 		}
-        
+		
 	}	
 
 

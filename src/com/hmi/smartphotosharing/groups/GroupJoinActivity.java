@@ -20,11 +20,11 @@ import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
 
-public class GroupJoinActivity extends ListActivity implements OnDownloadListener, OnGroupClickListener {
+public class GroupJoinActivity extends ListActivity implements OnDownloadListener{
 
 	private DrawableManager dm;
-	private static final int CODE_GROUPS = 1;
-	private static final int CODE_JOIN = 2;
+	public static final int CODE_GROUPS = 1;
+	public static final int CODE_JOIN = 2;
 	
 	private static final int STATUS_OK = 200;
 	private static final int STATUS_FORBIDDEN = 403;
@@ -124,7 +124,7 @@ public class GroupJoinActivity extends ListActivity implements OnDownloadListene
 			List <Group> group_list = gr.getObject();
 			if (group_list == null) group_list = new ArrayList<Group>();
 			
-			setListAdapter(new GroupAdapter(
+			setListAdapter(new GroupJoinAdapter(
 								this, 
 								R.layout.list_item, 
 								group_list.toArray(new Group[group_list.size()]),
@@ -133,14 +133,4 @@ public class GroupJoinActivity extends ListActivity implements OnDownloadListene
 		}
 	}
 
-	@Override
-	public void OnGroupClick(long id) {
-
-		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
-		String hash = settings.getString(Login.SESSION_HASH, null);
-
-        String joinUrl = String.format(getResources().getString(R.string.groups_http_join),hash,id);		
-        new FetchJSON(this, CODE_JOIN).execute(joinUrl);
-		
-	}
 }

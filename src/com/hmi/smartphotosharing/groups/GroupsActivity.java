@@ -33,7 +33,7 @@ import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SettingsActivity;
 import com.hmi.smartphotosharing.Util;
 import com.hmi.smartphotosharing.camera.CameraActivity;
-public class GroupsActivity extends ListActivity implements OnDownloadListener, OnGroupClickListener {
+public class GroupsActivity extends ListActivity implements OnDownloadListener {
 	
     public static final int CREATE_GROUP = 4;
 
@@ -214,7 +214,7 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener, 
 		name.setText(user.getName());
 		
 		// Set the user icon
-		String userPic = getResources().getString(R.string.group_http_logo) + user.picture;
+		String userPic = getResources().getString(R.string.user_http_logo) + user.picture;
 		dm.fetchDrawableOnThread(userPic, pic);
 	}
 
@@ -235,16 +235,5 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener, 
 							));	
 		}
 	}
-	
-	@Override
-	public void OnGroupClick(long id) {
-
-    	Intent intent = new Intent(this, GroupDetailActivity.class);
-    	intent.putExtra("id", id);
-    	startActivity(intent);
-		
-	}
-	
-
  
 }
