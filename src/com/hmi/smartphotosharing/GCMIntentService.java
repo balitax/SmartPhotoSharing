@@ -22,6 +22,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 
 	private static final int ACTION_DEFAULT = 0;
 	private static final int ACTION_PHOTO_UPLOAD = 10;
+	private static final int ACTION_PHOTO_COMMENT = 11;
 	private static final int ACTION_GROUP_INVITE = 20;
 	
 	private static final int CODE_REGISTER = 1;
@@ -42,7 +43,6 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 	protected void onError(Context context, String errorId) {
         Log.i( LOG_TAG, "GCMIntentService onError called: " + errorId );
 
-
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 
         // Create notification
 		String ns = Context.NOTIFICATION_SERVICE;
-		int icon = R.drawable.ic_launcher;
+		int icon = R.drawable.picalilly;
 		CharSequence tickerText = title;
 		long when = System.currentTimeMillis();
 		
@@ -69,7 +69,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 		
 		// Set notification contents
-		Context mcontext = getApplicationContext();
+		Context mcontext = this;
 		CharSequence contentTitle = title;
 		CharSequence contentText = content;
 		
@@ -86,6 +86,10 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 			notificationIntent = new Intent(this, GroupDetailActivity.class);
 			notificationIntent.putExtra("id", value);		
 			break;
+		case ACTION_PHOTO_COMMENT:
+			notificationIntent = new Intent(this, PhotoDetailActivity.class);	
+			notificationIntent.putExtra("id", value);	
+		case ACTION_DEFAULT:
 		default:
 			notificationIntent = new Intent(this, GroupsActivity.class);
 		}

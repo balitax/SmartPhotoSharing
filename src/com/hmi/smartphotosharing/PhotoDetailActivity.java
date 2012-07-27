@@ -148,6 +148,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 			
 			
 			if (comments != null) {
+				list.removeAllViews();
 				for (int i=0; i<comments.size(); i++) {
 				  View vi = inflater.inflate(R.layout.comment, null);
 				  Comment comment = comments.get(i);

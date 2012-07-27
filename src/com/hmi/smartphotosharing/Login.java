@@ -1,10 +1,8 @@
 package com.hmi.smartphotosharing;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +11,6 @@ import android.widget.Toast;
 
 import com.google.android.gcm.GCMRegistrar;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.json.StringRepsonse;
@@ -54,20 +51,8 @@ public class Login extends Activity implements OnDownloadListener{
 		if (regId.equals("")) {
 			GCMRegistrar.register(this, SENDER_ID);
 		} else {
+			Log.v("GCM", "Already registered");
 		  
-			if (GCMRegistrar.isRegisteredOnServer(this)) {
-				// Skips registration.
-				Log.v("GCM", "Already registered final");
-			} else {
-				
-				// Register with the server by sending the SENDER_ID
-				Log.v("GCM", "Registering with server");
-				SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
-				String hash = settings.getString(Login.SESSION_HASH, null);
-			
-				String registerUrl = String.format(getResources().getString(R.string.gcm_register),hash,regId);		
-				new FetchJSON(this, CODE_REGISTER).execute(registerUrl);
-			}
 		}
 		
 		setContentView(R.layout.login);
@@ -76,8 +61,8 @@ public class Login extends Activity implements OnDownloadListener{
 		password = (EditText) findViewById(R.id.login_password);
 		
 		// TODO remove
-		username.setText("s0166049");
-		password.setText("changeme22");
+		//username.setText("s0166049");
+		//password.setText("changeme22");
 		
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
@@ -120,8 +105,10 @@ public class Login extends Activity implements OnDownloadListener{
 		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 		
-		if (response.getStatus() != CORRECT) {
-			GCMRegistrar.unregister(this);			
+		if (response.getStatus() == Util.STATUS_OK) {
+			//GCMRegistrar.setRegisteredOnServer(this, true);			
+		} else {
+			GCMRegistrar.unregister(this);
 		}
 	}
 
@@ -131,6 +118,10 @@ public class Login extends Activity implements OnDownloadListener{
 		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
 		if (response.getStatus() == CORRECT) {
+
+			// GCM
+			checkGCM();
+			
 			Intent intent = new Intent(this, GroupsActivity.class);
 		    startActivity(intent);				
 		}
@@ -144,6 +135,10 @@ public class Login extends Activity implements OnDownloadListener{
 		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 
 		if (response.getStatus() != INCORRECT) {
+			
+			// GCM
+			checkGCM();
+			
 			// Store the sessionhash in sharedpreferences
 			SharedPreferences settings = getSharedPreferences(SESSION_PREFS,MODE_PRIVATE);
 			SharedPreferences.Editor editor = settings.edit();
@@ -156,6 +151,21 @@ public class Login extends Activity implements OnDownloadListener{
 			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 		}
 	
+		
+		
+	}
+
+	private void checkGCM() {
+		
+			final String regId = GCMRegistrar.getRegistrationId(this);
+			
+			// Register with the server by sending the SENDER_ID
+			Log.v("GCM", "Registering with server");
+			SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+			String hash = settings.getString(Login.SESSION_HASH, null);
+		
+			String registerUrl = String.format(getResources().getString(R.string.gcm_register),hash,regId);		
+			new FetchJSON(this, CODE_REGISTER).execute(registerUrl);
 		
 		
 	}	
