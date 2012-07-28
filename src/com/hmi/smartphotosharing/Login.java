@@ -102,12 +102,14 @@ public class Login extends Activity implements OnDownloadListener{
 
 	private void parseRegister(String json) {
 		Gson gson = new Gson();
+		Log.d("JSON parse", json);
 		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
-		Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 		
 		if (response.getStatus() == Util.STATUS_OK) {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			//GCMRegistrar.setRegisteredOnServer(this, true);			
 		} else {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			GCMRegistrar.unregister(this);
 		}
 	}

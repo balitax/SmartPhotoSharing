@@ -5,13 +5,15 @@
     <string name="app_name">Smart Photo Sharing</string>
     <string name="icon_unknown">Unknown Icon</string>
     <string name="chooser_title">Share this photo via</string>
-    <string name="button_send">Send</string>    
     <string name="button_share">Share</string>
+    <string name="button_send">Send</string>
     <string name="button_add_comment">Add</string>      
     <string name="add_comment">Add a comment</string>   
     <string name="create_group">New group</string>   
     <string name="no_data">This is an empty list</string>
+    <string name="search">Search</string>
         
+    <string name="toggle_gps">Update GPS</string>
     <string name="enable_gps">Enable GPS</string>
     <string name="enable_gps_dialog">GPS provider not enabled. Would you like to enable it?</string>
     <string name="not_support_gps">GPS provider not supported</string>
@@ -47,12 +49,14 @@
     <string name="groups_http_join">http://sps.juursema.com/api.php?cmd=joingroup&amp;sid=%1$s&amp;gid=%2$s</string>
     <string name="groups_http_leave">http://sps.juursema.com/api.php?cmd=leavegroup&amp;sid=%1$s&amp;gid=%2$s</string>
     <string name="groups_http_invite">http://sps.juursema.com/api.php?cmd=add2group&amp;sid=%1$s&amp;gid=%2$s&amp;member=%3$s</string>
-    <string name="groups_http_users">http://sps.juursema.com/api.php?cmd=allusers&amp;sid=%1$s&amp;gid=%2$s</string>
+    <string name="groups_http_users_invite">http://sps.juursema.com/api.php?cmd=allusers&amp;sid=%1$s&amp;gid=%2$s</string>
+    <string name="groups_http_users">http://sps.juursema.com/api.php?cmd=allusers&amp;sid=%1$s</string>
     
+    <string name="group_private">Private Group</string>
+    <string name="group_create_friends">Invite Friends</string>
     <string name="group_create_name">Group name</string>
     <string name="group_create_description">Enter a description</string>
-    <string name="group_create_button">Create Group</string>
-    <string name="group_create_location">Please choose a location</string>
+    <string name="group_create_location">Choose a location</string>
     <string name="join_group">Join Group</string> 
     
     <!--  Group Detail -->

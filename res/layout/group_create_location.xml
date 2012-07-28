@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+    
+    <CheckBox 
+        android:id="@+id/toggle_gps_updates"
+        android:checked="true"
+	    android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+	    android:layout_toLeftOf="@+id/button_send"
+		android:text="@string/toggle_gps" />
+    
+    <ImageView 
+        android:id="@+id/button_send"
+        android:src="@drawable/ic_menu_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@string/button_send"
+        android:onClick="onSendClick" />
+    
+    <com.hmi.smartphotosharing.MyMapView 
+	    android:id="@+id/mapview"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_below="@+id/toggle_gps_updates"
+	    android:clickable="true"
+	    android:apiKey="0LgN0zWElNFx2cMBe0vH1UtWShWq1VlUPUeUb9w" />
+    	   
+</RelativeLayout>

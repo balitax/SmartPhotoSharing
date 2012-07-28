@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:paddingLeft="8dp"
+         android:paddingRight="8dp">
+     
+     <EditText
+         android:hint="@string/search"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_toLeftOf="@+id/button_send" />
+     
+     <ImageView 
+        android:id="@+id/button_send"
+        android:src="@drawable/ic_menu_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@string/button_send"
+        android:onClick="onSendClick" />
+     
+     <ListView 
+         android:id="@id/android:list"
+	     android:layout_width="fill_parent"
+	     android:layout_height="wrap_content"
+	     android:layout_below="@+id/button_send"
+         android:layout_alignParentLeft="true" />
+
+     <TextView android:id="@id/android:empty"
+	     android:layout_width="fill_parent"
+	     android:layout_height="match_parent"
+	     android:layout_below="@+id/button_send"
+         android:layout_alignParentLeft="true"
+	     android:text="@string/no_data" /> 
+        
+</RelativeLayout>

@@ -1,135 +1,92 @@
 package com.hmi.smartphotosharing.groups;
 
-import java.util.List;
-
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapController;
-import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 import com.google.gson.Gson;
 import com.hmi.json.FetchJSON;
-import com.hmi.json.StringRepsonse;
 import com.hmi.json.OnDownloadListener;
+import com.hmi.json.StringRepsonse;
 import com.hmi.smartphotosharing.Login;
-import com.hmi.smartphotosharing.MapsListener;
-import com.hmi.smartphotosharing.MyItemizedOverlay;
-import com.hmi.smartphotosharing.MyMapView;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.Util;
 
-public class GroupCreateActivity extends MapActivity implements MapsListener, OnDownloadListener {
+public class GroupCreateActivity extends Activity implements OnDownloadListener {
 
-    private MapController mc;
-    private MapView mapView;
-    
-    private LocationManager mLocationManager;
-    private Location gpsLocation;
-    
-    private static final int TEN_SECONDS = 10000;
-    private static final int TEN_METERS = 10;
-    private static final int ZOOM_LEVEL = 16;
-	private static int STATUS_OK = 200;
-	private static int STATUS_FAIL = 500;
-    
+	private static final int CODE_LOCATION = 1;
+	private static final int CODE_INVITE = 2;
+	
+	private long[] friends;
+	
+	private double lat1, lon1, lat2, lon2;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.group_create);
-		
-        // MapView
-        //------------------
         
-        mapView = (MapView) findViewById(R.id.mapview);
+        // Make the Dialog style appear fullscreen
+        getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 
-        mc = mapView.getController();
-                
-        // Location Manager 
-        //------------------
-                  
-        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        friends = null;
     }
-
-	@Override
-	protected boolean isRouteDisplayed() {
-		return false;
-	}
-		
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        // Check if the GPS setting is currently enabled on the device.
-        // This verification should be done during onStart() because the system calls this method
-        // when the user returns to the activity, which ensures the desired location provider is
-        // enabled each time the activity resumes from the stopped state.
-        LocationManager locationManager =
-                (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        if (!gpsEnabled) {
-        	createGpsDisabledAlert();
-        } else {        	
-        	setupGps();
+    	    
+    public void onClickFriends(View view) {
+    	Intent intent = new Intent(this,SelectFriendsActivity.class);
+    	startActivityForResult(intent, CODE_INVITE);
+    }
+    
+    public void onClickLocation(View view) {
+    	Intent intent = new Intent(this,SelectLocationActivity.class);
+    	startActivityForResult(intent, CODE_LOCATION);
+    }	
+    
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	
+    	Button friendsBtn = (Button) findViewById(R.id.button_invite_friends);
+    	
+        if (requestCode == CODE_INVITE) {
+        	if (resultCode == RESULT_OK) {
+	        	friends = data.getLongArrayExtra("friends");
+	        	Log.d("LIST", "Friends: " + friends.length);
+	        	
+	        	friendsBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.btn_check_buttonless_on,0,0,0);
+	        	
+        	} else {
+	        	friendsBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_invite,0,0,0);        		
+        	}
         }
-    }
-    
-    @Override
-    public void onResume() {
-      super.onResume();
-      
-      mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                                  TEN_SECONDS, TEN_METERS,
-                                  listener);
-    }    
-    
-    @Override
-    public void onPause() {
-      super.onPause();
-      
-      mLocationManager.removeUpdates(listener);
-    }
-    
-	@Override
-    protected void onStop() {
-        super.onStop();
-        mLocationManager.removeUpdates(listener);
-    }  
-	
-    private void addMyLocationToMap(int lat, int lon) {
-    	List<Overlay> mapOverlays = mapView.getOverlays();
-    	mapOverlays.clear();
-        Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-        MyItemizedOverlay itemizedoverlay = new MyItemizedOverlay(drawable,this);
+        
+        else if (requestCode == CODE_LOCATION) {
 
-        GeoPoint point = new GeoPoint(lat,lon);
-        OverlayItem overlayitem = new OverlayItem(point, null, null);
-        itemizedoverlay.addOverlay(overlayitem);
+        	Button locationBtn = (Button) findViewById(R.id.button_location);
+        	
+        	if (resultCode == RESULT_OK) {
+	        	lat1 = data.getDoubleExtra("lat1", 0);
+	        	lon1 = data.getDoubleExtra("lon1", 0);
+	        	
+	        	lat2 = data.getDoubleExtra("lat2", 0);
+	        	lon2 = data.getDoubleExtra("lon2", 0);
+	
+	        	locationBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.btn_check_buttonless_on,0,0,0);
+	        	
+        	} else {
+	        	locationBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_mylocation,0,0,0);
+        		
+        	}
+        }
         
-        mapOverlays.add(itemizedoverlay);
-        
-        mc.setCenter(point);
-        mc.setZoom(ZOOM_LEVEL); 
-        mapView.invalidate();
-		
-	}
-    
+    }	
+	
 	public void onCreateClick(View v) {
 
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
@@ -140,105 +97,12 @@ public class GroupCreateActivity extends MapActivity implements MapsListener, On
 
 		EditText descView = (EditText) findViewById(R.id.group_create_desc);
 		String desc = descView.getText().toString();
-		
-		double lat = gpsLocation.getLatitude();
-		double lon = gpsLocation.getLongitude();
-		
+				
     	// Get group info
-		String createUrl = String.format(getResources().getString(R.string.groups_http_create),hash,name,desc,lat,lon,0,0);
+		String createUrl = String.format(getResources().getString(R.string.groups_http_create),hash,name,desc,lat1,lon1,lat2,lon2);
 		Log.d("SmarthPhotoSharing", "Create url: " + createUrl);
 		new FetchJSON(this).execute(createUrl);
 		
-	}
-
-    // Set up fine and/or coarse location providers depending on whether the fine provider or
-    // both providers button is pressed.
-    private void setupGps() { 
-    	
-        // Request updates from just the fine (gps) provider.
-        gpsLocation = requestUpdatesFromProvider(
-                LocationManager.GPS_PROVIDER, R.string.not_support_gps);
-    	
-        if (gpsLocation != null)            	
-    		addMyLocationToMap((int)(gpsLocation.getLatitude()*1E6),(int)(gpsLocation.getLongitude()*1E6));   
-    }
-    
-    /**
-     * Method to register location updates with a desired location provider.  If the requested
-     * provider is not available on the device, the app displays a Toast with a message referenced
-     * by a resource id.
-     *
-     * @param provider Name of the requested provider.
-     * @param errorResId Resource id for the string message to be displayed if the provider does
-     *                   not exist on the device.
-     * @return A previously returned {@link android.location.Location} from the requested provider,
-     *         if exists.
-     */
-    private Location requestUpdatesFromProvider(final String provider, final int errorResId) {
-        Location location = null;
-        if (mLocationManager.isProviderEnabled(provider)) {
-            mLocationManager.requestLocationUpdates(provider, TEN_SECONDS, TEN_METERS, listener);
-            location = mLocationManager.getLastKnownLocation(provider);
-        } else {
-            Toast.makeText(this, errorResId, Toast.LENGTH_LONG).show();
-        }
-        return location;
-    }
-
-    private final LocationListener listener = new LocationListener() {
-
-        @Override
-        public void onLocationChanged(Location location) {
-            gpsLocation = location;
-
-        	if (gpsLocation != null)            	
-        		addMyLocationToMap((int)(gpsLocation.getLatitude()*1E6),(int)(gpsLocation.getLongitude()*1E6));   
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-    };
-	
-	private void createGpsDisabledAlert(){
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Your GPS is disabled! Would you like to enable it?")
-		     .setCancelable(false)
-		     .setPositiveButton("Enable GPS",
-		          new DialogInterface.OnClickListener(){
-		          public void onClick(DialogInterface dialog, int id){
-		               showGpsOptions();
-		          }
-		     });
-		     builder.setNegativeButton("Do nothing",
-		          new DialogInterface.OnClickListener(){
-		          public void onClick(DialogInterface dialog, int id){
-		               dialog.cancel();
-		          }
-		     });
-		AlertDialog alert = builder.create();
-		alert.show();
-	}  
-	
-	private void showGpsOptions(){
-		Intent gpsOptionsIntent = new Intent(
-				android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-		startActivity(gpsOptionsIntent);
-	}
-
-	@Override
-	public void updateGPS(double lat, double lon) {
-		gpsLocation.setLatitude(lat);
-		gpsLocation.setLongitude(lon);	
-		Log.d(this.getClass().getSimpleName(), "Updated location: (" + lat + "; " + lon + ")");
 	}
 
 	@Override
@@ -248,14 +112,12 @@ public class GroupCreateActivity extends MapActivity implements MapsListener, On
 		
 		Log.i("Json parse", json);
 		
-		if (response.getStatus() == STATUS_OK) {
+		if (response.getStatus() == Util.STATUS_OK) {
         	Toast.makeText(this, "Group created", Toast.LENGTH_SHORT).show();
     		setResult(RESULT_OK);
     		finish();
-		} else if (response.getStatus() == STATUS_FAIL) {
-        	Toast.makeText(this, "Group creation failed", Toast.LENGTH_SHORT).show();	
 		} else {
-        	Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();	
+        	Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();	
 		}
 		
 	}

@@ -61,7 +61,13 @@
         <activity android:label="Camera" 
             android:name=".camera.CameraActivity" />
         <activity android:label="Create Group" 
-            android:name=".groups.GroupCreateActivity" />
+            android:name=".groups.GroupCreateActivity"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity android:label="Invite Friends" 
+            android:name=".groups.SelectFriendsActivity"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity android:label="Select Location" 
+            android:name=".groups.SelectLocationActivity" />
         <activity android:label="Group Details" 
             android:name=".groups.GroupDetailActivity" />
         <activity android:label="Photo Details" 
