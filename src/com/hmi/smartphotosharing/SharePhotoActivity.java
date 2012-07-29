@@ -116,7 +116,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		
-		String groupsUrl = String.format(getResources().getString(R.string.groups_http), hash);
+		String groupsUrl = String.format(Util.getUrl(this,R.string.groups_http), hash);
         new FetchJSON(this, CODE_GROUPS).execute(groupsUrl);
 		
 	}
@@ -160,7 +160,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		}
     		String commentTxt = comment.getText().toString();
     		
-    		String shareUrl = getResources().getString(R.string.url_upload);
+    		String shareUrl = Util.getUrl(this,R.string.url_upload);
     		
     		pd = new ProgressDialog(SharePhotoActivity.this);
     		pd.setMessage("Uploading photo...");

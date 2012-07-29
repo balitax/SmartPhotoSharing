@@ -99,7 +99,7 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
 		String desc = descView.getText().toString();
 				
     	// Get group info
-		String createUrl = String.format(getResources().getString(R.string.groups_http_create),hash,name,desc,lat1,lon1,lat2,lon2);
+		String createUrl = String.format(Util.getUrl(this,R.string.groups_http_create),hash,name,desc,lat1,lon1,lat2,lon2);
 		Log.d("SmarthPhotoSharing", "Create url: " + createUrl);
 		new FetchJSON(this).execute(createUrl);
 		

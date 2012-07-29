@@ -89,7 +89,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
 		String commentTxt = commentInput.getText().toString();
-        String commentUrl = String.format(getResources().getString(R.string.photo_detail_addcomment),hash,id,commentTxt);		
+        String commentUrl = String.format(Util.getUrl(this,R.string.photo_detail_addcomment),hash,id,commentTxt);		
         new FetchJSON(this, CODE_COMMENT_ADD).execute(commentUrl);
 	}
 	
@@ -105,13 +105,13 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		String hash = settings.getString(Login.SESSION_HASH, null);
         
 		if (photo) {
-	        String photoUrl = String.format(getResources().getString(R.string.photo_detail_url),hash,id);
+	        String photoUrl = String.format(Util.getUrl(this,R.string.photo_detail_url),hash,id);
 	        
 			new FetchJSON(this,CODE_PHOTO).execute(photoUrl);
 		}
 		
 		if (comments) {
-	        String commentsUrl = String.format(getResources().getString(R.string.photo_detail_comments),hash,id);
+	        String commentsUrl = String.format(Util.getUrl(this,R.string.photo_detail_comments),hash,id);
 	        
 			new FetchJSON(this,CODE_COMMENT_LOAD).execute(commentsUrl);
 		}
@@ -155,7 +155,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 				  
 				  //Icon
 				  ImageView img = (ImageView)vi.findViewById(R.id.comment_icon);
-				  String userPic = getResources().getString(R.string.user_http_logo) + comment.picture;
+				  String userPic = Util.USER_DB + comment.picture;
 				  dm.fetchDrawableOnThread(userPic, img);
 
 				  // Comment text
@@ -193,6 +193,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		if (pr.getStatus() == Util.STATUS_OK) {
 			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
 			loadData(false,true);
+			commentInput.getEditableText().clear();
 		} else if (pr.getStatus() == Util.STATUS_LOGIN){
 			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
 		} else {
@@ -214,7 +215,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 	        
 	        // Update user icon
 	        ImageView pic = (ImageView) findViewById(R.id.photo_detail_icon);
-			String userPic = getResources().getString(R.string.user_http_logo) + p.picture;
+			String userPic = Util.USER_DB + p.picture;
 			dm.fetchDrawableOnThread(userPic, pic);
 	        
 			// Update the 'Taken by' text

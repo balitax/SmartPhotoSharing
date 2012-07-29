@@ -19,6 +19,7 @@ import com.hmi.json.OnDownloadListener;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.Util;
 
 public class GroupJoinActivity extends ListActivity implements OnDownloadListener{
 
@@ -57,7 +58,7 @@ public class GroupJoinActivity extends ListActivity implements OnDownloadListene
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
-        String groupsUrl = String.format(getResources().getString(R.string.groups_http_public),hash);		
+        String groupsUrl = String.format(Util.getUrl(this,R.string.groups_http_public),hash);		
         new FetchJSON(this, CODE_GROUPS).execute(groupsUrl);
 
 	}

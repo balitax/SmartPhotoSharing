@@ -72,8 +72,8 @@ public class SelectLocationActivity extends MapActivity {
 
 					private void setRectangle(MapView view) {
 						view.getOverlays().clear();
-				        GeoPoint topLeft = view.getProjection().fromPixels(0, 0);
-				        GeoPoint bottomRight = view.getProjection().fromPixels(view.getWidth()-1, view.getHeight()-1);
+				        GeoPoint topLeft = view.getProjection().fromPixels(5, 5);
+				        GeoPoint bottomRight = view.getProjection().fromPixels(view.getWidth()-4, view.getHeight()-4);
 				        RectangleOverlay rect = new RectangleOverlay(topLeft,bottomRight);
 				        view.getOverlays().add(rect);
 						

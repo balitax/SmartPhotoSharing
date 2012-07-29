@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.hmi.json.User;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.Util;
 
 /**
  * Custom ArrayAdapter class that is used to display a list of items with an icon.
@@ -82,7 +83,7 @@ public class UserAdapter extends ArrayAdapter<User> {
         holder.txtTitle.setText(user.rname);
         
         // Set the icon for this list item
-        String url = context.getResources().getString(R.string.group_http_logo) + user.picture;
+        String url = Util.USER_DB + user.picture;
         dm.fetchDrawableOnThread(url, holder.imgIcon);
                 
         return row;

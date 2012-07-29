@@ -107,7 +107,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		
-        String registerUrl = String.format(getResources().getString(R.string.gcm_register),hash,regId);		
+        String registerUrl = String.format(Util.getUrl(this,R.string.gcm_register),hash,regId);		
         new FetchJSON(this, CODE_REGISTER).execute(registerUrl);
 
 	}
@@ -120,7 +120,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		
-        String unregisterUrl = String.format(getResources().getString(R.string.gcm_unregister),hash,regId);		
+        String unregisterUrl = String.format(Util.getUrl(this,R.string.gcm_unregister),hash,regId);		
         new FetchJSON(this, CODE_UNREGISTER).execute(unregisterUrl);
 
 	}

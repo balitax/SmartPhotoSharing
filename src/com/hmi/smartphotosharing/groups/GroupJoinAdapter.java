@@ -25,6 +25,7 @@ import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyGalleryAdapter;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.Util;
 
 /**
  * Custom ArrayAdapter class that is used to display a list of items with an icon.
@@ -104,7 +105,7 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
         	holder.totalNew.setText(Integer.toString(group.totalnew));
         
         // Set the icon for this list item
-        String url = context.getResources().getString(R.string.group_http_logo) + group.logo;
+        String url = Util.GROUP_DB + group.logo;
         dm.fetchDrawableOnThread(url, holder.imgIcon);
         
         // We need to set the onClickListener here to make sure that
@@ -164,7 +165,7 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
         	SharedPreferences settings = context.getSharedPreferences(Login.SESSION_PREFS, context.MODE_PRIVATE);
     		String hash = settings.getString(Login.SESSION_HASH, null);
 
-            String joinUrl = String.format(context.getResources().getString(R.string.groups_http_join),hash,getItemId(mPosition));		
+            String joinUrl = String.format(Util.getUrl(context,R.string.groups_http_join),hash,getItemId(mPosition));		
             new FetchJSON(context, GroupJoinActivity.CODE_JOIN).execute(joinUrl);
         }       
     }

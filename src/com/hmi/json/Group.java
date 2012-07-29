@@ -21,6 +21,7 @@ public class Group {
 	public String latstart;
 	public String latend;
 	
+	public String numphotos;
 	public int members;
 	public int member;
 	public int totalnew;

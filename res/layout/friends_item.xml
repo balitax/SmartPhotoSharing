@@ -25,8 +25,8 @@
 	<ImageView 
 	    android:id="@+id/icon"
 	    android:contentDescription="@string/icon_unknown"
-	    android:layout_width="32dp"
-	    android:layout_height="32dp"
+	    android:layout_width="48dp"
+	    android:layout_height="48dp"
        	android:layout_alignParentRight="true"
     	android:padding="2dp"
         android:focusable="false"

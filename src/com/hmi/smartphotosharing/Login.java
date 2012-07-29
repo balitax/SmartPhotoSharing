@@ -67,7 +67,7 @@ public class Login extends Activity implements OnDownloadListener{
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		
-		String validateUrl = String.format(getResources().getString(R.string.login_validate), hash);
+		String validateUrl = String.format(Util.getUrl(this,R.string.login_validate), hash);
 
         new FetchJSON(this, CODE_VALIDATE).execute(validateUrl);
 	}
@@ -166,7 +166,7 @@ public class Login extends Activity implements OnDownloadListener{
 			SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 			String hash = settings.getString(Login.SESSION_HASH, null);
 		
-			String registerUrl = String.format(getResources().getString(R.string.gcm_register),hash,regId);		
+			String registerUrl = String.format(Util.getUrl(this,R.string.gcm_register),hash,regId);		
 			new FetchJSON(this, CODE_REGISTER).execute(registerUrl);
 		
 		

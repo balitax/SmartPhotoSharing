@@ -3,6 +3,7 @@ package com.hmi.smartphotosharing.groups;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,6 +33,7 @@ import com.hmi.smartphotosharing.MyImageAdapter;
 import com.hmi.smartphotosharing.NavBarActivity;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.Util;
 
 public class GroupDetailActivity extends NavBarActivity implements OnDownloadListener {
 
@@ -43,6 +44,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	private static final int CODE_INVITE = 5;
 	
 	private static final int STATUS_OK = 200;
+	private static final int DIALOG_INFO = 0;
 	
 	//gallery object
 	private GridView gridView;
@@ -52,12 +54,13 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	private TextView groupMembers;
 	private TextView groupName;
 	private ImageView groupIcon;
-	private Button groupJoinBtn;
 	
 	private DrawableManager dm;
 			
 	private long id;
 	private boolean isMember;
+	
+	private Group group;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,7 +73,6 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         groupIcon = (ImageView) findViewById(R.id.group_detail_icon);
         groupPhotos = (TextView) findViewById(R.id.group_detail_photos);
         groupMembers = (TextView) findViewById(R.id.group_detail_members);
-        groupJoinBtn = (Button) findViewById(R.id.join_group);
         
         // Get the gallery view
         gridView = (GridView) findViewById(R.id.grid);
@@ -81,22 +83,56 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         id = intent.getLongExtra("id", 0);
         
         isMember = true;
+        group = null;
     }
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        Dialog dialog;
+        switch(id) {
+        case DIALOG_INFO:
+        	dialog = new Dialog(this);
 
+        	dialog.setContentView(R.layout.group_info);
+        	dialog.setTitle(group.name);
+
+        	TextView text = (TextView) dialog.findViewById(R.id.text);
+        	text.setText(group.description);
+
+        	text = (TextView) dialog.findViewById(R.id.members);
+        	text.setText("Members: " + Integer.toString(group.members));
+
+        	text = (TextView) dialog.findViewById(R.id.photos);
+        	text.setText("Photos: " + group.numphotos);
+        	
+        	text = (TextView) dialog.findViewById(R.id.owner);
+        	text.setText("Owner: " + group.owner);
+
+            break;
+        default:
+            dialog = null;
+        }
+        return dialog;
+    }
+    
     public void onClickJoinGroup(View view) {
 
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
 		if (isMember) {
-	        String leaveUrl = String.format(getResources().getString(R.string.groups_http_leave),hash,id);		
+	        String leaveUrl = String.format(Util.getUrl(this,R.string.groups_http_leave),hash,id);		
 	        new FetchJSON(this, CODE_LEAVE).execute(leaveUrl);
 		} else {
-	        String joinUrl = String.format(getResources().getString(R.string.groups_http_join),hash,id);		
+	        String joinUrl = String.format(Util.getUrl(this,R.string.groups_http_join),hash,id);		
 	        new FetchJSON(this, CODE_JOIN).execute(joinUrl);
 		}
     }
     
+    public void onClickInfo(View view) {
+    	
+    	showDialog(DIALOG_INFO);
+    }
     private class MyOnItemClickListener implements OnItemClickListener {
 		private Context c;
 		
@@ -147,11 +183,11 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		
     	// Get group info
-		String detailUrl = String.format(getResources().getString(R.string.group_http_detail),hash,id);
+		String detailUrl = String.format(Util.getUrl(this,R.string.group_http_detail),hash,id);
 		new FetchJSON(this,CODE_GROUP_DETAILS).execute(detailUrl);
 		
 		// Get list of photos
-		String photosUrl = String.format(getResources().getString(R.string.group_http_detail_photos),hash,id);
+		String photosUrl = String.format(Util.getUrl(this,R.string.group_http_detail_photos),hash,id);
 		new FetchJSON(this,CODE_GROUP_PHOTOS).execute(photosUrl);
 		        
 	}
@@ -207,10 +243,8 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 			
 			case(STATUS_OK):
 				if (isMember) { // If user PREVIOUSLY was a member...
-					groupJoinBtn.setText("Join group");
 					isMember = false;
 				} else {
-					groupJoinBtn.setText("Leave group");
 					isMember = true;				
 				}
 				break;
@@ -222,6 +256,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		}
 		
 	}
+	
 	private void parsePhoto(String result) {
 		Gson gson = new Gson();
 		PhotoListResponse list = gson.fromJson(result, PhotoListResponse.class);
@@ -253,23 +288,21 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		GroupResponse gdr = gson.fromJson(result, GroupResponse.class);
 		
 		if (gdr.getStatus() == STATUS_OK) {
-			Group g = gdr.getObject();
+			group = gdr.getObject();
 	
-			groupName.setText(g.name);
-			String logoUrl = getResources().getString(R.string.group_http_logo) + g.logo;
+			groupName.setText(group.name);
+			String logoUrl = Util.GROUP_DB + group.logo;
 			dm.fetchDrawableOnThread(logoUrl, groupIcon);
 	
 			// Set the button text join/leave group
-			if (g.member == 0) {
-				groupJoinBtn.setText("Join group");
+			if (group.member == 0) {
 				isMember = false;
 			} else {
-				groupJoinBtn.setText("Leave group");
 				isMember = true;				
 			}
 			
 			// Set the string telling how many members the group has
-			String photos = String.format(getResources().getString(R.string.group_detail_members), g.members);
+			String photos = String.format(getResources().getString(R.string.group_detail_members), group.members);
 			groupMembers.setText(photos);
 		} else {
 			Toast.makeText(this, gdr.getMessage(), Toast.LENGTH_SHORT).show();

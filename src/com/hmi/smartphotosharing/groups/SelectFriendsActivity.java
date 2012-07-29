@@ -20,6 +20,7 @@ import com.hmi.json.UserListResponse;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.Util;
 
 public class SelectFriendsActivity extends ListActivity implements OnDownloadListener {
 	private DrawableManager dm;
@@ -88,7 +89,7 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
-        String usersUrl = String.format(getResources().getString(R.string.groups_http_users),hash);		
+        String usersUrl = String.format(Util.getUrl(this,R.string.groups_http_users),hash);		
         new FetchJSON(this, CODE_USERS).execute(usersUrl);
 
         Log.d("FRIENDS", usersUrl);

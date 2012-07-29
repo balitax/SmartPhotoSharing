@@ -5,53 +5,83 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
    
-   	<Button 
-        android:id="@+id/join_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/join_group"
-        android:onClick="onClickJoinGroup"
-        android:layout_alignParentRight="true" />  
-        
+    <RelativeLayout
+        android:id="@+id/header"
+        android:background="#222"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        	        
+	    <ImageView 
+	        android:id="@+id/group_detail_icon"
+	        android:src="@drawable/ic_unknown"
+	        android:layout_width="50dp"
+	        android:layout_height="50dp"
+			android:adjustViewBounds="true"  
+			android:maxWidth="42dp"  
+			android:maxHeight="42dp"  
+			android:scaleType="fitCenter"  
+	        android:layout_alignParentLeft="true"
+	        android:padding="4dp" />
+	    
+	    <TextView
+	    	android:id="@+id/group_detail_name"
+	    	android:text="@string/group_detail_name"
+	    	android:singleLine="true"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	        android:layout_toRightOf="@+id/group_detail_icon"
+	        android:textSize="15sp" />
+	    
+	    <TextView 
+	    	android:id="@+id/group_detail_members"
+	    	android:text="@string/group_detail_members"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	        android:layout_toRightOf="@+id/group_detail_icon"
+	        android:layout_below="@+id/group_detail_name"
+	        android:textSize="10sp" />
+	    
+	   <TextView
+	    	android:id="@+id/group_detail_photos"
+	    	android:text="@string/group_detail_photos"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	        android:layout_toRightOf="@+id/group_detail_icon"
+	        android:layout_below="@+id/group_detail_members"
+	        android:textSize="10sp" />
+    </RelativeLayout>
+    
+     <!-- NAV BUTTONS -->
+     
     <ImageView 
-        android:id="@+id/group_detail_icon"
-        android:src="@drawable/ic_unknown"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-		android:adjustViewBounds="true"  
-		android:maxWidth="42dp"  
-		android:maxHeight="42dp"  
-		android:scaleType="fitCenter"  
-        android:layout_alignParentLeft="true"
-        android:padding="4dp" />
-    
-    <TextView
-    	android:id="@+id/group_detail_name"
-    	android:text="@string/group_detail_name"
-    	android:singleLine="true"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/group_detail_icon"
-        android:textSize="15sp" />
-    
-    <TextView 
-    	android:id="@+id/group_detail_members"
-    	android:text="@string/group_detail_members"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/group_detail_icon"
-        android:layout_below="@+id/group_detail_name"
-        android:textSize="10sp" />
-    
-   <TextView
-    	android:id="@+id/group_detail_photos"
-    	android:text="@string/group_detail_photos"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/group_detail_icon"
-        android:layout_below="@+id/group_detail_members"
-        android:textSize="10sp" />
-    
+	    android:id="@+id/group_info"
+	    android:contentDescription="@string/icon_unknown"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/header"
+	    android:onClick="onClickInfo"
+	    android:src="@drawable/ic_menu_info_details" />	
+	
+    <ImageView 
+	    android:id="@+id/group_invite"
+	    android:contentDescription="@string/icon_unknown"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/header"
+	    android:layout_toRightOf="@+id/group_info"
+	    android:src="@drawable/ic_menu_invite" />	
+	    
+	<ImageView 
+	    android:id="@+id/group_leave"
+	    android:contentDescription="@string/icon_unknown"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/header"
+	    android:layout_alignParentRight="true"
+	    android:onClick="onClickJoinGroup"
+	    android:src="@drawable/ic_menu_block" />	  
+	      
+    <!-- GRID -->
     
 	<GridView xmlns:android="http://schemas.android.com/apk/res/android" 
 	    android:id="@+id/grid"
@@ -64,7 +94,7 @@
 	    android:columnWidth="50dp"
 	    android:stretchMode="columnWidth"
 	    android:gravity="center"
-        android:layout_below="@+id/group_detail_icon"
+        android:layout_below="@+id/group_info"
         android:layout_marginBottom="50dp"
 	/>
    

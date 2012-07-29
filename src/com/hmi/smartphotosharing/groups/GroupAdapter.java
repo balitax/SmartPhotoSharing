@@ -22,6 +22,7 @@ import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.MyGalleryAdapter;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.Util;
 
 /**
  * Custom ArrayAdapter class that is used to display a list of items with an icon.
@@ -96,7 +97,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         holder.txtTitle.setText(group.name);
                 
         // Set the icon for this list item
-        String url = context.getResources().getString(R.string.group_http_logo) + group.logo;
+        String url = Util.GROUP_DB + group.logo;
         dm.fetchDrawableOnThread(url, holder.imgIcon);
         
         // We need to set the onClickListener here to make sure that

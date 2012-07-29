@@ -21,6 +21,7 @@ import com.hmi.json.UserListResponse;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.Util;
 
 public class GroupInviteActivity extends ListActivity implements OnDownloadListener {
 
@@ -62,7 +63,7 @@ public class GroupInviteActivity extends ListActivity implements OnDownloadListe
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
-        String usersUrl = String.format(getResources().getString(R.string.groups_http_users_invite),hash,id);		
+        String usersUrl = String.format(Util.getUrl(this,R.string.groups_http_users_invite),hash,id);		
         new FetchJSON(this, CODE_USERS).execute(usersUrl);
 
 	}
@@ -132,7 +133,7 @@ public class GroupInviteActivity extends ListActivity implements OnDownloadListe
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		Log.d("GroupInvite", "User ID: " + uid);
-        String inviteUrl = String.format(getResources().getString(R.string.groups_http_invite),hash,id,uid);		
+        String inviteUrl = String.format(Util.getUrl(this,R.string.groups_http_invite),hash,id,uid);		
         new FetchJSON(this, CODE_INVITE).execute(inviteUrl);
 		
 	}

@@ -44,8 +44,6 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
     private static final int JOIN_GROUP = 6;
     
 	private DrawableManager dm;
-	private TextView name;
-	private ImageView pic;
 	
 	private ImageView add,groups;
 	private ImageView camera,archive,settings;
@@ -65,8 +63,7 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
         groups = (ImageView) findViewById(R.id.all_groups);
         groups.setOnClickListener(new MyClickListener(this,GroupJoinActivity.class));
         
-        name = (TextView) findViewById(R.id.groups_name);
-        pic = (ImageView) findViewById(R.id.groups_icon);
+        ImageView pic = (ImageView) findViewById(R.id.groups_icon);
         
         // Nav bar
         camera = (ImageView) findViewById(R.id.camera);
@@ -155,12 +152,12 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
 		if (profile) {
-	        String profileUrl = String.format(getResources().getString(R.string.profile_http),hash);		
+	        String profileUrl = String.format(Util.getUrl(this,R.string.profile_http),hash);		
 	        new FetchJSON(this,CODE_PROFILE).execute(profileUrl);
 		}
 
 		if (groups) {
-			String groupsUrl = String.format(getResources().getString(R.string.groups_http),hash);
+			String groupsUrl = String.format(Util.getUrl(this,R.string.groups_http),hash);
 			new FetchJSON(this,CODE_GROUPS).execute(groupsUrl);
 		}
 
@@ -211,10 +208,16 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 		User user = response.getObject();
 		
 		// Set the user name
+		TextView name = (TextView) findViewById(R.id.groups_name);
 		name.setText(user.getName());
 		
+		// Set the user name
+		TextView stats = (TextView) findViewById(R.id.stats);
+		stats.setText(String.format(this.getResources().getString(R.string.profile_stats), user.groups, user.photos));
+		
 		// Set the user icon
-		String userPic = getResources().getString(R.string.user_http_logo) + user.picture;
+		String userPic = Util.USER_DB + user.picture;
+		ImageView pic = (ImageView) findViewById(R.id.groups_icon);
 		dm.fetchDrawableOnThread(userPic, pic);
 	}
 

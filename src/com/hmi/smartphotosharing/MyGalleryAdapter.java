@@ -77,6 +77,7 @@ public class MyGalleryAdapter extends BaseAdapter {
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         //set default gallery item background
         //imageView.setBackgroundResource(defaultItemBackground);
+        imageView.setPadding(2,2,2,2);
         if (getItem(position).isNew)
  	   		imageView.setBackgroundColor(0xFFFF0000);
         //return the view
