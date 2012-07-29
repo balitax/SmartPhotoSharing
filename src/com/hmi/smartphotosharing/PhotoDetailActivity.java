@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,8 +35,6 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 	private static final int CODE_PHOTO = 1;
 	private static final int CODE_COMMENT_ADD = 2;
 	private static final int CODE_COMMENT_LOAD = 3;
-
-	private ImageView imgView;
 	
 	private long id;
 	private DrawableManager dm;
@@ -48,7 +47,6 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         setContentView(R.layout.photo_detail);
         super.onCreate(savedInstanceState);
 
-        imgView = (ImageView) findViewById(R.id.picture);
         commentInput = (EditText) findViewById(R.id.edit_message);
         list = (LinearLayout) findViewById(R.id.comments);
         
@@ -61,6 +59,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         } else {
         	Log.e("SmartPhotoSharing", "Photo id was 0, url was probably incorrect");
         }
+        
     }
     
 	@Override
@@ -210,9 +209,11 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 			Photo p = pr.getObject();
 			
 			String uri = p.getUrl();
-			        
-	        dm.fetchDrawableOnThread(uri, imgView);
+
+	        ImageView photo = (ImageView) findViewById(R.id.picture);
 	        
+	        dm.fetchDrawableOnThread(uri, photo);
+
 	        // Update user icon
 	        ImageView pic = (ImageView) findViewById(R.id.photo_detail_icon);
 			String userPic = Util.USER_DB + p.picture;

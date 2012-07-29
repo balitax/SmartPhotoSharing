@@ -67,6 +67,8 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	private boolean isExternal;
 	private ProgressDialog pd;
 	
+	private String newGroupName;
+	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.share_photo);
@@ -180,7 +182,8 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	protected void onActivityResult(int requestCode, int resultCode,
             Intent data) {
         if (requestCode == CREATE_GROUP && resultCode == RESULT_OK) {
-        	Toast.makeText(this, "Group Created", Toast.LENGTH_SHORT).show();
+        	newGroupName = data.getStringExtra("name");
+        	Toast.makeText(this, "Group '" + newGroupName + "' Created", Toast.LENGTH_SHORT).show();
         	loadData();
         }
     }	
@@ -296,8 +299,14 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		Gson gson = new Gson();
 		GroupListResponse gr = gson.fromJson(json, GroupListResponse.class);
 		List<Group> list = gr.getObject();
-		spinner.setAdapter(new MySpinnerAdapter(this,list));
-		
+		MySpinnerAdapter spinnerAdapter = new MySpinnerAdapter(this,list);
+		spinner.setAdapter(spinnerAdapter);
+
+		for(int i = 0; i < spinnerAdapter.getCount(); i++) {
+			if (spinnerAdapter.getItem(i).name.equals(newGroupName)) {
+				spinner.setSelection(i);
+			}
+		}
 	}
 
 	private class UploadImage extends AsyncTask<String,Integer,String> {

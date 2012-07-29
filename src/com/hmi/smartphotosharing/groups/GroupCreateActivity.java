@@ -114,7 +114,13 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
 		
 		if (response.getStatus() == Util.STATUS_OK) {
         	Toast.makeText(this, "Group created", Toast.LENGTH_SHORT).show();
-    		setResult(RESULT_OK);
+        	Intent data = new Intent();
+
+    		EditText nameView = (EditText) findViewById(R.id.group_create_name);
+    		String name = nameView.getText().toString();
+        	data.putExtra("name", name);
+        	
+    		setResult(RESULT_OK, data);
     		finish();
 		} else {
         	Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();	

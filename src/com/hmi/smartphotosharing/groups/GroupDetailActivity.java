@@ -130,9 +130,15 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
     }
     
     public void onClickInfo(View view) {
-    	
     	showDialog(DIALOG_INFO);
     }
+    
+    public void onClickInvite(View view) {
+    	Intent intent = new Intent(this, GroupInviteActivity.class);
+    	intent.putExtra("id", id);
+    	startActivityForResult(intent, CODE_INVITE);
+    }
+    
     private class MyOnItemClickListener implements OnItemClickListener {
 		private Context c;
 		

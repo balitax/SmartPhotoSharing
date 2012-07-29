@@ -5,6 +5,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
    
+    <!-- HEADER -->
+    
     <RelativeLayout
         android:id="@+id/header"
         android:background="#222"
@@ -34,7 +36,6 @@
 	    
 	    <TextView 
 	    	android:id="@+id/group_detail_members"
-	    	android:text="@string/group_detail_members"
 	    	android:layout_width="wrap_content"
 	    	android:layout_height="wrap_content"
 	        android:layout_toRightOf="@+id/group_detail_icon"
@@ -43,7 +44,6 @@
 	    
 	   <TextView
 	    	android:id="@+id/group_detail_photos"
-	    	android:text="@string/group_detail_photos"
 	    	android:layout_width="wrap_content"
 	    	android:layout_height="wrap_content"
 	        android:layout_toRightOf="@+id/group_detail_icon"
@@ -69,6 +69,7 @@
 	    android:layout_height="wrap_content"
 	    android:layout_below="@+id/header"
 	    android:layout_toRightOf="@+id/group_info"
+	    android:onClick="onClickInvite"
 	    android:src="@drawable/ic_menu_invite" />	
 	    
 	<ImageView 

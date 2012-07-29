@@ -4,7 +4,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fillViewport="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:focusable="true" android:focusableInTouchMode="true">
     
 	<ScrollView 
 	    android:layout_width="fill_parent"
@@ -51,20 +52,23 @@
 		        android:layout_below="@+id/photo_detail_date"
 		        android:textSize="10sp" />
 		    
-		 
+		   <!-- ACTUAL PHOTO -->
+		   
 		    <ImageView 
 		        android:id="@+id/picture"
 		    	android:layout_width="fill_parent"
 		    	android:layout_height="wrap_content"
+		    	android:scaleType="centerInside"
+		    	android:adjustViewBounds="true"
 		    	android:contentDescription="@string/picture"
-		        android:layout_below="@+id/photo_detail_icon" />
+		        android:layout_below="@+id/photo_detail_group" />
 		    
-	         <LinearLayout 
-	             android:id="@+id/comments"
-			     android:layout_width="fill_parent"
-			     android:layout_height="wrap_content"
-		         android:layout_below="@+id/picture"
-		         android:orientation="vertical" />
+	        <LinearLayout 
+	            android:id="@+id/comments"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+		        android:layout_below="@+id/picture"
+		        android:orientation="vertical" />
 		         
 		    <EditText 
 		        android:id="@+id/edit_message"
