@@ -1,4 +1,4 @@
-package com.hmi.smartphotosharing;
+package com.hmi.smartphotosharing.maps;
 import java.util.ArrayList;
 
 import android.graphics.drawable.Drawable;

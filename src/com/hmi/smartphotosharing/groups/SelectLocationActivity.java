@@ -18,9 +18,9 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
-import com.hmi.smartphotosharing.MyMapView;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.RectangleOverlay;
+import com.hmi.smartphotosharing.maps.MyMapView;
+import com.hmi.smartphotosharing.maps.RectangleOverlay;
 
 public class SelectLocationActivity extends MapActivity {
 

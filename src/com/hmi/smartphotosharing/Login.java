@@ -75,7 +75,7 @@ public class Login extends Activity implements OnDownloadListener{
 	public void onClickLogin(View v) {
 			
 		String url = String.format(
-				getResources().getString(R.string.login_http), 
+				Util.getUrl(this, R.string.login_http), 
 				username.getText().toString(), 
 				password.getText().toString()
 				);
@@ -136,7 +136,7 @@ public class Login extends Activity implements OnDownloadListener{
 		
 		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 
-		if (response.getStatus() != INCORRECT) {
+		if (response.getStatus() == Util.STATUS_OK) {
 			
 			// GCM
 			checkGCM();

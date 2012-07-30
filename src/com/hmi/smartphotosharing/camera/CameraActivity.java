@@ -92,12 +92,19 @@ public class CameraActivity extends Activity {
 	 */
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		
-		if (requestCode == ACTION_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
-			handleCameraPhoto();
+				
+		if (requestCode == ACTION_TAKE_PHOTO) {
+			
+			// Succesfully taken a picture
+			if (resultCode == RESULT_OK) {
+				handleCameraPhoto();
+			} 
+			
+			// If the user returns from the camera app, we send him back to the previous page
+			else if (resultCode == RESULT_CANCELED) {
+				finish();
+			}
 
-    		setResult(RESULT_OK);
-    		finish();
 		}
 
 	}
@@ -206,44 +213,6 @@ public class CameraActivity extends Activity {
 		mCurrentPhotoPath = f.getAbsolutePath();
 		
 		return f;
-	}
-
-	/**
-	 * Prescales the image to fit the view.
-	 */
-	private void setPic() {
-
-		/* There isn't enough memory to open up more than a couple camera photos */
-		/* So pre-scale the target bitmap into which the file is decoded */
-
-		/* Get the size of the ImageView */
-		int targetW = mImageView.getWidth();
-		int targetH = mImageView.getHeight();
-
-		/* Get the size of the image */
-		BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-		bmOptions.inJustDecodeBounds = true;
-		BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-		int photoW = bmOptions.outWidth;
-		int photoH = bmOptions.outHeight;
-		
-		/* Figure out which way needs to be reduced less */
-		int scaleFactor = 1;
-		if ((targetW > 0) || (targetH > 0)) {
-			scaleFactor = Math.min(photoW/targetW, photoH/targetH);	
-		}
-
-		/* Set bitmap options to scale the image decode target */
-		bmOptions.inJustDecodeBounds = false;
-		bmOptions.inSampleSize = scaleFactor;
-		bmOptions.inPurgeable = true;
-
-		/* Decode the JPEG file into a Bitmap */
-		Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-		
-		/* Associate the Bitmap to the ImageView */
-		mImageView.setImageBitmap(bitmap);
-		mImageView.setVisibility(View.VISIBLE);
 	}
 
 	/**

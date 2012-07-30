@@ -30,8 +30,6 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 
     private static final String LOG_TAG = "GCM";
 
-
-	
 	public GCMIntentService(){
 		super(SENDER_ID);
 
@@ -77,22 +75,25 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		switch(action) {
 
 		case ACTION_PHOTO_UPLOAD:
-			notificationIntent = new Intent(this, PhotoDetailActivity.class);	
-			notificationIntent.putExtra("id", value);
+			notificationIntent = new Intent(this, PhotoDetailActivity.class);
+			notificationIntent.putExtra(PhotoDetailActivity.KEY_ID, value);
 			break;
 		case ACTION_GROUP_INVITE:
 			notificationIntent = new Intent(this, GroupDetailActivity.class);
-			notificationIntent.putExtra("id", value);		
+			notificationIntent.putExtra(GroupDetailActivity.KEY_ID, value);		
 			break;
 		case ACTION_PHOTO_COMMENT:
 			notificationIntent = new Intent(this, PhotoDetailActivity.class);	
-			notificationIntent.putExtra("id", value);	
+			notificationIntent.putExtra(PhotoDetailActivity.KEY_ID, value);	
+			break;
 		case ACTION_DEFAULT:
 		default:
 			notificationIntent = new Intent(this, GroupsActivity.class);
 		}
+
+		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 		notification.setLatestEventInfo(mcontext, contentTitle, contentText, contentIntent);
         

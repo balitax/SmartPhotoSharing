@@ -20,7 +20,7 @@
         android:contentDescription="@string/button_send"
         android:onClick="onSendClick" />
     
-    <com.hmi.smartphotosharing.MyMapView 
+    <com.hmi.smartphotosharing.maps.MyMapView 
 	    android:id="@+id/mapview"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"

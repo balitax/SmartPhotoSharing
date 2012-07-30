@@ -43,8 +43,9 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	private static final int CODE_LEAVE = 4;
 	private static final int CODE_INVITE = 5;
 	
-	private static final int STATUS_OK = 200;
 	private static final int DIALOG_INFO = 0;
+	
+	public static final String KEY_ID = "id";
 	
 	//gallery object
 	private GridView gridView;
@@ -84,6 +85,19 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         
         isMember = true;
         group = null;
+    }
+    
+    @Override
+    protected void onNewIntent(Intent intent) {
+        id = intent.getLongExtra("id", 0);
+    }
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	if (id != 0) {
+			loadData();
+        }
     }
     
     @Override
@@ -225,7 +239,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		if (response != null) {
 			switch(response.getStatus()) {
 			
-			case(STATUS_OK):
+			case(Util.STATUS_OK):
 				Toast.makeText(this, "Group left", Toast.LENGTH_SHORT).show();
 		    	Intent intent = new Intent(this, GroupsActivity.class);
 		    	startActivity(intent);
@@ -247,7 +261,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		if (response != null) {
 			switch(response.getStatus()) {
 			
-			case(STATUS_OK):
+			case(Util.STATUS_OK):
 				if (isMember) { // If user PREVIOUSLY was a member...
 					isMember = false;
 				} else {
@@ -293,7 +307,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		
 		GroupResponse gdr = gson.fromJson(result, GroupResponse.class);
 		
-		if (gdr.getStatus() == STATUS_OK) {
+		if (gdr.getStatus() == Util.STATUS_OK) {
 			group = gdr.getObject();
 	
 			groupName.setText(group.name);

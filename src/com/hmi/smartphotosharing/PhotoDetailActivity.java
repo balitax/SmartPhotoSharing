@@ -36,6 +36,8 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 	private static final int CODE_COMMENT_ADD = 2;
 	private static final int CODE_COMMENT_LOAD = 3;
 	
+	public static final String KEY_ID = "id";
+	
 	private long id;
 	private DrawableManager dm;
 	private EditText commentInput;
@@ -51,7 +53,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         list = (LinearLayout) findViewById(R.id.comments);
         
         Intent intent = getIntent();
-        id = intent.getLongExtra("id", 0);
+        id = intent.getLongExtra(KEY_ID, 0);
 
         dm = new DrawableManager(this);
         if (id != 0) {
@@ -60,6 +62,19 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         	Log.e("SmartPhotoSharing", "Photo id was 0, url was probably incorrect");
         }
         
+    }
+    
+    @Override
+    protected void onNewIntent(Intent intent) {
+        id = intent.getLongExtra(KEY_ID, 0);
+    }
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	if (id != 0) {
+			loadData(true,true);
+        }
     }
     
 	@Override

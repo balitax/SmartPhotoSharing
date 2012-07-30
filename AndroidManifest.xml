@@ -43,7 +43,7 @@
             </intent-filter>
         </activity>
         
-        <activity android:label="Smart Photo Sharing" 
+        <activity android:label="@string/app_name" 
             android:name=".SharePhotoActivity" >
 		    <intent-filter>
 		        <action android:name="android.intent.action.SEND" />

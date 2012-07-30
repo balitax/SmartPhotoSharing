@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 public class NavBarListener implements OnClickListener {
-
-    private static final int CODE_PHOTO = 3;
    
 	private Context c;
 	private int code;
@@ -47,8 +45,7 @@ public class NavBarListener implements OnClickListener {
 
 	private void action_camera() {
 		Intent intent = new Intent(c, CameraActivity.class);
-	    Activity a = (Activity)c;
-		a.startActivityForResult(intent, CODE_PHOTO);			
+		c.startActivity(intent);			
 	}
 
 	private void action_archive() {

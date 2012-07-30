@@ -2,7 +2,7 @@
 <resources>
     
     <!--  General -->
-    <string name="app_name">Smart Photo Sharing</string>
+    <string name="app_name">Picalilly</string>
     <string name="icon_unknown">Unknown Icon</string>
     <string name="chooser_title">Share this photo via</string>
     <string name="button_share">Share</string>

@@ -25,15 +25,17 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -45,8 +47,8 @@ import com.google.gson.JsonSyntaxException;
 import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
 import com.hmi.json.GroupListResponse;
-import com.hmi.json.StringRepsonse;
 import com.hmi.json.OnDownloadListener;
+import com.hmi.json.StringRepsonse;
 import com.hmi.smartphotosharing.groups.GroupCreateActivity;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
 
@@ -57,7 +59,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	private Spinner spinner;
 	private EditText comment;
 	private ImageView imageView;
-	private String imgPath;
+	//private String imgPath;
 	private LocationManager locationManager;
 	
 	private static final int CODE_GROUPS = 2;
@@ -96,7 +98,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	        if ("text/plain".equals(type)) {
 	            handleSendText(intent); // Handle text being sent
 	        } else if (type.startsWith("image/")) {
-	            handleSendImage(intent); // Handle single image being sent
+	            handleImage(intent); // Handle single image being sent
 	        }
 	    } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
 	        if (type.startsWith("image/")) {
@@ -107,7 +109,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	    // Handle the Intent that was sent internally, from another Activity
 	    else {
 	    	if (type.startsWith("image/")) {
-	            handleInternalImage(intent); // Handle single image being sent
+	            handleImage(intent); // Handle single image being sent
 	        }
 	    }
 		super.onStart();
@@ -195,15 +197,20 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	    }
 	}
 
-	private void handleSendImage(Intent intent) {
+	private void handleImage(Intent intent) {
 	    imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+	    
+	    showImageFromPath(imageUri);
+	    
+	    /*
 	    if (imageUri != null) {
 
 	    	imgPath = getRealPathFromURI(imageUri);
 	    	showImageFromPath(imgPath);
-	    }
+	    }*/
 	}
 
+	/*
 	private void handleInternalImage(Intent intent) {
 	    imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
 	    if (imageUri != null) {
@@ -211,7 +218,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	    	imgPath = imageUri.getPath();
 	    	showImageFromPath(imgPath);
 	    }
-	}
+	}*/
 	
 	private void handleSendMultipleImages(Intent intent) {
 	    ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
@@ -220,9 +227,13 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	    }
 	}
 	
-	private void showImageFromPath(String imgPath) {
-    	Display display = getWindowManager().getDefaultDisplay();	    	
-    	int targetW = display.getWidth();
+	private void showImageFromPath(Uri uri) {
+		// Image can come from different sources, so check the scheme
+		String imgPath = "";
+
+		imgPath = getImgPath(imageUri);
+		
+    	int targetW = imageView.getWidth();
 		int targetH = imageView.getHeight();
 		
 		BitmapFactory.Options o = new BitmapFactory.Options();
@@ -237,6 +248,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		if ((targetW > 0) || (targetH > 0)) {
 			scaleFactor = photoW/targetW;	
 		}
+		
 		imageView.setMaxHeight(photoH*scaleFactor);
 		
 		// Set bitmap options to scale the image decode target
@@ -245,15 +257,67 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		o.inPurgeable = true;
 		
     	Bitmap myBitmap = BitmapFactory.decodeFile(imgPath,o);
+    	
+    	// Check rotation
+    	
+    	Matrix matrix = new Matrix();
+    	float rotation = rotationForImage(this, imageUri);
+    	if (rotation != 0f) {
+    	     matrix.preRotate(rotation);
+    	}
+
+    	myBitmap = Bitmap.createBitmap(
+    	     myBitmap, 0, 0, photoW, photoH, matrix, true);
+    	
     	imageView.setImageBitmap(myBitmap);
 	}	
 	
+	private String getImgPath(Uri uri) {
+		if (isExternal)
+			return getRealPathFromURI(uri);
+		else
+			return uri.getPath();
+	}
+
 	public String getRealPathFromURI(Uri contentUri) {
         String[] proj = { MediaStore.Images.Media.DATA };
         Cursor cursor = managedQuery(contentUri, proj, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
+    }
+
+	public float rotationForImage(Context context, Uri uri) {
+	    if (isExternal) {
+            String[] projection = { Images.ImageColumns.ORIENTATION };
+            Cursor c = context.getContentResolver().query(
+                    uri, projection, null, null, null);
+            if (c.moveToFirst()) {
+                return c.getInt(0);
+            }
+        } else {
+            try {
+                ExifInterface exif = new ExifInterface(uri.getPath());
+                int rotation = (int)exifOrientationToDegrees(
+                        exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                                ExifInterface.ORIENTATION_NORMAL));
+                return rotation;
+            } catch (IOException e) {
+                Log.e("SharePhoto", "Error checking exif", e);
+            }
+        }
+	    return 0f;
+	}
+
+	private static float exifOrientationToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
+        return 0;
     }
 
 	@Override
@@ -354,7 +418,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		HttpClient httpclient = new DefaultHttpClient();
 
     		HttpPost httppost = new HttpPost(url);
-    		File file = new File(imgPath);
+    		File file = new File(getImgPath(imageUri));
     		    		
     		MultipartEntity mpEntity = new MultipartEntity();
     		mpEntity.addPart("sid", new StringBody(sid));

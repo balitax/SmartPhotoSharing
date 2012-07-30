@@ -1,4 +1,4 @@
-package com.hmi.smartphotosharing;
+package com.hmi.smartphotosharing.maps;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

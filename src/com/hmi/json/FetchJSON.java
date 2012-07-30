@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 public class FetchJSON extends AsyncTask<String,Void,String> {
@@ -57,7 +58,9 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
        try {
            return downloadUrl(urls[0]);
        } catch (IOException e) {
-           return "Unable to retrieve web page. URL may be invalid.";
+    	   ErrorResponse err = new ErrorResponse();
+    	   
+           return new Gson().toJson(err);
        }
 	}
 	
@@ -66,8 +69,8 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 		try {
 			dl.parseJson(result, code);
 		} catch (JsonSyntaxException e) {
-			Toast.makeText(c, "Something went wrong with the server, please try again later", Toast.LENGTH_SHORT).show();
 			Log.e("JSON", "Json syntax exception: " + e.getMessage());
+			Log.e("JSON", result);
 		}
 		if (pd != null) pd.dismiss();
 	}
