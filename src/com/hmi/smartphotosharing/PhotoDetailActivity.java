@@ -1,8 +1,13 @@
 package com.hmi.smartphotosharing;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.StringBody;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,9 +30,11 @@ import com.google.gson.Gson;
 import com.hmi.json.Comment;
 import com.hmi.json.CommentListResponse;
 import com.hmi.json.FetchJSON;
+import com.hmi.json.PostRequest;
 import com.hmi.json.OnDownloadListener;
 import com.hmi.json.Photo;
 import com.hmi.json.PhotoResponse;
+import com.hmi.json.PostData;
 
 public class PhotoDetailActivity extends NavBarActivity implements OnDownloadListener {
 
@@ -103,8 +109,19 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
 		String commentTxt = commentInput.getText().toString();
-        String commentUrl = String.format(Util.getUrl(this,R.string.photo_detail_addcomment),hash,id,commentTxt);		
-        new FetchJSON(this, CODE_COMMENT_ADD).execute(commentUrl);
+        String commentUrl = Util.getUrl(this,R.string.photo_detail_addcomment);
+        
+        HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+        try {
+			map.put("sid", new StringBody(hash));
+	        map.put("iid", new StringBody(Long.toString(id)));
+	        map.put("comment", new StringBody(commentTxt));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        
+        PostData pr = new PostData(commentUrl,map);
+        new PostRequest(this, CODE_COMMENT_ADD).execute(pr);
 	}
 	
 	@Override
@@ -160,9 +177,9 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 			List<Comment> comments = response.getObject();
 			LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			
-			
+
+			list.removeAllViews();
 			if (comments != null) {
-				list.removeAllViews();
 				for (int i=0; i<comments.size(); i++) {
 				  View vi = inflater.inflate(R.layout.comment, null);
 				  Comment comment = comments.get(i);

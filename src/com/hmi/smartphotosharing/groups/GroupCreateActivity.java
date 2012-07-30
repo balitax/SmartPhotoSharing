@@ -1,5 +1,11 @@
 package com.hmi.smartphotosharing.groups;
 
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.StringBody;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,12 +14,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.hmi.json.FetchJSON;
 import com.hmi.json.OnDownloadListener;
+import com.hmi.json.PostData;
+import com.hmi.json.PostRequest;
 import com.hmi.json.StringRepsonse;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
@@ -50,6 +58,44 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
     	startActivityForResult(intent, CODE_LOCATION);
     }	
     
+	public void onCreateClick(View v) {
+
+		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+		String hash = settings.getString(Login.SESSION_HASH, null);
+		
+		EditText nameView = (EditText) findViewById(R.id.group_create_name);
+		String name = nameView.getText().toString();
+
+		EditText descView = (EditText) findViewById(R.id.group_create_desc);
+		String desc = descView.getText().toString();
+			
+		CheckBox checkbox = (CheckBox) findViewById(R.id.checkbox_private);
+		String isPrivate = checkbox.isChecked() ? "1" : "0";
+		
+    	// Get group info
+		String createUrl = Util.getUrl(this,R.string.groups_http_create);
+		
+        HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+        try {
+			map.put("sid", new StringBody(hash));
+	        map.put("name", new StringBody(name));
+	        map.put("desc", new StringBody(desc));
+	        map.put("lat1", new StringBody(Double.toString(lat1)));
+	        map.put("lat2", new StringBody(Double.toString(lat2)));
+	        map.put("lon1", new StringBody(Double.toString(lon1)));
+	        map.put("lon2", new StringBody(Double.toString(lon2)));
+	        map.put("private", new StringBody(isPrivate));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        
+        PostData pr = new PostData(createUrl,map);
+		
+		Log.d("SmarthPhotoSharing", "Create url: " + createUrl);
+		new PostRequest(this).execute(pr);
+		
+	} 
+	
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     	
     	Button friendsBtn = (Button) findViewById(R.id.button_invite_friends);
@@ -86,24 +132,7 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
         }
         
     }	
-	
-	public void onCreateClick(View v) {
 
-		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
-		String hash = settings.getString(Login.SESSION_HASH, null);
-		Log.d("Session ID", hash);
-		EditText nameView = (EditText) findViewById(R.id.group_create_name);
-		String name = nameView.getText().toString();
-
-		EditText descView = (EditText) findViewById(R.id.group_create_desc);
-		String desc = descView.getText().toString();
-				
-    	// Get group info
-		String createUrl = String.format(Util.getUrl(this,R.string.groups_http_create),hash,name,desc,lat1,lon1,lat2,lon2);
-		Log.d("SmarthPhotoSharing", "Create url: " + createUrl);
-		new FetchJSON(this).execute(createUrl);
-		
-	}
 
 	@Override
 	public void parseJson(String json, int code) {

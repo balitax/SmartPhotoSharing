@@ -81,7 +81,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         // Set the click listener for each item in the thumbnail gallery     
         
         Intent intent = getIntent();
-        id = intent.getLongExtra("id", 0);
+        id = intent.getLongExtra(KEY_ID, 0);
         
         isMember = true;
         group = null;
@@ -89,7 +89,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
     
     @Override
     protected void onNewIntent(Intent intent) {
-        id = intent.getLongExtra("id", 0);
+        id = intent.getLongExtra(KEY_ID, 0);
     }
     
     @Override
