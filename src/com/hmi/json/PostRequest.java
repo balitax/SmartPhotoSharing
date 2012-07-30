@@ -47,18 +47,15 @@ public class PostRequest extends AsyncTask<PostData,Void,String> {
 		this.c = c;
 		this.code = code;
 		this.dl = (OnDownloadListener) c;
-		
-	}
-	
-	@Override
-    protected void onPreExecute() {
 		pd = new ProgressDialog(c);
 		pd.setMessage("Loading...");
 		pd.setCancelable(false);
 		pd.setIndeterminate(true);
 		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		pd.show();
-    }
+		
+	}
+	
     
 	@Override
 	protected String doInBackground(PostData... data) {

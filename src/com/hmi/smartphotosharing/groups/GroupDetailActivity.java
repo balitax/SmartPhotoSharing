@@ -3,8 +3,10 @@ package com.hmi.smartphotosharing.groups;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -135,14 +137,32 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
 		if (isMember) {
-	        String leaveUrl = String.format(Util.getUrl(this,R.string.groups_http_leave),hash,id);		
-	        new FetchJSON(this, CODE_LEAVE).execute(leaveUrl);
+			confirmLeaveDialog(this, hash);
 		} else {
 	        String joinUrl = String.format(Util.getUrl(this,R.string.groups_http_join),hash,id);		
 	        new FetchJSON(this, CODE_JOIN).execute(joinUrl);
 		}
     }
     
+    private void confirmLeaveDialog(final Context c, final String hash) {
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Are you sure you want to leave this group?")
+		     .setCancelable(false)       
+		     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int bid) {
+			   	        String leaveUrl = String.format(Util.getUrl(c,R.string.groups_http_leave),hash,id);		
+			   	        new FetchJSON(c, CODE_LEAVE).execute(leaveUrl);
+		           }
+		       })
+		     .setNegativeButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                dialog.cancel();
+		           }
+		       });
+		AlertDialog alert = builder.create();
+		alert.show();
+		
+	}
     public void onClickInfo(View view) {
     	showDialog(DIALOG_INFO);
     }

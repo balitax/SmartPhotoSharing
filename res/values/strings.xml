@@ -41,7 +41,8 @@
     
     <string name="groups_http">cmd=allgroups&amp;sid=%1$s&amp;joined=1</string>
     <string name="groups_http_gallery">cmd=listpics&amp;sid=%1$s&amp;max=5&amp;gid=%2$s</string>
-    <string name="groups_http_create">cmd=addgroup&amp;sid=%1$s&amp;name=%2$s&amp;desc=%3$s&amp;lat1=%4$s&amp;lon1=%5$s&amp;lat2=%6$s&amp;lon2=%7$s</string>
+    <string name="groups_http_create">cmd=addgroup</string>
+    <string name="groups_http_locate">cmd=locategroup</string>
     <string name="groups_http_public">cmd=allgroups&amp;sid=%1$s&amp;notjoined=1</string>
     <string name="groups_http_join">cmd=joingroup&amp;sid=%1$s&amp;gid=%2$s</string>
     <string name="groups_http_leave">cmd=leavegroup&amp;sid=%1$s&amp;gid=%2$s</string>

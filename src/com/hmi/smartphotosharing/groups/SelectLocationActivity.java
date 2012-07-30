@@ -266,6 +266,7 @@ public class SelectLocationActivity extends MapActivity {
 		alert.show();
 		
 	}
+    
 	private void showGpsOptions(){
 		Intent gpsOptionsIntent = new Intent(
 				android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);

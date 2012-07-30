@@ -2,7 +2,9 @@ package com.hmi.smartphotosharing;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -48,6 +50,8 @@ import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
 import com.hmi.json.GroupListResponse;
 import com.hmi.json.OnDownloadListener;
+import com.hmi.json.PostData;
+import com.hmi.json.PostRequest;
 import com.hmi.json.StringRepsonse;
 import com.hmi.smartphotosharing.groups.GroupCreateActivity;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
@@ -120,8 +124,25 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		
-		String groupsUrl = String.format(Util.getUrl(this,R.string.groups_http), hash);
-        new FetchJSON(this, CODE_GROUPS).execute(groupsUrl);
+		String groupsUrl = String.format(Util.getUrl(this,R.string.groups_http_locate), hash);
+
+        HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+        
+        // TODO get real coordinates
+        double lat = 52.2391;
+        double lon = 6.85700;
+        
+        try {
+			map.put("sid", new StringBody(hash));
+	        map.put("lat", new StringBody(Double.toString(lat)));
+	        map.put("lon", new StringBody(Double.toString(lon)));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        
+        PostData pr = new PostData(groupsUrl,map);
+		
+		new PostRequest(this,CODE_GROUPS).execute(pr);
 		
 	}
 
