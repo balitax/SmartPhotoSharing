@@ -144,6 +144,15 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		}
     }
     
+    public void onClickShowLocation(View view) {
+    	Intent intent = new Intent(this,ShowLocationActivity.class);
+    	intent.putExtra("lat1", group.latstart);
+    	intent.putExtra("lat2", group.latend);
+    	intent.putExtra("lon1", group.longstart);
+    	intent.putExtra("lon2", group.longend);
+    	startActivity(intent);
+    }
+    
     private void confirmLeaveDialog(final Context c, final String hash) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("Are you sure you want to leave this group?")

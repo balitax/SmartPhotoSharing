@@ -30,6 +30,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -46,7 +47,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.hmi.json.FetchJSON;
 import com.hmi.json.Group;
 import com.hmi.json.GroupListResponse;
 import com.hmi.json.OnDownloadListener;
@@ -68,12 +68,14 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	
 	private static final int CODE_GROUPS = 2;
 	private static final int CODE_UPLOAD = 3;
-	private static int STATUS_OK = 200;
 	
 	private boolean isExternal;
 	private ProgressDialog pd;
 	
 	private String newGroupName;
+
+    private LocationManager mLocationManager;
+	private Location gpsLocation;
 	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -83,13 +85,46 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		spinner = (Spinner) findViewById(R.id.groups_spinner);
 		comment = (EditText) findViewById(R.id.edit_message);
 		isExternal = false;
-		
+
+        mLocationManager =
+                (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        final boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if (!gpsEnabled) {
+        	Util.createGpsDisabledAlert(this);
+        } else {        	
+        	setupGps();
+        }
+	    
 	    loadData();
+	    
+	    
 	}
+	
+    @Override
+    public void onPause() {
+      super.onPause();
+      
+      mLocationManager.removeUpdates(listener);
+    }
+    
+	@Override
+    protected void onStop() {
+        super.onStop();
+        mLocationManager.removeUpdates(listener);
+    }  
+	
+	@Override
+    public void onResume() {
+      super.onResume();
+      
+      setupGps();
+    } 
 	
 	protected void onStart () {
 		imageView = (ImageView) findViewById(R.id.image1);
-		 // Get intent, action and MIME type
+		
+		// Get intent, action and MIME type
 	    Intent intent = getIntent();
 	    String action = intent.getAction();
 	    String type = intent.getType();
@@ -127,10 +162,14 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		String groupsUrl = String.format(Util.getUrl(this,R.string.groups_http_locate), hash);
 
         HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
-        
-        // TODO get real coordinates
-        double lat = 52.2391;
-        double lon = 6.85700;
+
+    	double lat = 0;
+    	double lon = 0;
+    	
+        if (gpsLocation != null ) {
+	        lat = gpsLocation.getLatitude();
+	        lon = gpsLocation.getLongitude();
+        }
         
         try {
 			map.put("sid", new StringBody(hash));
@@ -187,6 +226,8 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		
     		String shareUrl = Util.getUrl(this,R.string.url_upload);
     		
+			new UploadImage(this).execute(shareUrl,hash,group,lat,lon,commentTxt);
+    		
     		pd = new ProgressDialog(SharePhotoActivity.this);
     		pd.setMessage("Uploading photo...");
     		pd.setCancelable(false);
@@ -194,7 +235,6 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     		pd.show();
     		
-			new UploadImage(this).execute(shareUrl,hash,group,lat,lon,commentTxt);
 		} else {
 			
 			setResult(RESULT_CANCELED);
@@ -361,7 +401,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		Gson gson = new Gson();
 		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
-		if (response.getStatus() == STATUS_OK) {
+		if (response.getStatus() == Util.STATUS_OK) {
         	Toast.makeText(this, "Upload successful", Toast.LENGTH_SHORT).show();
         	
         	if (isExternal) {
@@ -467,5 +507,69 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		return res;
     	}
     }
+	
+    private void setupGps() { 
+        // Request updates from just the fine (gps) provider.
+        gpsLocation = requestUpdatesFromProvider();
+    	 
+    }
+    
+    /**
+     * Method to register location updates with a desired location provider.  If the requested
+     * provider is not available on the device, the app displays a Toast with a message referenced
+     * by a resource id.
+     *
+     * @param provider Name of the requested provider.
+     * @param errorResId Resource id for the string message to be displayed if the provider does
+     *                   not exist on the device.
+     * @return A previously returned {@link android.location.Location} from the requested provider,
+     *         if exists.
+     */
+    private Location requestUpdatesFromProvider() {
+        Location location = null;
+        
+        // Network
+        String networkProvider = LocationManager.NETWORK_PROVIDER;
+        mLocationManager.requestLocationUpdates(networkProvider, 0, 0, listener);
+        
+        // GPS
+        String gpsProvider = LocationManager.GPS_PROVIDER;
+        
+        if (mLocationManager.isProviderEnabled(gpsProvider)) {
+            mLocationManager.requestLocationUpdates(gpsProvider, 0, 0, listener);
+            location = mLocationManager.getLastKnownLocation(gpsProvider);
+        }
+        
+        return location;
+    }
+
+    private final LocationListener listener = new LocationListener() {
+
+        @Override
+        public void onLocationChanged(Location location) {
+        	boolean isBetter = Util.isBetterLocation(location, gpsLocation);
+        	
+        	Log.d("LocationCheck", "Provider: " + location.getProvider() + " -> better location ? " + Boolean.toString(isBetter));
+        	// Check if we should update or not
+        	if (isBetter) {
+        		gpsLocation = location;
+        	}
+
+        	loadData();
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        	//createGpsDisabledAlert();
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    };
 
 }

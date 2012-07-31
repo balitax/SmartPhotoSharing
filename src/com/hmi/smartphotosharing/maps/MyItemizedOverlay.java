@@ -32,24 +32,5 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		  return mOverlays.size();
 	}
 	
-	@Override
-	public boolean onTap(GeoPoint p, MapView mapView)  {
-		
-		/*
-		mOverlays.clear();
-        OverlayItem overlayitem = new OverlayItem(p, null, null);
-        addOverlay(overlayitem);
-        mapView.invalidate();
-        */
-        
-        // Make rectangle
-		mapView.getOverlays().clear();
-        GeoPoint topLeft = mapView.getProjection().fromPixels(0, 0);
-        GeoPoint bottomRight = mapView.getProjection().fromPixels(mapView.getWidth()-1, mapView.getHeight()-1);
-        RectangleOverlay rect = new RectangleOverlay(topLeft,bottomRight);
-        mapView.getOverlays().add(rect);
-        
-        return true;
-	}
 	
 }

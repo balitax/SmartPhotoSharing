@@ -70,6 +70,8 @@
             android:name=".groups.SelectLocationActivity" />
         <activity android:label="Group Details" 
             android:name=".groups.GroupDetailActivity" />
+        <activity android:label="Location Details" 
+            android:name=".groups.ShowLocationActivity" />
         <activity android:label="Photo Details" 
             android:name=".PhotoDetailActivity" />
         <activity android:label="Login" 

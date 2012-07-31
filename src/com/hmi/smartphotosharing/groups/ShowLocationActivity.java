@@ -10,10 +10,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.CheckBox;
-import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -24,76 +21,62 @@ import com.google.android.maps.OverlayItem;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.Util;
 import com.hmi.smartphotosharing.maps.MyItemizedOverlay;
-import com.hmi.smartphotosharing.maps.MyMapView;
 import com.hmi.smartphotosharing.maps.RectangleOverlay;
 
-public class SelectLocationActivity extends MapActivity {
+public class ShowLocationActivity extends MapActivity{
 
-    private MapController mc;
-    private MyMapView mapView;
+    private MapView mapView;
     
     private LocationManager mLocationManager;
-    private Location gpsLocation, gps1, gps2;
+    private Location gpsLocation;
     
     private static final int OVERLAY_RECT = 0;
     private static final int OVERLAY_MY_POS = 1;
     
-    private CheckBox gpsUpdates;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        setContentView(R.layout.group_create_location);
-        
-        gpsUpdates = (CheckBox) findViewById(R.id.toggle_gps_updates);
-        
+        setContentView(R.layout.show_location);
+                
         // Make the Dialog style appear fullscreen
         getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 
         // MapView
         //------------------
         
-        mapView = (MyMapView) findViewById(R.id.mapview);
+        mapView = (MapView) findViewById(R.id.mapview);
 
+        // Two dummy overlays
         mapView.getOverlays().add(new RectangleOverlay(new GeoPoint(0,0),new GeoPoint(0,0)));
         mapView.getOverlays().add(new RectangleOverlay(new GeoPoint(0,0),new GeoPoint(0,0)));
+                    
+        // Get the coordinates from the intent
+        Intent intent = getIntent();
+        Double lat1 = Double.parseDouble(intent.getStringExtra("lat1"));
+        Double lat2 = Double.parseDouble(intent.getStringExtra("lat2"));
+        Double lon1 = Double.parseDouble(intent.getStringExtra("lon1"));
+        Double lon2 = Double.parseDouble(intent.getStringExtra("lon2"));
         
-        mc = mapView.getController();
-                        
-        gps1 = new Location(LocationManager.GPS_PROVIDER);
-        gps2 = new Location(LocationManager.GPS_PROVIDER);
-
-        // Listen for long-press on the map
+        // Add the rectangle showing the location
+        List<Overlay> overlays = mapView.getOverlays();
+        GeoPoint topLeft = new GeoPoint((int)(lat1*1E6),(int)(lon1*1E6));
+        GeoPoint bottomRight = new GeoPoint((int)(lat2*1E6),(int)(lon2*1E6));
+        RectangleOverlay rect = new RectangleOverlay(topLeft,bottomRight);
+        overlays.set(OVERLAY_RECT, rect);
+        mapView.invalidate();
         
-        mapView.setOnLongpressListener(new MyMapView.OnLongpressListener() {
-		    public void onLongpress(final MapView view, final GeoPoint longpressLocation) {
-			        runOnUiThread(new Runnable() {
-				    public void run() {
-			            Toast.makeText(getApplicationContext(), "Location updated", Toast.LENGTH_SHORT).show();
-				        setRectangle(view);
-				        
-				    }
+        // Move to the center of the Group location
+        int centerLat = (int) ((topLeft.getLatitudeE6() + bottomRight.getLatitudeE6())/2);
+        int centerLong = (int) ((topLeft.getLongitudeE6() + bottomRight.getLongitudeE6())/2);
+        
+        MapController mapController = mapView.getController();
+        mapController.zoomToSpan(
+                (topLeft.getLatitudeE6() - bottomRight.getLatitudeE6()),
+                (bottomRight.getLongitudeE6() - topLeft.getLongitudeE6()));
 
-					private void setRectangle(MapView view) {
-						List<Overlay> overlays = view.getOverlays();
-						
-				        GeoPoint topLeft = view.getProjection().fromPixels(5, 5);
-				        GeoPoint bottomRight = view.getProjection().fromPixels(view.getWidth()-4, view.getHeight()-4);
-				        RectangleOverlay rect = new RectangleOverlay(topLeft,bottomRight);
-				        overlays.set(OVERLAY_RECT, rect);
-						
-				        gps1.setLatitude(topLeft.getLatitudeE6()/1E6);
-				        gps1.setLongitude(topLeft.getLongitudeE6()/1E6);
-				        
-				        gps2.setLatitude(bottomRight.getLatitudeE6()/1E6);
-				        gps2.setLongitude(bottomRight.getLongitudeE6()/1E6);
-				        
-				        Log.d("GPS", "New location: (" + gps1.getLatitude() + ", " + gps1.getLongitude() + ") - (" + gps2.getLatitude() + ", " + gps2.getLongitude() + ")");
-					}
-				});
-			    }
-		});
+        mapController.setCenter(new GeoPoint(centerLat,centerLong));
     }
     
 	@Override
@@ -118,9 +101,7 @@ public class SelectLocationActivity extends MapActivity {
         } else {        	
         	setupGps();
         }
-        
-        Util.createUsageDialog(this);
-        
+                
     }
     
 	@Override
@@ -148,21 +129,20 @@ public class SelectLocationActivity extends MapActivity {
 	    this.setResult(RESULT_CANCELED);
 	    finish();
 	}
+	  
 
-    public void onSendClick(View view) {
-    	Intent data = new Intent();
-    	    	
-    	data.putExtra("lat1", gps1.getLatitude());
-    	data.putExtra("lon1", gps1.getLongitude());
-
-    	data.putExtra("lat2", gps2.getLatitude());
-    	data.putExtra("lon2", gps2.getLongitude());
+    // Set up fine and/or coarse location providers depending on whether the fine provider or
+    // both providers button is pressed.
+    private void setupGps() { 
     	
-    	this.setResult(RESULT_OK, data);
-    	this.finish();
+        // Request updates from just the fine (gps) provider.
+        gpsLocation = requestUpdatesFromProvider();
+
+        if (gpsLocation != null)
+        	showMyLocation((int)(gpsLocation.getLatitude()*1E6),(int)(gpsLocation.getLongitude()*1E6));   
     }
-	
-    private void moveToLocation(int lat, int lon) {
+    
+    private void showMyLocation(int lat, int lon) {
         GeoPoint point = new GeoPoint(lat,lon);
     	
     	List<Overlay> mapOverlays = mapView.getOverlays();
@@ -173,27 +153,11 @@ public class SelectLocationActivity extends MapActivity {
         itemizedoverlay.addOverlay(overlayitem);
         
         mapOverlays.set(OVERLAY_MY_POS,itemizedoverlay);
-        
-        if (gpsUpdates.isChecked()) 
-        	mc.setCenter(point);
-        
+                
         //mc.setZoom(ZOOM_LEVEL); 
         mapView.invalidate();
 		
-	}
-    
-
-    // Set up fine and/or coarse location providers depending on whether the fine provider or
-    // both providers button is pressed.
-    private void setupGps() { 
-    	
-        // Request updates from just the fine (gps) provider.
-        gpsLocation = requestUpdatesFromProvider();
-    	
-        if (gpsLocation != null)
-        	moveToLocation((int)(gpsLocation.getLatitude()*1E6),(int)(gpsLocation.getLongitude()*1E6));   
-    }
-    
+	}   
     /**
      * Method to register location updates with a desired location provider.  If the requested
      * provider is not available on the device, the app displays a Toast with a message referenced
@@ -235,8 +199,8 @@ public class SelectLocationActivity extends MapActivity {
         		gpsLocation = location;
         	}
 
-        	if (gpsLocation != null)            	
-        		moveToLocation((int)(gpsLocation.getLatitude()*1E6),(int)(gpsLocation.getLongitude()*1E6));   
+            if (gpsLocation != null)
+            	showMyLocation((int)(gpsLocation.getLatitude()*1E6),(int)(gpsLocation.getLongitude()*1E6));   
         }
 
         @Override
@@ -252,6 +216,5 @@ public class SelectLocationActivity extends MapActivity {
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
     };
-	
 	
 }
