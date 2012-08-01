@@ -18,9 +18,9 @@ public class Subscription {
 	public String lat2;
 	public String time;
 	
-	public String icon;
 	public int totalnew;
 	
+	public User user;
 	public List<Photo> photos;
 	
 	public long getId() {

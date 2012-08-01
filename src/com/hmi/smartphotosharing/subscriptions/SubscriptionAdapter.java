@@ -2,6 +2,7 @@ package com.hmi.smartphotosharing.subscriptions;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
@@ -35,6 +36,8 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
 
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private GestureDetector gestureDetector;
+    private static final int GLOBE_WIDTH = 256;
+    private static final Double LN2 = 0.6931471805599453;
     
     OnTouchListener gestureListener;
     
@@ -50,6 +53,7 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         this.context = context;
         this.data = objects;
         this.dm = dm;
+        
 	}
 	
     @Override
@@ -95,17 +99,42 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         }
                         
         Subscription subscription = data[position];
-        holder.txtTitle.setText(subscription.name);
-                
-        // Set the icon for this list item
-        
-        // TODO icon
-        
+            
+        // Show subscription as a person
         if (subscription.person != null) {
-	        String url = Util.USER_DB + subscription.icon;
+        	holder.txtTitle.setText(subscription.user.rname);
+	        String url = Util.USER_DB + subscription.user.picture;
 	        dm.fetchDrawableOnThread(url, holder.imgIcon);
-        } else {
-        	holder.imgIcon.setImageResource(R.drawable.ic_menu_mapmode);
+        } 
+        
+        // Show subscription as a location
+        else {
+        	holder.txtTitle.setText(subscription.name);
+        	
+        	String url = context.getResources().getString(R.string.subscription_static_map);
+        	
+        	double lat1 = Double.parseDouble(subscription.lat1);
+        	double lat2 = Double.parseDouble(subscription.lat2);
+        	double lon1 = Double.parseDouble(subscription.lon1);
+        	double lon2 = Double.parseDouble(subscription.lon2);
+        	
+        	// Move to the center of the Group location
+            double centerLat = ((lat1 + lat2)/2);
+            double centerLong = ((lon1 + lon2)/2);
+
+            // Calculate the zoom level from the GPS bounds
+            Double angle = lon2 - lon1;
+            if (angle < 0) {
+              angle += 360;
+            }
+            
+            int zoom = (int)(Math.log(100 * 360 / angle / GLOBE_WIDTH) / LN2);
+            Log.d("ZOOM", Integer.toString(zoom));
+        	String mapUrl = String.format(url, centerLat, centerLong, zoom, Util.API_KEY);
+        	
+        	Log.d("ZOOM", mapUrl);
+        	dm.fetchDrawableOnThread(mapUrl, holder.imgIcon);
+        	
         }
         
         // We need to set the onClickListener here to make sure that
