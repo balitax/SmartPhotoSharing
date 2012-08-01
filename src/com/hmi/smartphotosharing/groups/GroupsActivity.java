@@ -20,32 +20,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.hmi.json.FetchJSON;
-import com.hmi.json.Group;
-import com.hmi.json.GroupListResponse;
-import com.hmi.json.OnDownloadListener;
-import com.hmi.json.User;
-import com.hmi.json.UserResponse;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarListener;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.SettingsActivity;
-import com.hmi.smartphotosharing.Util;
-import com.hmi.smartphotosharing.camera.CameraActivity;
+import com.hmi.smartphotosharing.json.FetchJSON;
+import com.hmi.smartphotosharing.json.Group;
+import com.hmi.smartphotosharing.json.GroupListResponse;
+import com.hmi.smartphotosharing.json.OnDownloadListener;
+import com.hmi.smartphotosharing.json.User;
+import com.hmi.smartphotosharing.json.UserResponse;
+import com.hmi.smartphotosharing.util.Sorter;
+import com.hmi.smartphotosharing.util.Util;
+import com.hmi.smartphotosharing.subscriptions.SubscriptionsActivity;
+
 public class GroupsActivity extends ListActivity implements OnDownloadListener {
 	
     public static final int CREATE_GROUP = 4;
 
     private static final int CODE_PROFILE = 1;
     private static final int CODE_GROUPS = 2;
-    private static final int CODE_PHOTO = 3;
-    
-    private static final int JOIN_GROUP = 6;
-    
+        
 	private DrawableManager dm;
 	
-	private ImageView add,groups;
+	private ImageView add,groups,subscriptions;
 	private ImageView camera,archive,settings;
 	
 	 // Nav bar listeners
@@ -62,8 +60,8 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
         add.setOnClickListener(new MyClickListener(this,GroupCreateActivity.class));
         groups = (ImageView) findViewById(R.id.all_groups);
         groups.setOnClickListener(new MyClickListener(this,GroupJoinActivity.class));
-        
-        ImageView pic = (ImageView) findViewById(R.id.groups_icon);
+        subscriptions = (ImageView) findViewById(R.id.button_subscription);
+        subscriptions.setOnClickListener(new MyClickListener(this,SubscriptionsActivity.class));  
         
         // Nav bar
         camera = (ImageView) findViewById(R.id.camera);
@@ -94,7 +92,7 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
     	}
 
     }
-    
+
 	@Override
 	public void onStart() {
         super.onStart();
@@ -117,30 +115,12 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 	}	
 	
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		Intent intent;
-		
+	public boolean onOptionsItemSelected(MenuItem item) {		
         switch (item.getItemId()) {
-	        case R.id.camera:
-				intent = new Intent(this, CameraActivity.class);
-			    startActivityForResult(intent, CODE_PHOTO);	
-	        	return true;
-	        case R.id.settings:
-	            intent = new Intent(this, SettingsActivity.class);
-	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	            startActivity(intent);
-		        return true;
+
 	        case R.id.refresh:
 	        	loadData(false,true);
 		    	return true;
-	        case R.id.create_group:
-	        	intent = new Intent(this, GroupCreateActivity.class);
-	        	startActivityForResult(intent, CREATE_GROUP);
-		    	return true;
-	        case R.id.join_group:
-	        	intent = new Intent(this, GroupJoinActivity.class);
-	        	startActivityForResult(intent, JOIN_GROUP);
-	        	return true;
 	        default:
 	        	return super.onOptionsItemSelected(item);
         }
@@ -228,14 +208,19 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 		
 		if (gr != null) {
 			List <Group> group_list = gr.getObject();
+			
+			// Sort the group on newest
+			
 			if (group_list == null) group_list = new ArrayList<Group>();
 			
-			setListAdapter(new GroupAdapter(
-								this, 
-								R.layout.list_item, 
-								group_list.toArray(new Group[group_list.size()]),
-								dm
-							));	
+			GroupAdapter adapter = new GroupAdapter(
+					this, 
+					R.layout.list_item, 
+					group_list.toArray(new Group[group_list.size()]),
+					dm
+				);
+			adapter.sort(Sorter.GROUP_SORTER);
+			setListAdapter(adapter);	
 		}
 	}
  

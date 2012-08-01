@@ -11,8 +11,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hmi.json.Group;
-import com.hmi.json.Photo;
+import com.hmi.smartphotosharing.json.Group;
+import com.hmi.smartphotosharing.json.Photo;
 
 public class MySpinnerAdapter extends BaseAdapter {
 	private Context mContext;

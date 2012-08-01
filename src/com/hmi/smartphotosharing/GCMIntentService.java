@@ -10,11 +10,12 @@ import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.gson.Gson;
-import com.hmi.json.FetchJSON;
-import com.hmi.json.OnDownloadListener;
-import com.hmi.json.StringRepsonse;
 import com.hmi.smartphotosharing.groups.GroupDetailActivity;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
+import com.hmi.smartphotosharing.json.FetchJSON;
+import com.hmi.smartphotosharing.json.OnDownloadListener;
+import com.hmi.smartphotosharing.json.StringRepsonse;
+import com.hmi.smartphotosharing.util.Util;
 
 public class GCMIntentService extends GCMBaseIntentService implements OnDownloadListener {
 
@@ -44,15 +45,18 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 	@Override
 	protected void onMessage(Context context, Intent intent) {
 		
+		String actionStr = intent.getStringExtra("action");
+		String valueStr = intent.getStringExtra("value");
+		
 		// Get the message contents
 		// See the protocol on dropbox
 		int id = Integer.parseInt(intent.getStringExtra("id"));
 		String title = intent.getStringExtra("title");
 		String content = intent.getStringExtra("content");
-		int action = Integer.parseInt(intent.getStringExtra("action"));
-		long value = Long.parseLong(intent.getStringExtra("value"));
+		int action = Integer.parseInt(actionStr);
+		long value = Long.parseLong(valueStr);
 		
-        Log.d( LOG_TAG, "Title: " + title + " / Action: " + action + " / Value: " + value);
+        Log.d( LOG_TAG, "Title: " + title + " / Action: " + actionStr + " / Value: " + valueStr);
 
         // Create notification
 		String ns = Context.NOTIFICATION_SERVICE;

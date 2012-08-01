@@ -1,4 +1,4 @@
-package com.hmi.smartphotosharing;
+package com.hmi.smartphotosharing.util;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -23,7 +23,8 @@ public class Util {
     public static final String API = "http://sps.juursema.com/api.php?";
     public static final String USER_DB = "http://sps.juursema.com/profilepicdb/";
     public static final String GROUP_DB = "http://sps.juursema.com/logodb/";
-
+    public static final String REGISTER_URL = "http://sps.juursema.com/signup.php";
+    
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     
     public static String getUrl(Context c, int resource) {

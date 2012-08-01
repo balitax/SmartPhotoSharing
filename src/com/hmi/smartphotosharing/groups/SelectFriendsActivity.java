@@ -13,14 +13,14 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
-import com.hmi.json.FetchJSON;
-import com.hmi.json.OnDownloadListener;
-import com.hmi.json.User;
-import com.hmi.json.UserListResponse;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.Util;
+import com.hmi.smartphotosharing.json.FetchJSON;
+import com.hmi.smartphotosharing.json.OnDownloadListener;
+import com.hmi.smartphotosharing.json.User;
+import com.hmi.smartphotosharing.json.UserListResponse;
+import com.hmi.smartphotosharing.util.Util;
 
 public class SelectFriendsActivity extends ListActivity implements OnDownloadListener {
 	private DrawableManager dm;

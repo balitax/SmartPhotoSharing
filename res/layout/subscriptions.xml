@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent">  
+
+    <!-- HEADER -->
+    
+    <RelativeLayout
+        android:id="@+id/header"
+        android:background="#222"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        
+	    <ImageView 
+	        android:id="@+id/app_icon"
+	        android:src="@drawable/picalilly"
+	        android:layout_width="48dp"
+	        android:layout_height="48dp"
+	        android:layout_alignParentLeft="true"
+	        android:padding="4dp"
+	        android:contentDescription="@string/app_name" />
+	    
+	    <TextView
+	    	android:id="@+id/groups_name"
+	    	android:text="@string/profile_name"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	        android:layout_toRightOf="@+id/app_icon"
+	        android:textSize="20sp" />
+	    
+	    <TextView
+	    	android:id="@+id/stats"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	        android:layout_toRightOf="@+id/app_icon"
+	        android:layout_below="@+id/groups_name" />	  
+	         
+	   <ImageView 
+	        android:id="@+id/groups_icon"
+	        android:src="@drawable/ic_unknown"
+	        android:layout_width="48dp"
+	        android:layout_height="48dp"
+	        android:layout_alignParentRight="true"
+	        android:padding="4dp" />     
+	</RelativeLayout>
+     
+     <!-- NAV BUTTONS -->
+     
+    <ImageView 
+	    android:id="@+id/subscription_add"
+	    android:contentDescription="@string/icon_unknown"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/header"
+	    android:src="@drawable/ic_menu_add"
+	    android:onClick="onClickCreateSubscription" />	      
+	    
+    <!-- GROUPS LIST -->
+    
+     <ListView 
+         android:id="@id/android:list"
+	     android:layout_width="match_parent"
+	     android:layout_height="wrap_content"
+	     android:drawSelectorOnTop="false"
+         android:layout_below="@+id/subscription_add"
+         android:layout_marginBottom="50dp" />
+
+     <TextView 
+         android:id="@id/android:empty"
+	     android:layout_width="match_parent"
+	     android:layout_height="match_parent"
+	     android:text="@string/no_data"
+         android:layout_below="@+id/subscription_add" /> 
+         
+     <include
+         android:id="@+id/navbar"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         layout="@layout/navbar" />
+          
+</RelativeLayout>

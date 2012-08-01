@@ -18,14 +18,14 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hmi.json.FetchJSON;
-import com.hmi.json.Group;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyGalleryAdapter;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.Util;
+import com.hmi.smartphotosharing.json.FetchJSON;
+import com.hmi.smartphotosharing.json.Group;
+import com.hmi.smartphotosharing.util.Util;
 
 /**
  * Custom ArrayAdapter class that is used to display a list of items with an icon.

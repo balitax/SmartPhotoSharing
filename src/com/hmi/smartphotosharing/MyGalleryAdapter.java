@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
 
-import com.hmi.json.Photo;
+import com.hmi.smartphotosharing.json.Photo;
 
 /**
  * Base Adapter subclass creates Gallery view

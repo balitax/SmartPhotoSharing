@@ -11,10 +11,10 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.hmi.json.User;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.Util;
+import com.hmi.smartphotosharing.json.User;
+import com.hmi.smartphotosharing.util.Util;
 
 /**
  * Custom ArrayAdapter class that is used to display a list of items with an icon.

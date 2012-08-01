@@ -47,14 +47,15 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.hmi.json.Group;
-import com.hmi.json.GroupListResponse;
-import com.hmi.json.OnDownloadListener;
-import com.hmi.json.PostData;
-import com.hmi.json.PostRequest;
-import com.hmi.json.StringRepsonse;
 import com.hmi.smartphotosharing.groups.GroupCreateActivity;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
+import com.hmi.smartphotosharing.json.Group;
+import com.hmi.smartphotosharing.json.GroupListResponse;
+import com.hmi.smartphotosharing.json.OnDownloadListener;
+import com.hmi.smartphotosharing.json.PostData;
+import com.hmi.smartphotosharing.json.PostRequest;
+import com.hmi.smartphotosharing.json.StringRepsonse;
+import com.hmi.smartphotosharing.util.Util;
 
 public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	
@@ -212,7 +213,6 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 
     		String group = Long.toString(spinner.getSelectedItemId());
     		
-    		// TODO fix gps
     		String lat, lon;
     		
     		if (location != null) {

@@ -29,6 +29,7 @@
     <string name="login_username_txt">Username</string>
     <string name="login_password_txt">Password</string>
     <string name="login_button">Login</string>    
+    <string name="register_button">Sign up</string>    
     <string name="login_http">cmd=login&amp;u=%1$s&amp;p=%2$s</string> 
     <string name="login_validate">cmd=status&amp;sid=%1$s</string> 
         
@@ -64,6 +65,14 @@
     <string name="group_detail_name">Loading group data..</string>
     <string name="group_detail_members">%1$d members</string>
     <string name="group_detail_photos">%1$d photos</string>
+    
+    <!-- Subscriptions -->
+    <string name="sub_create_name">Subscription name</string>
+    <string name="sub_select_friend">Follow friend</string>
+    <string name="sub_select_location">Follow location</string>
+    <string name="subscriptions_http">cmd=subscriptions&amp;sid=%1$s</string>
+    <string name="subscriptions_http_create">cmd=addsubscription</string>
+    <string name="subscriptions_http_remove">cmd=removescription&amp;sid=%1$s&amp;ssid=%2$s</string>
     
     <!--  Photo Detail -->
     

@@ -22,20 +22,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.hmi.json.FetchJSON;
-import com.hmi.json.Group;
-import com.hmi.json.GroupResponse;
-import com.hmi.json.OnDownloadListener;
-import com.hmi.json.Photo;
-import com.hmi.json.PhotoListResponse;
-import com.hmi.json.StringRepsonse;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyImageAdapter;
 import com.hmi.smartphotosharing.NavBarActivity;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.Util;
+import com.hmi.smartphotosharing.json.FetchJSON;
+import com.hmi.smartphotosharing.json.Group;
+import com.hmi.smartphotosharing.json.GroupResponse;
+import com.hmi.smartphotosharing.json.OnDownloadListener;
+import com.hmi.smartphotosharing.json.Photo;
+import com.hmi.smartphotosharing.json.PhotoListResponse;
+import com.hmi.smartphotosharing.json.StringRepsonse;
+import com.hmi.smartphotosharing.util.Util;
 
 public class GroupDetailActivity extends NavBarActivity implements OnDownloadListener {
 
@@ -177,7 +177,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
     }
     
     public void onClickInvite(View view) {
-    	Intent intent = new Intent(this, GroupInviteActivity.class);
+    	Intent intent = new Intent(this, SelectSingleFriendActivity.class);
     	intent.putExtra("id", id);
     	startActivityForResult(intent, CODE_INVITE);
     }
@@ -210,7 +210,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		
         switch (item.getItemId()) {
 	        case R.id.invite:
-	        	intent = new Intent(this, GroupInviteActivity.class);
+	        	intent = new Intent(this, SelectSingleFriendActivity.class);
 	        	intent.putExtra("id", id);
 	        	startActivityForResult(intent, CODE_INVITE);
 	        	return true;

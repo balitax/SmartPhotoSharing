@@ -1,4 +1,4 @@
-package com.hmi.smartphotosharing.groups;
+package com.hmi.smartphotosharing.subscriptions;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,7 +21,8 @@ import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.MyGalleryAdapter;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.json.Group;
+import com.hmi.smartphotosharing.groups.GroupDetailActivity;
+import com.hmi.smartphotosharing.json.Subscription;
 import com.hmi.smartphotosharing.util.Util;
 
 /**
@@ -30,7 +31,7 @@ import com.hmi.smartphotosharing.util.Util;
  * @author Edwin
  *
  */
-public class GroupAdapter extends ArrayAdapter<Group> {
+public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
 
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private GestureDetector gestureDetector;
@@ -39,10 +40,10 @@ public class GroupAdapter extends ArrayAdapter<Group> {
     
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
-	Group data[] = null;	// A Group array that contains all list items
+	Subscription data[] = null;	// A Group array that contains all list items
 	DrawableManager dm;
 		
-	public GroupAdapter(Context context, int resource, Group[] objects, DrawableManager dm) {
+	public SubscriptionAdapter(Context context, int resource, Subscription[] objects, DrawableManager dm) {
 		super(context, resource, objects);
 		
         this.layoutResourceId = resource;
@@ -57,7 +58,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
     }
 
     @Override
-    public Group getItem(int position) {
+    public Subscription getItem(int position) {
         return data[position];
     }
 
@@ -75,7 +76,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         View v = convertView;
-        GroupHolder holder = null;
+        SubscriptionHolder holder = null;
        
         if(v == null) {
         	
@@ -83,33 +84,40 @@ public class GroupAdapter extends ArrayAdapter<Group> {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(layoutResourceId, null);
            
-            holder = new GroupHolder();
+            holder = new SubscriptionHolder();
             holder.imgIcon = (ImageView)v.findViewById(R.id.icon);
             holder.txtTitle = (TextView)v.findViewById(R.id.item_text);
             holder.totalNew = (TextView)v.findViewById(R.id.total_new);
             holder.picGallery = (Gallery) v.findViewById(R.id.gallery);
             v.setTag(holder);
         } else {
-            holder = (GroupHolder)v.getTag();
+            holder = (SubscriptionHolder)v.getTag();
         }
                         
-        Group group = data[position];
-        holder.txtTitle.setText(group.name);
+        Subscription subscription = data[position];
+        holder.txtTitle.setText(subscription.name);
                 
         // Set the icon for this list item
-        String url = Util.GROUP_DB + group.logo;
-        dm.fetchDrawableOnThread(url, holder.imgIcon);
+        
+        // TODO icon
+        
+        if (subscription.person != null) {
+	        String url = Util.USER_DB + subscription.icon;
+	        dm.fetchDrawableOnThread(url, holder.imgIcon);
+        } else {
+        	holder.imgIcon.setImageResource(R.drawable.ic_menu_mapmode);
+        }
         
         // We need to set the onClickListener here to make sure that
         // the row can also be clicked, in addition to the gallery photos
         v.setOnClickListener(new MyOnClickListener(position));
         
         
-        if (group.totalnew == 0) {
+        if (subscription.totalnew == 0) {
         	holder.totalNew.setVisibility(TextView.INVISIBLE);
         } else {
             holder.totalNew.setVisibility(TextView.VISIBLE); // Needed because of the holder pattern
-            holder.totalNew.setText(Integer.toString(group.totalnew));
+            holder.totalNew.setText(Integer.toString(subscription.totalnew));
         }
         
         // Set the adapter for the gallery
@@ -117,7 +125,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
 		holder.picGallery.setAdapter(
 				new MyGalleryAdapter(
 						context, 
-						group.photos,
+						subscription.photos,
 						dm
 			));
 		
@@ -145,7 +153,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
 	 * @author Edwin
 	 *
 	 */
-    static class GroupHolder {
+    static class SubscriptionHolder {
         ImageView imgIcon;
         TextView txtTitle;
         TextView totalNew;

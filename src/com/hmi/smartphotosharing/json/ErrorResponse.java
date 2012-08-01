@@ -1,6 +1,6 @@
-package com.hmi.json;
+package com.hmi.smartphotosharing.json;
 
-import com.hmi.smartphotosharing.Util;
+import com.hmi.smartphotosharing.util.Util;
 
 public class ErrorResponse {
 	

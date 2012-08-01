@@ -8,22 +8,23 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.hmi.json.FetchJSON;
-import com.hmi.json.OnDownloadListener;
-import com.hmi.json.StringRepsonse;
-import com.hmi.json.User;
-import com.hmi.json.UserListResponse;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.Util;
+import com.hmi.smartphotosharing.json.FetchJSON;
+import com.hmi.smartphotosharing.json.OnDownloadListener;
+import com.hmi.smartphotosharing.json.StringRepsonse;
+import com.hmi.smartphotosharing.json.User;
+import com.hmi.smartphotosharing.json.UserListResponse;
+import com.hmi.smartphotosharing.util.Util;
 
-public class GroupInviteActivity extends ListActivity implements OnDownloadListener {
+public class SelectSingleFriendActivity extends ListActivity implements OnDownloadListener {
 
 	private DrawableManager dm;
 	private long id;
@@ -129,12 +130,20 @@ public class GroupInviteActivity extends ListActivity implements OnDownloadListe
 
 	@Override
 	protected void onListItemClick (ListView l, View v, int position, long uid) {
+    	Intent data = new Intent();
 
+    	data.putExtra("friend", uid);
+    	this.setResult(RESULT_OK, data);
+    	this.finish();
+
+		/*
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		Log.d("GroupInvite", "User ID: " + uid);
         String inviteUrl = String.format(Util.getUrl(this,R.string.groups_http_invite),hash,id,uid);		
         new FetchJSON(this, CODE_INVITE).execute(inviteUrl);
+		*/
+		
 		
 	}
 }

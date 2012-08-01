@@ -11,7 +11,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hmi.json.Photo;
+import com.hmi.smartphotosharing.json.Photo;
 
 public class MyImageAdapter extends BaseAdapter {
 	

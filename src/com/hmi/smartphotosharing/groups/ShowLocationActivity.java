@@ -19,9 +19,9 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.Util;
 import com.hmi.smartphotosharing.maps.MyItemizedOverlay;
 import com.hmi.smartphotosharing.maps.RectangleOverlay;
+import com.hmi.smartphotosharing.util.Util;
 
 public class ShowLocationActivity extends MapActivity{
 
@@ -174,7 +174,8 @@ public class ShowLocationActivity extends MapActivity{
         
         // Network
         String networkProvider = LocationManager.NETWORK_PROVIDER;
-        mLocationManager.requestLocationUpdates(networkProvider, 0, 0, listener);
+        if (mLocationManager.isProviderEnabled(networkProvider))
+        	mLocationManager.requestLocationUpdates(networkProvider, 0, 0, listener);
         
         // GPS
         String gpsProvider = LocationManager.GPS_PROVIDER;

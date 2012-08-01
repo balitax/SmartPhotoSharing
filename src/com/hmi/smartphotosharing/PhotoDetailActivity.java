@@ -27,14 +27,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.hmi.json.Comment;
-import com.hmi.json.CommentListResponse;
-import com.hmi.json.FetchJSON;
-import com.hmi.json.PostRequest;
-import com.hmi.json.OnDownloadListener;
-import com.hmi.json.Photo;
-import com.hmi.json.PhotoResponse;
-import com.hmi.json.PostData;
+import com.hmi.smartphotosharing.json.Comment;
+import com.hmi.smartphotosharing.json.CommentListResponse;
+import com.hmi.smartphotosharing.json.FetchJSON;
+import com.hmi.smartphotosharing.json.OnDownloadListener;
+import com.hmi.smartphotosharing.json.Photo;
+import com.hmi.smartphotosharing.json.PhotoResponse;
+import com.hmi.smartphotosharing.json.PostData;
+import com.hmi.smartphotosharing.json.PostRequest;
+import com.hmi.smartphotosharing.util.Util;
 
 public class PhotoDetailActivity extends NavBarActivity implements OnDownloadListener {
 

@@ -1,4 +1,4 @@
-package com.hmi.json;
+package com.hmi.smartphotosharing.json;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,12 +43,6 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 		this.code = code;
 		this.dl = (OnDownloadListener) c;
 		
-		pd = new ProgressDialog(c);
-		pd.setMessage("Loading...");
-		pd.setCancelable(false);
-		pd.setIndeterminate(true);
-		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		pd.show();
 	}
 	
 	@Override

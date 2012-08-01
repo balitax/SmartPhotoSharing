@@ -1,4 +1,4 @@
-package com.hmi.json;
+package com.hmi.smartphotosharing.json;
 
 import java.util.HashMap;
 

@@ -22,10 +22,10 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.Util;
 import com.hmi.smartphotosharing.maps.MyItemizedOverlay;
 import com.hmi.smartphotosharing.maps.MyMapView;
 import com.hmi.smartphotosharing.maps.RectangleOverlay;
+import com.hmi.smartphotosharing.util.Util;
 
 public class SelectLocationActivity extends MapActivity {
 

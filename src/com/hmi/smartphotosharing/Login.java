@@ -3,6 +3,7 @@ package com.hmi.smartphotosharing;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,10 +12,11 @@ import android.widget.Toast;
 
 import com.google.android.gcm.GCMRegistrar;
 import com.google.gson.Gson;
-import com.hmi.json.FetchJSON;
-import com.hmi.json.OnDownloadListener;
-import com.hmi.json.StringRepsonse;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
+import com.hmi.smartphotosharing.json.FetchJSON;
+import com.hmi.smartphotosharing.json.OnDownloadListener;
+import com.hmi.smartphotosharing.json.StringRepsonse;
+import com.hmi.smartphotosharing.util.Util;
 
 public class Login extends Activity implements OnDownloadListener{
 	
@@ -83,6 +85,12 @@ public class Login extends Activity implements OnDownloadListener{
         new FetchJSON(this,CODE_LOGIN).execute(url);
 	}
 
+	public void onClickRegister(View v) {
+		Uri uri = Uri.parse(Util.REGISTER_URL);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+	}
+	
 	@Override
 	public void parseJson(String json, int code) {
 		switch(code) {

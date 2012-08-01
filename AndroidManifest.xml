@@ -52,14 +52,15 @@
 		    </intent-filter>
 		</activity>
 		
+        <activity android:label="Photo Details" 
+            android:name=".PhotoDetailActivity" />		
+            
         <activity android:label="Groups" 
             android:name=".groups.GroupsActivity" />
         <activity android:label="Join Group" 
             android:name=".groups.GroupJoinActivity" />
         <activity android:label="Invite" 
-            android:name=".groups.GroupInviteActivity" />
-        <activity android:label="Camera" 
-            android:name=".camera.CameraActivity" />
+            android:name=".groups.SelectSingleFriendActivity" />
         <activity android:label="Create Group" 
             android:name=".groups.GroupCreateActivity"
             android:theme="@android:style/Theme.Dialog" />
@@ -72,11 +73,15 @@
             android:name=".groups.GroupDetailActivity" />
         <activity android:label="Location Details" 
             android:name=".groups.ShowLocationActivity" />
-        <activity android:label="Photo Details" 
-            android:name=".PhotoDetailActivity" />
-        <activity android:label="Login" 
-            android:name=".SmartPhotoSharing" />
-		
+        
+        <activity android:label="Camera" 
+            android:name=".camera.CameraActivity" />
+        
+        <activity android:label="Subscriptions" 
+            android:name=".subscriptions.SubscriptionsActivity" />
+        <activity android:label="Create Subscription" 
+            android:name=".subscriptions.SubscriptionCreateActivity" />
+        
 		<activity android:label="SettingsActivity" android:name=".SettingsActivity">
              <intent-filter>
                 <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
@@ -96,7 +101,7 @@
 		</receiver>
 		
 		<service 
-		    android:name="com.hmi.smartphotosharing.GCMIntentService"
+		    android:name=".GCMIntentService"
 		    android:enabled="true" />
     </application>
 
