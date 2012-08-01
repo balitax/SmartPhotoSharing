@@ -3,12 +3,9 @@ package com.hmi.smartphotosharing.groups;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -16,15 +13,17 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
+import com.hmi.smartphotosharing.NavBarListActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.StringRepsonse;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserListResponse;
+import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 
-public class SelectSingleFriendActivity extends ListActivity implements OnDownloadListener {
+public class SelectSingleFriendActivity extends NavBarListActivity implements OnDownloadListener {
 
 	private DrawableManager dm;
 	private long id;
@@ -36,12 +35,12 @@ public class SelectSingleFriendActivity extends ListActivity implements OnDownlo
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        setContentView(R.layout.join_group);
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
         id = intent.getLongExtra("id", 0);
         
-        setContentView(R.layout.join_group);
         dm = new DrawableManager(this);
     }
     	
@@ -119,12 +118,15 @@ public class SelectSingleFriendActivity extends ListActivity implements OnDownlo
 			List<User> userList = response.getObject();
 			if (userList == null) userList = new ArrayList<User>();
 			
-			setListAdapter(new UserAdapter(
-								this, 
-								R.layout.list_item, 
-								userList,
-								dm
-							));	
+			UserAdapter adapter = new UserAdapter(
+					this, 
+					R.layout.select_friend, 
+					userList,
+					dm
+				);
+			
+			adapter.sort(Sorter.USER_SORTER);
+			setListAdapter(adapter);	
 		}
 	}
 

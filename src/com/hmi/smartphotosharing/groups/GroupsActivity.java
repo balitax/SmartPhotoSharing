@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,7 +21,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
-import com.hmi.smartphotosharing.NavBarListener;
+import com.hmi.smartphotosharing.NavBarListActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Group;
@@ -30,11 +29,11 @@ import com.hmi.smartphotosharing.json.GroupListResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserResponse;
+import com.hmi.smartphotosharing.subscriptions.SubscriptionsActivity;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
-import com.hmi.smartphotosharing.subscriptions.SubscriptionsActivity;
 
-public class GroupsActivity extends ListActivity implements OnDownloadListener {
+public class GroupsActivity extends NavBarListActivity implements OnDownloadListener {
 	
     public static final int CREATE_GROUP = 4;
 
@@ -44,17 +43,11 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
 	private DrawableManager dm;
 	
 	private ImageView add,groups,subscriptions;
-	private ImageView camera,archive,settings;
-	
-	 // Nav bar listeners
-    private OnClickListener cameraListener = new NavBarListener(this, Util.ACTION_CAMERA);
-    private OnClickListener archiveListener = new NavBarListener(this, Util.ACTION_ARCHIVE);
-    private OnClickListener settingsListener = new NavBarListener(this, Util.ACTION_SETTINGS);
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.groups);
+        super.onCreate(savedInstanceState);
         
         add = (ImageView) findViewById(R.id.group_add);
         add.setOnClickListener(new MyClickListener(this,GroupCreateActivity.class));
@@ -62,15 +55,7 @@ public class GroupsActivity extends ListActivity implements OnDownloadListener {
         groups.setOnClickListener(new MyClickListener(this,GroupJoinActivity.class));
         subscriptions = (ImageView) findViewById(R.id.button_subscription);
         subscriptions.setOnClickListener(new MyClickListener(this,SubscriptionsActivity.class));  
-        
-        // Nav bar
-        camera = (ImageView) findViewById(R.id.camera);
-        camera.setOnClickListener(cameraListener);
-        archive = (ImageView) findViewById(R.id.archive);
-        archive.setOnClickListener(archiveListener);
-        settings = (ImageView) findViewById(R.id.settings);
-        settings.setOnClickListener(settingsListener);
-        
+                
         dm = new DrawableManager(this);
         loadData(true, true);
         

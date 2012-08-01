@@ -70,7 +70,7 @@
     <string name="sub_create_name">Subscription name</string>
     <string name="sub_select_friend">Follow friend</string>
     <string name="sub_select_location">Follow location</string>
-    <string name="subscriptions_http">cmd=subscriptions&amp;sid=%1$s</string>
+    <string name="subscriptions_http">cmd=listsubscriptions&amp;sid=%1$s</string>
     <string name="subscriptions_http_create">cmd=addsubscription</string>
     <string name="subscriptions_http_remove">cmd=removescription&amp;sid=%1$s&amp;ssid=%2$s</string>
     

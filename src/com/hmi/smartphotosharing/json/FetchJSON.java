@@ -61,7 +61,12 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 	@Override
 	protected void onPostExecute(String result) {
 		try {
-			dl.parseJson(result, code);
+			if (result != "") {
+				dl.parseJson(result, code);
+			} else {
+	    	   ErrorResponse err = new ErrorResponse();
+	           dl.parseJson(new Gson().toJson(err), code);
+			}
 		} catch (JsonSyntaxException e) {
 			Log.e("JSON", "Json syntax exception: " + e.getMessage());
 			Log.e("JSON", result);

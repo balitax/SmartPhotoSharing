@@ -8,6 +8,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import com.hmi.smartphotosharing.json.Subscription;
 import com.hmi.smartphotosharing.json.SubscriptionListResponse;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserResponse;
+import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 public class SubscriptionsActivity extends ListActivity implements OnDownloadListener {
 	
@@ -29,9 +31,6 @@ public class SubscriptionsActivity extends ListActivity implements OnDownloadLis
 
     private static final int CODE_PROFILE = 1;
     private static final int CODE_SUBSCRIPTS = 2;
-    private static final int CODE_PHOTO = 3;
-    
-    private static final int JOIN_GROUP = 6;
     
 	private DrawableManager dm;
 		    
@@ -127,7 +126,8 @@ public class SubscriptionsActivity extends ListActivity implements OnDownloadLis
 	}
 
 	private void parseSubscripts(String result) {
-		
+
+		Log.d("JSON Parse", result);
 		Gson gson = new Gson();
 		SubscriptionListResponse gr = gson.fromJson(result, SubscriptionListResponse.class);
 		
@@ -135,12 +135,15 @@ public class SubscriptionsActivity extends ListActivity implements OnDownloadLis
 			List <Subscription> subscription_list = gr.getObject();
 			if (subscription_list == null) subscription_list = new ArrayList<Subscription>();
 			
-			setListAdapter(new SubscriptionAdapter(
-								this, 
-								R.layout.list_item, 
-								subscription_list.toArray(new Subscription[subscription_list.size()]),
-								dm
-							));	
+			SubscriptionAdapter adapter = new SubscriptionAdapter(
+					this, 
+					R.layout.list_item, 
+					subscription_list.toArray(new Subscription[subscription_list.size()]),
+					dm
+				);
+			
+			adapter.sort(Sorter.SUBSCRIPTIONS_SORTER);
+			setListAdapter(adapter);	
 		}
 	}
  
