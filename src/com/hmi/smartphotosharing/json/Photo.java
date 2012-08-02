@@ -1,5 +1,7 @@
 package com.hmi.smartphotosharing.json;
 
+import java.util.List;
+
 public class Photo {
 
 	public String name;
@@ -9,7 +11,7 @@ public class Photo {
 	public String gid;
 	public String longtitude;
 	public String latitude;
-	public String comments;
+	
 	public String time;
 	public String active;
 
@@ -32,6 +34,8 @@ public class Photo {
 	public String fb_oauth;
 	public String picture;
 		
+	public List<Comment> comments;
+	
 	public String getUrl() {
 		return location + picname;
 	}

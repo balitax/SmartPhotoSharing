@@ -6,12 +6,9 @@ import java.util.List;
 import android.app.ListActivity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
@@ -19,11 +16,12 @@ import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.GroupListResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.StringRepsonse;
+import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
 
 public class GroupJoinActivity extends ListActivity implements OnDownloadListener{
 
-	private DrawableManager dm;
+	private ImageLoader dm;
 	public static final int CODE_GROUPS = 1;
 	public static final int CODE_JOIN = 2;
 	
@@ -36,7 +34,7 @@ public class GroupJoinActivity extends ListActivity implements OnDownloadListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.join_group);
-        dm = new DrawableManager(this);
+        dm = new ImageLoader(this);
     }
     	
 	@Override

@@ -11,7 +11,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarListActivity;
 import com.hmi.smartphotosharing.R;
@@ -20,12 +19,13 @@ import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.StringRepsonse;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserListResponse;
+import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 
 public class SelectSingleFriendActivity extends NavBarListActivity implements OnDownloadListener {
 
-	private DrawableManager dm;
+	private ImageLoader dm;
 	private long id;
 	
 	private static final int CODE_USERS = 1;
@@ -41,7 +41,7 @@ public class SelectSingleFriendActivity extends NavBarListActivity implements On
         Intent intent = getIntent();
         id = intent.getLongExtra("id", 0);
         
-        dm = new DrawableManager(this);
+        dm = new ImageLoader(this);
     }
     	
 	@Override

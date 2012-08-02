@@ -11,9 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.User;
+import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
 
 /**
@@ -27,9 +27,9 @@ public class UserAdapter extends ArrayAdapter<User> {
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
 	List<User> data = null;	// A Group array that contains all list items
-	DrawableManager dm;
+	ImageLoader dm;
 
-	public UserAdapter(Context context, int resource, List<User> objects, DrawableManager dm) {
+	public UserAdapter(Context context, int resource, List<User> objects, ImageLoader dm) {
 		super(context, resource, objects);
 		
         this.layoutResourceId = resource;
@@ -84,7 +84,7 @@ public class UserAdapter extends ArrayAdapter<User> {
         
         // Set the icon for this list item
         String url = Util.USER_DB + user.picture;
-        dm.fetchDrawableOnThread(url, holder.imgIcon);
+        dm.DisplayImage(url, holder.imgIcon);
                 
         return row;
     }

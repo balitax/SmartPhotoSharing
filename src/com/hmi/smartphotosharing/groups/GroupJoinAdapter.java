@@ -18,13 +18,13 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyGalleryAdapter;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Group;
+import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
 
 /**
@@ -43,9 +43,9 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
 	Group data[] = null;	// A Group array that contains all list items
-	DrawableManager dm;
+	ImageLoader dm;
 		
-	public GroupJoinAdapter(Context context, int resource, Group[] objects, DrawableManager dm) {
+	public GroupJoinAdapter(Context context, int resource, Group[] objects, ImageLoader dm) {
 		super(context, resource, objects);
 		
         this.layoutResourceId = resource;
@@ -106,7 +106,7 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
         
         // Set the icon for this list item
         String url = Util.GROUP_DB + group.logo;
-        dm.fetchDrawableOnThread(url, holder.imgIcon);
+        dm.DisplayImage(url, holder.imgIcon);
         
         // We need to set the onClickListener here to make sure that
         // the row can also be clicked, in addition to the gallery photos

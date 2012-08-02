@@ -8,7 +8,6 @@ import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,12 +17,11 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.MyGalleryAdapter;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.groups.GroupDetailActivity;
 import com.hmi.smartphotosharing.json.Subscription;
+import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
 
 /**
@@ -44,9 +42,9 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
 	Subscription data[] = null;	// A Group array that contains all list items
-	DrawableManager dm;
+	ImageLoader dm;
 		
-	public SubscriptionAdapter(Context context, int resource, Subscription[] objects, DrawableManager dm) {
+	public SubscriptionAdapter(Context context, int resource, Subscription[] objects, ImageLoader dm) {
 		super(context, resource, objects);
 		
         this.layoutResourceId = resource;
@@ -104,7 +102,7 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         if (subscription.person != null) {
         	holder.txtTitle.setText(subscription.user.rname);
 	        String url = Util.USER_DB + subscription.user.picture;
-	        dm.fetchDrawableOnThread(url, holder.imgIcon);
+	        dm.DisplayImage(url, holder.imgIcon);
         } 
         
         // Show subscription as a location
@@ -133,14 +131,10 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         	String mapUrl = String.format(url, centerLat, centerLong, zoom, Util.API_KEY);
         	
         	Log.d("ZOOM", mapUrl);
-        	dm.fetchDrawableOnThread(mapUrl, holder.imgIcon);
+        	dm.DisplayImage(mapUrl, holder.imgIcon);
         	
         }
-        
-        // We need to set the onClickListener here to make sure that
-        // the row can also be clicked, in addition to the gallery photos
-        v.setOnClickListener(new MyOnClickListener(position));
-        
+                
         
         if (subscription.totalnew == 0) {
         	holder.totalNew.setVisibility(TextView.INVISIBLE);
@@ -188,23 +182,7 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         TextView totalNew;
         Gallery picGallery;
     }	
-    
-    private class MyOnClickListener implements OnClickListener{       
-        private int mPosition;
-        
-        public MyOnClickListener(int position){
-            mPosition = position;
-        }
-        
-        @Override
-        public void onClick(View arg0) {
-        	//groupClickListener.OnGroupClick(getItemId(mPosition));
-        	Intent intent = new Intent(context, GroupDetailActivity.class);
-        	intent.putExtra("id", getItemId(mPosition));
-        	context.startActivity(intent);
-        }       
-    }
-	
+    	
 	/**
 	 * Gesture detector needed to detect swipes
 	 * This is needed in combination with onItemClickListener to

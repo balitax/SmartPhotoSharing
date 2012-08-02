@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarListActivity;
 import com.hmi.smartphotosharing.R;
@@ -30,6 +29,7 @@ import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserResponse;
 import com.hmi.smartphotosharing.subscriptions.SubscriptionsActivity;
+import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 
@@ -40,7 +40,7 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
     private static final int CODE_PROFILE = 1;
     private static final int CODE_GROUPS = 2;
         
-	private DrawableManager dm;
+	private ImageLoader im;
 	
 	private ImageView add,groups,subscriptions;
     
@@ -56,7 +56,7 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
         subscriptions = (ImageView) findViewById(R.id.button_subscription);
         subscriptions.setOnClickListener(new MyClickListener(this,SubscriptionsActivity.class));  
                 
-        dm = new DrawableManager(this);
+        im = new ImageLoader(this);
         loadData(true, true);
         
     }
@@ -183,7 +183,8 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 		// Set the user icon
 		String userPic = Util.USER_DB + user.picture;
 		ImageView pic = (ImageView) findViewById(R.id.groups_icon);
-		dm.fetchDrawableOnThread(userPic, pic);
+		//dm.fetchDrawableOnThread(userPic, pic);
+		im.DisplayImage(userPic, pic);
 	}
 
 	private void parseGroups(String result) {
@@ -202,7 +203,7 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 					this, 
 					R.layout.list_item, 
 					group_list.toArray(new Group[group_list.size()]),
-					dm
+					im
 				);
 			adapter.sort(Sorter.GROUP_SORTER);
 			setListAdapter(adapter);	

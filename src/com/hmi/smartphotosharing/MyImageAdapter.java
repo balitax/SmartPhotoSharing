@@ -9,19 +9,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.hmi.smartphotosharing.json.Photo;
+import com.hmi.smartphotosharing.util.ImageLoader;
 
 public class MyImageAdapter extends BaseAdapter {
 	
 	private static int DIM = 46;
 	
 	private Context mContext;
-	private DrawableManager dm;
+	private ImageLoader dm;
 	private List<Photo> data;
 	
-    public MyImageAdapter(Context c, List<Photo> list, DrawableManager dm) {
+    public MyImageAdapter(Context c, List<Photo> list, ImageLoader dm) {
         mContext = c;
         this.dm = dm;
         this.data = list;
@@ -72,7 +72,7 @@ public class MyImageAdapter extends BaseAdapter {
         Photo photo = data.get(position);
         
         String url = photo.thumb;
-        dm.fetchDrawableOnThread(url, holder.img);
+        dm.DisplayImage(url, holder.img);
         
         return v;
     }

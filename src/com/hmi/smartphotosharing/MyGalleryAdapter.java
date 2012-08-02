@@ -11,6 +11,7 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 
 import com.hmi.smartphotosharing.json.Photo;
+import com.hmi.smartphotosharing.util.ImageLoader;
 
 /**
  * Base Adapter subclass creates Gallery view
@@ -22,7 +23,7 @@ public class MyGalleryAdapter extends BaseAdapter {
 
 
 	private Context context;
-	private DrawableManager dm;
+	private ImageLoader dm;
 	private List<Photo> data;
 	
 	//use the default gallery background image
@@ -32,7 +33,7 @@ public class MyGalleryAdapter extends BaseAdapter {
     Bitmap placeholder;
 
     //constructor
-    public MyGalleryAdapter(Context c, List<Photo> list, DrawableManager dm) {
+    public MyGalleryAdapter(Context c, List<Photo> list, ImageLoader dm) {
         context = c;
         this.dm = dm;
         this.data = list;
@@ -67,7 +68,7 @@ public class MyGalleryAdapter extends BaseAdapter {
         //specify the bitmap at this position in the array
         
         Photo photo = data.get(position);
-        dm.fetchDrawableOnThread(photo.thumb, imageView);
+        dm.DisplayImage(photo.thumb, imageView);
         
         //set layout options
         imageView.setLayoutParams(new Gallery.LayoutParams(45, 45));

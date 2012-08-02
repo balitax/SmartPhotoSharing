@@ -1,99 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fillViewport="true"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:focusable="true" android:focusableInTouchMode="true">
-    
-	<ScrollView 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+         
+	<android.support.v4.view.ViewPager
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
-	    android:fillViewport="true"
-	    android:orientation="vertical"
-	    android:layout_marginBottom="50dp">
-	    
-		<RelativeLayout 
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:orientation="vertical" >
-		
-		    <ImageView 
-		        android:id="@+id/photo_detail_icon"
-		        android:src="@drawable/ic_unknown"
-		        android:layout_width="50dp"
-		        android:layout_height="50dp"
-		        android:layout_alignParentLeft="true"
-		        android:padding="4dp" />
-		    
-		    <TextView
-		    	android:id="@+id/photo_detail_name"
-		    	android:text="@string/photo_detail_name"
-		    	android:layout_width="wrap_content"
-		    	android:layout_height="wrap_content"
-		        android:layout_toRightOf="@+id/photo_detail_icon"
-		        android:textSize="20sp" />
-		    
-		    <TextView 
-		    	android:id="@+id/photo_detail_date"
-		    	android:layout_width="wrap_content"
-		    	android:layout_height="wrap_content"
-		        android:layout_toRightOf="@+id/photo_detail_icon"
-		        android:layout_below="@+id/photo_detail_name"
-		        android:textSize="10sp" />
-		    
-		   <TextView
-		    	android:id="@+id/photo_detail_group"
-		    	android:text="@string/photo_detail_group"
-		    	android:layout_width="wrap_content"
-		    	android:layout_height="wrap_content"
-		        android:layout_toRightOf="@+id/photo_detail_icon"
-		        android:layout_below="@+id/photo_detail_date"
-		        android:textSize="10sp" />
-		    
-		   <!-- ACTUAL PHOTO -->
-		   
-		    <ImageView 
-		        android:id="@+id/picture"
-		    	android:layout_width="fill_parent"
-		    	android:layout_height="wrap_content"
-		    	android:scaleType="centerInside"
-		    	android:adjustViewBounds="true"
-		    	android:contentDescription="@string/picture"
-		        android:layout_below="@+id/photo_detail_group" />
-		    
-	        <LinearLayout 
-	            android:id="@+id/comments"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-		        android:layout_below="@+id/picture"
-		        android:orientation="vertical" />
-		         
-		    <EditText 
-		        android:id="@+id/edit_message"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:hint="@string/add_comment"
-		        android:layout_alignParentLeft="true"
-		        android:layout_below="@+id/comments" />
-			
-		   	<Button 
-		        android:id="@+id/add_comment"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:text="@string/button_add_comment"
-		        android:layout_below="@+id/edit_message"
-		        android:onClick="onCommentClick" />  
-		        
-		
-		</RelativeLayout>
-	</ScrollView>
-	
+	    android:id="@+id/viewpager"/>
+
     <include
          android:id="@+id/navbar"
          android:layout_width="fill_parent"
          android:layout_height="wrap_content"
-         android:layout_alignParentBottom="true"
-         layout="@layout/navbar" />
-</RelativeLayout>
+         layout="@layout/navbar" />	
+
+</LinearLayout>

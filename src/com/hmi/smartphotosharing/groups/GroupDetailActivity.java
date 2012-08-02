@@ -22,11 +22,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyImageAdapter;
 import com.hmi.smartphotosharing.NavBarActivity;
-import com.hmi.smartphotosharing.PhotoDetailActivity;
+import com.hmi.smartphotosharing.PhotoDetailActivity2;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Group;
@@ -35,6 +34,7 @@ import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PhotoListResponse;
 import com.hmi.smartphotosharing.json.StringRepsonse;
+import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
 
 public class GroupDetailActivity extends NavBarActivity implements OnDownloadListener {
@@ -58,7 +58,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	private TextView groupName;
 	private ImageView groupIcon;
 	
-	private DrawableManager dm;
+	private ImageLoader dm;
 			
 	private long id;
 	private boolean isMember;
@@ -70,7 +70,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         setContentView(R.layout.group_detail);
         super.onCreate(savedInstanceState);
 
-        dm = new DrawableManager(this);
+        dm = new ImageLoader(this);
         
         groupName = (TextView) findViewById(R.id.group_detail_name);
         groupIcon = (ImageView) findViewById(R.id.group_detail_icon);
@@ -191,8 +191,9 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		// Handle clicks
 		@Override
 	    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-	    	Intent intent = new Intent(c, PhotoDetailActivity.class);
+	    	Intent intent = new Intent(c, PhotoDetailActivity2.class);
 	    	intent.putExtra("id", id);
+	    	intent.putExtra("gid", group.getId());
 	    	startActivity(intent);
 	    }
     }
@@ -341,7 +342,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	
 			groupName.setText(group.name);
 			String logoUrl = Util.GROUP_DB + group.logo;
-			dm.fetchDrawableOnThread(logoUrl, groupIcon);
+			dm.DisplayImage(logoUrl, groupIcon);
 	
 			// Set the button text join/leave group
 			if (group.member == 0) {

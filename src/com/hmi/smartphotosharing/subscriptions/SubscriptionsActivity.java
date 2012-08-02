@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.Login;
+import com.hmi.smartphotosharing.NavBarListActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
@@ -23,23 +22,25 @@ import com.hmi.smartphotosharing.json.Subscription;
 import com.hmi.smartphotosharing.json.SubscriptionListResponse;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserResponse;
+import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
-public class SubscriptionsActivity extends ListActivity implements OnDownloadListener {
+
+public class SubscriptionsActivity extends NavBarListActivity implements OnDownloadListener {
 	
     public static final int CREATE_GROUP = 4;
 
     private static final int CODE_PROFILE = 1;
     private static final int CODE_SUBSCRIPTS = 2;
-    
-	private DrawableManager dm;
+
+	private ImageLoader dm;
 		    
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.subscriptions);
-                        
-        dm = new DrawableManager(this);
+        super.onCreate(savedInstanceState);
+
+        dm = new ImageLoader(this);
         loadData(true, true);
         
     }
@@ -122,7 +123,7 @@ public class SubscriptionsActivity extends ListActivity implements OnDownloadLis
 		// Set the user icon
 		String userPic = Util.USER_DB + user.picture;
 		ImageView pic = (ImageView) findViewById(R.id.groups_icon);
-		dm.fetchDrawableOnThread(userPic, pic);
+		dm.DisplayImage(userPic, pic);
 	}
 
 	private void parseSubscripts(String result) {

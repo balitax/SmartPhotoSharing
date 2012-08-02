@@ -54,7 +54,10 @@
 		
         <activity android:label="Photo Details" 
             android:name=".PhotoDetailActivity" />		
-            
+        
+        <activity android:label="Photo Details" 
+            android:name=".PhotoDetailActivity2" />
+        	    
         <activity android:label="Groups" 
             android:name=".groups.GroupsActivity" />
         <activity android:label="Join Group" 

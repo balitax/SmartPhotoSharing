@@ -11,9 +11,9 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.hmi.smartphotosharing.DrawableManager;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.User;
+import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
 
 /**
@@ -27,10 +27,10 @@ public class FriendsAdapter extends ArrayAdapter<User>  {
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
 	List<User> data = null;	// A Group array that contains all list items
-	DrawableManager dm;
+	ImageLoader dm;
 	ListView list;
 	
-	public FriendsAdapter(Context context, int resource, List<User> objects, DrawableManager dm, ListView list) {
+	public FriendsAdapter(Context context, int resource, List<User> objects, ImageLoader dm, ListView list) {
 		super(context, resource, objects);
 		
         this.layoutResourceId = resource;
@@ -91,7 +91,7 @@ public class FriendsAdapter extends ArrayAdapter<User>  {
 
         // Set the icon for this list item
         String url = Util.USER_DB + user.picture;
-        dm.fetchDrawableOnThread(url, holder.imgIcon);
+        dm.DisplayImage(url, holder.imgIcon);
                 
         return row;
     }

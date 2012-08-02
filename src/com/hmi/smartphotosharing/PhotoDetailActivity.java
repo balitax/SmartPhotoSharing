@@ -35,6 +35,7 @@ import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PhotoResponse;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
+import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
 
 public class PhotoDetailActivity extends NavBarActivity implements OnDownloadListener {
@@ -46,7 +47,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 	public static final String KEY_ID = "id";
 	
 	private long id;
-	private DrawableManager dm;
+	private ImageLoader dm;
 	private EditText commentInput;
 	
 	private LinearLayout list;
@@ -62,7 +63,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         Intent intent = getIntent();
         id = intent.getLongExtra(KEY_ID, 0);
 
-        dm = new DrawableManager(this);
+        dm = new ImageLoader(this);
         if (id != 0) {
 			loadData(true,true);
         } else {
@@ -188,7 +189,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 				  //Icon
 				  ImageView img = (ImageView)vi.findViewById(R.id.comment_icon);
 				  String userPic = Util.USER_DB + comment.picture;
-				  dm.fetchDrawableOnThread(userPic, img);
+				  dm.DisplayImage(userPic, img);
 
 				  // Comment text
 				  TextView txt = (TextView)vi.findViewById(R.id.comment_txt);
@@ -245,12 +246,12 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 
 	        ImageView photo = (ImageView) findViewById(R.id.picture);
 	        
-	        dm.fetchDrawableOnThread(uri, photo);
+	        dm.DisplayImage(uri, photo);
 
 	        // Update user icon
 	        ImageView pic = (ImageView) findViewById(R.id.photo_detail_icon);
 			String userPic = Util.USER_DB + p.picture;
-			dm.fetchDrawableOnThread(userPic, pic);
+			dm.DisplayImage(userPic, pic);
 	        
 			// Update the 'Taken by' text
 	        TextView by = (TextView)findViewById(R.id.photo_detail_name);
