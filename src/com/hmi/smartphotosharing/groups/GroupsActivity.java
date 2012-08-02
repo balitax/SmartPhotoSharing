@@ -42,7 +42,7 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
         
 	private ImageLoader im;
 	
-	private ImageView add,groups,subscriptions;
+	private ImageView add,groups;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,8 +53,6 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
         add.setOnClickListener(new MyClickListener(this,GroupCreateActivity.class));
         groups = (ImageView) findViewById(R.id.all_groups);
         groups.setOnClickListener(new MyClickListener(this,GroupJoinActivity.class));
-        subscriptions = (ImageView) findViewById(R.id.button_subscription);
-        subscriptions.setOnClickListener(new MyClickListener(this,SubscriptionsActivity.class));  
                 
         im = new ImageLoader(this);
         loadData(true, true);
@@ -201,7 +199,7 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 			
 			GroupAdapter adapter = new GroupAdapter(
 					this, 
-					R.layout.list_item, 
+					R.layout.group_item, 
 					group_list.toArray(new Group[group_list.size()]),
 					im
 				);

@@ -19,11 +19,12 @@ import com.hmi.smartphotosharing.util.Util;
 public class NavBarListActivity extends ListActivity {
 
 	// ImageViews that function as buttons
-	private ImageView camera,archive,settings;
+	private ImageView camera,home,favourite,settings;
 	 
 	// Nav bar listeners
 	private OnClickListener cameraListener = new NavBarListener(this, Util.ACTION_CAMERA);
-	private OnClickListener archiveListener = new NavBarListener(this, Util.ACTION_ARCHIVE);
+	private OnClickListener homeListener = new NavBarListener(this, Util.ACTION_ARCHIVE);
+	private OnClickListener favouriteListener = new NavBarListener(this, Util.ACTION_FAVOURITE);
 	private OnClickListener settingsListener = new NavBarListener(this, Util.ACTION_SETTINGS);
    
 	@Override
@@ -33,8 +34,10 @@ public class NavBarListActivity extends ListActivity {
        // Set the nav bar listeners
        camera = (ImageView) findViewById(R.id.camera);
        camera.setOnClickListener(cameraListener);
-       archive = (ImageView) findViewById(R.id.archive);
-       archive.setOnClickListener(archiveListener);
+       home = (ImageView) findViewById(R.id.home);
+       home.setOnClickListener(homeListener);
+       favourite = (ImageView) findViewById(R.id.favourite);
+       favourite.setOnClickListener(favouriteListener);
        settings = (ImageView) findViewById(R.id.settings);
        settings.setOnClickListener(settingsListener);
               

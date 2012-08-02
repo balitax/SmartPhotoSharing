@@ -125,7 +125,7 @@ public class GroupJoinActivity extends ListActivity implements OnDownloadListene
 			
 			setListAdapter(new GroupJoinAdapter(
 								this, 
-								R.layout.list_item, 
+								R.layout.group_item, 
 								group_list.toArray(new Group[group_list.size()]),
 								dm
 							));	

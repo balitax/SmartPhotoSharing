@@ -62,16 +62,7 @@
 	    android:layout_below="@+id/header"
 	    android:layout_toRightOf="@+id/group_add"
 	    android:src="@drawable/ic_menu_groups" />
-	
-	<ImageView 
-	    android:id="@+id/button_subscription"
-	    android:contentDescription="@string/subscriptions"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/header"
-	    android:layout_alignParentRight="true"
-	    android:src="@drawable/ic_menu_friendslist" />    
-	    
+		    
     <!-- GROUPS LIST -->
     
      <ListView 

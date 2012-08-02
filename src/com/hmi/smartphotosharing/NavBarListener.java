@@ -1,14 +1,14 @@
 package com.hmi.smartphotosharing;
 
-import com.hmi.smartphotosharing.camera.CameraActivity;
-import com.hmi.smartphotosharing.groups.GroupsActivity;
-import com.hmi.smartphotosharing.util.Util;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
+
+import com.hmi.smartphotosharing.camera.CameraActivity;
+import com.hmi.smartphotosharing.groups.GroupsActivity;
+import com.hmi.smartphotosharing.subscriptions.SubscriptionsActivity;
+import com.hmi.smartphotosharing.util.Util;
 
 public class NavBarListener implements OnClickListener {
    
@@ -26,6 +26,9 @@ public class NavBarListener implements OnClickListener {
 		case Util.ACTION_ARCHIVE:
 			action_archive();
 			break;
+		case Util.ACTION_FAVOURITE:
+			action_favourite();
+			break;
 		case Util.ACTION_CAMERA:
 			action_camera();
 			break;
@@ -35,6 +38,12 @@ public class NavBarListener implements OnClickListener {
 		default:
 		}			
 		
+	}
+
+	private void action_favourite() {
+        Intent intent = new Intent(c, SubscriptionsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        c.startActivity(intent);
 	}
 
 	private void action_settings() {

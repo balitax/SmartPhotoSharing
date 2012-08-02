@@ -17,6 +17,24 @@
     	android:padding="2dp"
 	    android:src="@drawable/ic_unknown" />
 	
+	<ImageView 
+	    android:id="@+id/private_icon"
+	    android:contentDescription="@string/private_group"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+       	android:layout_alignParentLeft="true"
+    	android:padding="1dp"
+	    android:src="@drawable/ic_lock_lock" />	
+	
+	<ImageView 
+	    android:id="@+id/location_icon"
+	    android:contentDescription="@string/private_group"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+       	android:layout_below="@+id/private_icon"
+    	android:padding="1dp"
+	    android:src="@drawable/ic_location_lock" />	
+	        
 	<TextView
         android:id="@+id/total_new"
         style="@style/Red"

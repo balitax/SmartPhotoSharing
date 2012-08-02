@@ -75,7 +75,6 @@ public class GroupAdapter extends ArrayAdapter<Group> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         View v = convertView;
-        GroupHolder holder = null;
        
         if(v == null) {
         	
@@ -83,16 +82,18 @@ public class GroupAdapter extends ArrayAdapter<Group> {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(layoutResourceId, null);
            
-            holder = new GroupHolder();
-            holder.imgIcon = (ImageView)v.findViewById(R.id.icon);
-            holder.txtTitle = (TextView)v.findViewById(R.id.item_text);
-            holder.totalNew = (TextView)v.findViewById(R.id.total_new);
-            holder.picGallery = (Gallery) v.findViewById(R.id.gallery);
-            v.setTag(holder);
-        } else {
-            holder = (GroupHolder)v.getTag();
+            GroupHolder h = new GroupHolder();
+            h.imgIcon = (ImageView)v.findViewById(R.id.icon);
+            h.privateIcon = (ImageView)v.findViewById(R.id.private_icon);
+            h.locationIcon = (ImageView)v.findViewById(R.id.location_icon);
+            h.txtTitle = (TextView)v.findViewById(R.id.item_text);
+            h.totalNew = (TextView)v.findViewById(R.id.total_new);
+            h.picGallery = (Gallery) v.findViewById(R.id.gallery);
+            v.setTag(h);
         }
-                        
+
+        GroupHolder holder = (GroupHolder)v.getTag();
+          
         Group group = data[position];
         holder.txtTitle.setText(group.name);
                 
@@ -104,7 +105,21 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         // the row can also be clicked, in addition to the gallery photos
         v.setOnClickListener(new MyOnClickListener(position));
         
+        // Private icon
+        if(group.isPrivate()) {
+        	holder.privateIcon.setVisibility(ImageView.VISIBLE);
+        } else {
+        	holder.privateIcon.setVisibility(ImageView.GONE);
+        }
+
+        // Private icon
+        if(group.isLocationLocked()) {
+        	holder.locationIcon.setVisibility(ImageView.VISIBLE);
+        } else {
+        	holder.locationIcon.setVisibility(ImageView.GONE);
+        }
         
+        // Number of updates
         if (group.totalnew == 0) {
         	holder.totalNew.setVisibility(TextView.INVISIBLE);
         } else {
@@ -147,6 +162,8 @@ public class GroupAdapter extends ArrayAdapter<Group> {
 	 */
     static class GroupHolder {
         ImageView imgIcon;
+        ImageView privateIcon;
+        ImageView locationIcon;
         TextView txtTitle;
         TextView totalNew;
         Gallery picGallery;

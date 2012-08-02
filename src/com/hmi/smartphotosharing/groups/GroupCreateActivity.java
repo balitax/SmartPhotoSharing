@@ -32,7 +32,7 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
 	private static final int CODE_LOCATION = 1;
 	private static final int CODE_INVITE = 2;
 	
-	private long[] friends;
+	private String friendIds;
 	
 	private double lat1, lon1, lat2, lon2;
 	
@@ -45,7 +45,6 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
         // Make the Dialog style appear fullscreen
         getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 
-        friends = null;
     }
     	    
     public void onClickFriends(View view) {
@@ -85,6 +84,10 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
 	        map.put("lon1", new StringBody(Double.toString(lon1)));
 	        map.put("lon2", new StringBody(Double.toString(lon2)));
 	        map.put("private", new StringBody(isPrivate));
+	        
+	        if (friendIds != "") {
+	        	map.put("members", new StringBody(friendIds));
+	        }
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -102,12 +105,13 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
     	
         if (requestCode == CODE_INVITE) {
         	if (resultCode == RESULT_OK) {
-	        	friends = data.getLongArrayExtra("friends");
-	        	Log.d("LIST", "Friends: " + friends.length);
-	        	
+        		friendIds = data.getStringExtra("friends");
+	        	Log.d("LIST", "Friends: " + friendIds);
+	        		        	
 	        	friendsBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.btn_check_buttonless_on,0,0,0);
 	        	
         	} else {
+        		friendIds = "";
 	        	friendsBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_invite,0,0,0);        		
         	}
         }
@@ -126,6 +130,7 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
 	        	locationBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.btn_check_buttonless_on,0,0,0);
 	        	
         	} else {
+        		lat1 = lat2 = lon1 = lon2 = 0;
 	        	locationBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_mylocation,0,0,0);
         		
         	}

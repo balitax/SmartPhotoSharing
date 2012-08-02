@@ -57,6 +57,8 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	private TextView groupMembers;
 	private TextView groupName;
 	private ImageView groupIcon;
+
+	private ImageView privateIcon, locationIcon;
 	
 	private ImageLoader dm;
 			
@@ -76,6 +78,8 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         groupIcon = (ImageView) findViewById(R.id.group_detail_icon);
         groupPhotos = (TextView) findViewById(R.id.group_detail_photos);
         groupMembers = (TextView) findViewById(R.id.group_detail_members);
+        privateIcon = (ImageView) findViewById(R.id.private_icon);
+        locationIcon = (ImageView) findViewById(R.id.location_icon);
         
         // Get the gallery view
         gridView = (GridView) findViewById(R.id.grid);
@@ -344,6 +348,14 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 			String logoUrl = Util.GROUP_DB + group.logo;
 			dm.DisplayImage(logoUrl, groupIcon);
 	
+			if (!group.isPrivate()) {
+				privateIcon.setVisibility(ImageView.GONE);
+			}
+
+			if (!group.isLocationLocked()) {
+				locationIcon.setVisibility(ImageView.GONE);
+			}
+			
 			// Set the button text join/leave group
 			if (group.member == 0) {
 				isMember = false;

@@ -138,7 +138,7 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 			
 			SubscriptionAdapter adapter = new SubscriptionAdapter(
 					this, 
-					R.layout.list_item, 
+					R.layout.subscription_item, 
 					subscription_list.toArray(new Subscription[subscription_list.size()]),
 					dm
 				);

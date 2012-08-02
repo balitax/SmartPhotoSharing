@@ -22,11 +22,18 @@
         android:gravity="center_horizontal">  
         
 	    <ImageView 
-		    android:id="@+id/archive"
+		    android:id="@+id/home"
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:src="@drawable/ic_menu_home" />
+	    
+	    <ImageView 
+		    android:id="@+id/favourite"
+		    android:contentDescription="@string/icon_unknown"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:src="@drawable/ic_menu_star" />
 	    
 	    <ImageView 
 		    android:id="@+id/camera"

@@ -20,15 +20,13 @@ import com.google.gson.JsonSyntaxException;
 
 public class FetchJSON extends AsyncTask<String,Void,String> {
     
-	private Context c;
 	private int code;
 	private OnDownloadListener dl;
 	private ProgressDialog pd;
 	
-	public FetchJSON(Context c) {
-		this.c = c;
+	public FetchJSON(Object o) {
 		this.code = 0;
-		this.dl = (OnDownloadListener) c;
+		this.dl = (OnDownloadListener) o;
 	}
 	
 	/**
@@ -38,10 +36,9 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 	 * @param dl The listener object
 	 * @param code The request code
 	 */
-	public FetchJSON(Context c, int code) {
-		this.c = c;
+	public FetchJSON(Object o, int code) {
 		this.code = code;
-		this.dl = (OnDownloadListener) c;
+		this.dl = (OnDownloadListener) o;
 		
 	}
 	

@@ -64,22 +64,20 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
     	Intent data = new Intent();
     	
     	SparseBooleanArray items = listView.getCheckedItemPositions();
-    	int size = 0;
     	
+    	StringBuilder sb = new StringBuilder();
+    	boolean first = true;
     	for (int i = 0; i < items.size(); i++) {
     		if (items.valueAt(i)) {
-    			size++;
-    		}
-       	}
-    	
-    	long[] res = new long[size];
-    	for (int i = 0; i < items.size(); i++) {
-    		if (items.valueAt(i)) {
-    			res[i] = items.keyAt(i);
+    			if (first)
+    				first = false;
+    			else
+    				sb.append(",");
+    			sb.append(listView.getItemIdAtPosition(items.keyAt(i)));
     		}
     	}
     	
-    	data.putExtra("friends", res);
+    	data.putExtra("friends", sb.toString());
     	this.setResult(RESULT_OK, data);
     	this.finish();
     }

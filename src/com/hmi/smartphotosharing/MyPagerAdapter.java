@@ -16,12 +16,15 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hmi.smartphotosharing.json.Comment;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
@@ -38,16 +41,7 @@ public class MyPagerAdapter extends PagerAdapter {
 	private List<Photo> data;
 	private long id;
 	private ImageLoader dm;
-	private EditText commentInput;
-	
-	/*
 	private LinearLayout list;
-	private TextView by;
-	private TextView group;
-	private TextView date;
-	private ImageView image;
-	private ImageView userIcon;
-	*/
 	
 	public MyPagerAdapter(Context c, List<Photo> data, ImageLoader dm) {
 		this.context = c;
@@ -70,15 +64,21 @@ public class MyPagerAdapter extends PagerAdapter {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View view = inflater.inflate(R.layout.photo_detail_item, null);
-		
+
+        Button button = (Button)view.findViewById(R.id.add_comment);
+        EditText commentInput = (EditText)view.findViewById(R.id.edit_message);
+        button.setOnClickListener(new MyOnClickListener(position,commentInput));
 		TextView date = (TextView)view.findViewById(R.id.photo_detail_date);
 		TextView group = (TextView)view.findViewById(R.id.photo_detail_group);
 		TextView by = (TextView)view.findViewById(R.id.photo_detail_name);
 		ImageView image = (ImageView) view.findViewById(R.id.picture);
 		ImageView userIcon = (ImageView) view.findViewById(R.id.photo_detail_icon);
-        EditText commentInput = (EditText) view.findViewById(R.id.edit_message);
-        LinearLayout list = (LinearLayout) view.findViewById(R.id.comments);
+        list = (LinearLayout) view.findViewById(R.id.comments);
 
+        // GroupText
+        String groupTxt = context.getResources().getString(R.string.photo_detail_group);
+        group.setText(String.format(groupTxt, p.groupname));
+        
         // Update user icon
 		String userPic = Util.USER_DB + p.picture;
 		dm.DisplayImage(userPic, userIcon);
@@ -93,10 +93,11 @@ public class MyPagerAdapter extends PagerAdapter {
         String datum = sdf.format(time);
         date.setText(datum);
         
-
         dm.DisplayImage(p.location + p.name, image);
-			
-        ((ViewPager) collection).addView(view, 0);
+		      
+        setComments(p.comments);
+        
+		((ViewPager) collection).addView(view, 0);
 
         return view;
     }
@@ -118,26 +119,75 @@ public class MyPagerAdapter extends PagerAdapter {
     @Override
     public Parcelable saveState() {
         return null;
-    }
-    	
-	public void onCommentClick(View v) {
-		SharedPreferences settings = context.getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);
-		String hash = settings.getString(Login.SESSION_HASH, null);
+    } 	
 
-		String commentTxt = commentInput.getText().toString();
-        String commentUrl = Util.getUrl(context,R.string.photo_detail_addcomment);
-        
-        HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
-        try {
-			map.put("sid", new StringBody(hash));
-	        map.put("iid", new StringBody(Long.toString(id)));
-	        map.put("comment", new StringBody(commentTxt));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+	public void setComments(List<Comment> comments) {
+		list.removeAllViews();
+		if (comments != null) {
+			for (int i=0; i<comments.size(); i++) {
+				
+			  LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			  View vi = inflater.inflate(R.layout.comment, null);
+			  Comment comment = comments.get(i);
+			  
+			  //Icon
+			  ImageView img = (ImageView)vi.findViewById(R.id.comment_icon);
+			  String userPic = Util.USER_DB + comment.picture;
+			  dm.DisplayImage(userPic, img);
+	
+			  // Comment text
+			  TextView txt = (TextView)vi.findViewById(R.id.comment_txt);
+			  txt.setText(comment.comment);
+			  
+			  
+			  // Get the timestamp
+	          Date time = new Date(Long.parseLong(comment.time)*1000);
+	          SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	          String datum = sdf.format(time);
+	          				  
+			  // Comment username
+			  TextView user = (TextView)vi.findViewById(R.id.comment_user);
+			  user.setText(comment.rname + " (" + datum + ")");
+			  
+			  
+			  list.addView(vi);
+			}
+		} else {
+	
+			TextView txt = new TextView(context);
+			txt.setText("No comments for this photo");
+			list.addView(txt);
 		}
-        
-        PostData pr = new PostData(commentUrl,map);
-        new PostRequest(context, CODE_COMMENT_ADD).execute(pr);
 	}
 	
+    private class MyOnClickListener implements OnClickListener{       
+        private int mPosition;
+        private EditText e;
+        public MyOnClickListener(int position, EditText e){
+            mPosition = position;
+            this.e = e;
+        }
+        
+        @Override
+        public void onClick(View arg0) {
+    		SharedPreferences settings = context.getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);
+    		String hash = settings.getString(Login.SESSION_HASH, null);
+    		
+    		
+            String commentUrl = Util.getUrl(context,R.string.photo_detail_addcomment);
+            
+            HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+            try {
+    			map.put("sid", new StringBody(hash));
+    	        map.put("iid", new StringBody(Long.toString(id)));
+    	        map.put("comment", new StringBody(e.getEditableText().toString()));
+    		} catch (UnsupportedEncodingException e) {
+    			e.printStackTrace();
+    		}
+            
+            PostData pr = new PostData(commentUrl,map);
+            new PostRequest(context, CODE_COMMENT_ADD).execute(pr);
+        }       
+    }
+    	
 }

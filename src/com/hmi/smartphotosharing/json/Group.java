@@ -13,9 +13,6 @@ public class Group {
 	public String gid;
 	public String name;
 	public String locationlink;
-	public String timelink;
-	public String starttime;
-	public String endtime;
 	public String longstart;
 	public String longend;
 	public String latstart;
@@ -27,12 +24,20 @@ public class Group {
 	public int totalnew;
 	
 	@SerializedName("private")
-	public String private_group;
+	private String private_group;
 	public String logo;
 	public String description;
 	public String owner;
 	
+	public boolean isLocationLocked() {
+		return locationlink.equals("1");
+	}
+	
 	public List<Photo> photos;
+	
+	public boolean isPrivate() {
+		return private_group.equals("1");
+	}
 	
 	public long getId() {
 		return Long.parseLong(gid);

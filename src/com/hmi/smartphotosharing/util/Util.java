@@ -19,6 +19,7 @@ public class Util {
     public static final int ACTION_ARCHIVE = 1;
     public static final int ACTION_CAMERA = 2;
     public static final int ACTION_SETTINGS = 3;
+    public static final int ACTION_FAVOURITE = 4;
 
     public static final String API_KEY = "AIzaSyCKN-AGNHA7ZYTPQ_-IXZUHFGT8UlXlZig";
     public static final String API_KEY_MAPS ="0LgN0zWElNFx2cMBe0vH1UtWShWq1VlUPUeUb9w";

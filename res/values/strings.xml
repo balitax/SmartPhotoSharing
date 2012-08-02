@@ -13,6 +13,7 @@
     <string name="no_data">This is an empty list</string>
     <string name="search">Search</string>
     <string name="subscriptions">Subscriptions</string>
+    <string name="private_group">Private</string>
         
     <string name="toggle_gps">Update GPS</string>
     <string name="enable_gps">Enable GPS</string>
@@ -61,7 +62,7 @@
     <!--  Group Detail -->
     
     <string name="group_http_detail">cmd=group&amp;sid=%1$s&amp;gid=%2$s</string>
-    <string name="group_http_detail_photos">cmd=listpics&amp;sid=%1$s&amp;gid=%2$s</string>
+    <string name="group_http_detail_photos">cmd=listpics&amp;sid=%1$s&amp;gid=%2$s&amp;comments=1</string>
     <string name="group_detail_name">Loading group data..</string>
     <string name="group_detail_members">%1$d members</string>
     <string name="group_detail_photos">%1$d photos</string>
