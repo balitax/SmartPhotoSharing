@@ -3,13 +3,14 @@ package com.hmi.smartphotosharing.groups;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.ListActivity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
+import com.hmi.smartphotosharing.NavBarListActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Group;
@@ -19,21 +20,16 @@ import com.hmi.smartphotosharing.json.StringRepsonse;
 import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
 
-public class GroupJoinActivity extends ListActivity implements OnDownloadListener{
+public class GroupJoinActivity extends NavBarListActivity implements OnDownloadListener{
 
 	private ImageLoader dm;
 	public static final int CODE_GROUPS = 1;
 	public static final int CODE_JOIN = 2;
-	
-	private static final int STATUS_OK = 200;
-	private static final int STATUS_FORBIDDEN = 403;
-	private static final int STATUS_404 = 404;
-	private static final int STATUS_FAILED = 500;
-	
+		
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.join_group);
+        super.onCreate(savedInstanceState);
         dm = new ImageLoader(this);
     }
     	
@@ -88,26 +84,14 @@ public class GroupJoinActivity extends ListActivity implements OnDownloadListene
 		if (response != null) {
 			switch(response.getStatus()) {
 			
-			case(STATUS_OK):
+			case(Util.STATUS_OK):
 				Toast.makeText(this, "Joined group", Toast.LENGTH_SHORT).show();
 	    		setResult(RESULT_OK);
 	    		finish();
 				break;
-				
-			case(STATUS_404):
-				Toast.makeText(this, "Group does not exist", Toast.LENGTH_SHORT).show();
-				break;
-				
-			case(STATUS_FORBIDDEN):
-				Toast.makeText(this, "This group is private, you need an invite", Toast.LENGTH_SHORT).show();
-				break;	
-				
-			case(STATUS_FAILED):
-				Toast.makeText(this, "You already are a member", Toast.LENGTH_SHORT).show();
-				break;	
-				
+								
 			default:
-				Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			
 			}
 		}
@@ -116,6 +100,7 @@ public class GroupJoinActivity extends ListActivity implements OnDownloadListene
 
 	public void parseGroups(String json) {
 
+		Log.d("JOIN", json);
 		Gson gson = new Gson();
 		GroupListResponse gr = gson.fromJson(json, GroupListResponse.class);
 		

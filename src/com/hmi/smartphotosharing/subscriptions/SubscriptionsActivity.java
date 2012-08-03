@@ -118,7 +118,7 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 		
 		// Set the user name
 		TextView stats = (TextView) findViewById(R.id.stats);
-		stats.setText(String.format(this.getResources().getString(R.string.profile_stats), user.groups, user.photos));
+		stats.setText(String.format(this.getResources().getString(R.string.profile_follows), user.following, user.followers));
 		
 		// Set the user icon
 		String userPic = Util.USER_DB + user.picture;

@@ -38,11 +38,21 @@
         android:hint="@string/group_create_description" />
 
     <CheckBox android:id="@+id/checkbox_private"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/group_create_desc"
         android:text="@string/group_private" />
-        
+    
+    <ImageView 
+        android:src="@drawable/ic_menu_help2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/group_create_desc"
+        android:layout_marginTop="8dp"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@string/button_send"
+        android:onClick="onPrivateHelp" />  
+                    
     <Button
         android:id="@+id/button_invite_friends"
         android:text="@string/group_create_friends"
@@ -51,13 +61,29 @@
         android:layout_below="@+id/checkbox_private"
     	android:drawableLeft="@drawable/ic_menu_invite"
         android:onClick="onClickFriends" />
+
+    <CheckBox android:id="@+id/checkbox_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_invite_friends"
+        android:text="@string/group_location" />
+    
+    <ImageView 
+        android:src="@drawable/ic_menu_help2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_invite_friends"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/button_send"
+        android:onClick="onLocationHelp" />
     
     <Button
         android:id="@+id/button_location"
         android:text="@string/group_create_location"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button_invite_friends"
+        android:layout_below="@+id/checkbox_location"
     	android:drawableLeft="@drawable/ic_menu_mylocation"
         android:onClick="onClickLocation" /> 
     	   

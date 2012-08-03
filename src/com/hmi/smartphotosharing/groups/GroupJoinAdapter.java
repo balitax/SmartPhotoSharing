@@ -87,6 +87,8 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
             v = inflater.inflate(layoutResourceId, null);
            
             holder = new GroupHolder();
+            holder.privateIcon = (ImageView)v.findViewById(R.id.private_icon);
+            holder.locationIcon = (ImageView)v.findViewById(R.id.location_icon);
             holder.imgIcon = (ImageView)v.findViewById(R.id.icon);
             holder.txtTitle = (TextView)v.findViewById(R.id.item_text);
             holder.totalNew = (TextView)v.findViewById(R.id.total_new);
@@ -98,7 +100,20 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
                         
         Group group = data[position];
         holder.txtTitle.setText(group.name);
-        
+
+        // Private icon
+        if(group.isPrivate()) {
+        	holder.privateIcon.setVisibility(ImageView.VISIBLE);
+        } else {
+        	holder.privateIcon.setVisibility(ImageView.GONE);
+        }
+
+        // Private icon
+        if(group.isLocationLocked()) {
+        	holder.locationIcon.setVisibility(ImageView.VISIBLE);
+        } else {
+        	holder.locationIcon.setVisibility(ImageView.GONE);
+        }
         if (group.totalnew == 0) 
         	holder.totalNew.setVisibility(View.GONE);
         else
@@ -146,7 +161,9 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
 	 *
 	 */
     static class GroupHolder {
-        ImageView imgIcon;
+        public ImageView locationIcon;
+		public ImageView privateIcon;
+		ImageView imgIcon;
         TextView txtTitle;
         TextView totalNew;
         Gallery picGallery;

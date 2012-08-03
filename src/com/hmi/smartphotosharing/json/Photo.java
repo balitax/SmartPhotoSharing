@@ -9,6 +9,7 @@ public class Photo {
 	public String uid;
 	public String iid;
 	public String gid;
+	
 	public String longtitude;
 	public String latitude;
 	
@@ -43,4 +44,5 @@ public class Photo {
 	public long getId() {
 		return Long.parseLong(iid);		
 	}
+	
 }

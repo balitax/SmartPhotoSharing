@@ -20,6 +20,7 @@ import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserListResponse;
 import com.hmi.smartphotosharing.util.ImageLoader;
+import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 
 public class SelectFriendsActivity extends ListActivity implements OnDownloadListener {
@@ -45,6 +46,7 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
         super.onStart();
         loadData();
         
+        Util.createSimpleDialog(this, getResources().getString(R.string.dialog_friends));
 	}
 	
     @Override
@@ -118,13 +120,16 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
 			List<User> userList = response.getObject();
 			if (userList == null) userList = new ArrayList<User>();
 			
-			setListAdapter(new FriendsAdapter(
-								this, 
-								R.layout.friends_item, 
-								userList,
-								dm,
-								listView
-							));	
+			FriendsAdapter adapter = new FriendsAdapter(
+					this, 
+					R.layout.friends_item, 
+					userList,
+					dm,
+					listView
+				);
+			
+			adapter.sort(Sorter.USER_SORTER);
+			setListAdapter(adapter);	
 		}
 	}
 	

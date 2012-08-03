@@ -44,12 +44,13 @@ public class PhotoDetailActivity2 extends NavBarActivity implements OnDownloadLi
 
 	private static final int CODE_COMMENT_ADD = 2;
 	private static final int CODE_COMMENT_LOAD = 3;
-	private static final int CODE_GROUP_PHOTOS = 4;
+	private static final int CODE_PHOTOS = 4;
 	
 	public static final String KEY_ID = "id";
 	public static final String KEY_GID = "gid";
+	public static final String KEY_SSID = "ssid";
 	
-	private long id, gid;
+	private long id, gid, ssid;
 	private ImageLoader dm;
 	
 	private ViewPager vp;
@@ -62,7 +63,7 @@ public class PhotoDetailActivity2 extends NavBarActivity implements OnDownloadLi
         Intent intent = getIntent();
         id = intent.getLongExtra(KEY_ID, 0);
         gid = intent.getLongExtra(KEY_GID, 0);    
-
+        ssid = intent.getLongExtra(KEY_SSID, 0); 
         vp = (ViewPager) findViewById(R.id.viewpager);    
         dm = new ImageLoader(this);
         if (id != 0) {
@@ -126,10 +127,22 @@ public class PhotoDetailActivity2 extends NavBarActivity implements OnDownloadLi
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
         
-		// Get list of photos
-		String photosUrl = String.format(Util.getUrl(this,R.string.group_http_detail_photos),hash,gid);
-		Log.d("JSON", photosUrl);
-		new FetchJSON(this,CODE_GROUP_PHOTOS).execute(photosUrl);
+		if (gid != 0) {
+			// Get list of photos
+			String photosUrl = String.format(Util.getUrl(this,R.string.group_http_detail_photos),hash,gid);
+			Log.d("JSON", photosUrl);
+			new FetchJSON(this,CODE_PHOTOS).execute(photosUrl);
+		}
+		
+		else if (ssid != 0) {
+			String photosUrl = String.format(Util.getUrl(this,R.string.subscriptions_http_photos),hash,ssid);
+			Log.d("JSON", photosUrl);
+			new FetchJSON(this,CODE_PHOTOS).execute(photosUrl);
+		}
+		
+		else {
+			// TODO ERROR
+		}
 		
 	}
 	
@@ -139,7 +152,7 @@ public class PhotoDetailActivity2 extends NavBarActivity implements OnDownloadLi
 		Log.i("JSON parse", json);
 		
 		switch(code){
-		case(CODE_GROUP_PHOTOS):
+		case(CODE_PHOTOS):
 			parsePhoto(json);
 			break;
 		case(CODE_COMMENT_ADD):

@@ -109,9 +109,9 @@ public class Util {
 		alert.show();
 	}  
 	
-	public static void createUsageDialog(Context c) {
+	public static void createSimpleDialog(Context c, String s) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(c);
-		builder.setMessage("Press and hold on the map to select a location.")
+		builder.setMessage(s)
 		     .setCancelable(false)
 		     .setNeutralButton("Ok", null);
 		AlertDialog alert = builder.create();

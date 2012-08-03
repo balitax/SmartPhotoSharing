@@ -14,6 +14,8 @@ public class User {
 	
 	public String groups;
 	public String photos;
+	public String following;
+	public String followers;
 	
 	public long getId() {
 		return Long.parseLong(uid);

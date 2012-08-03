@@ -14,11 +14,18 @@
     <string name="search">Search</string>
     <string name="subscriptions">Subscriptions</string>
     <string name="private_group">Private</string>
+    <string name="followers">Followers</string>
         
     <string name="toggle_gps">Update GPS</string>
     <string name="enable_gps">Enable GPS</string>
     <string name="enable_gps_dialog">GPS provider not enabled. Would you like to enable it?</string>
     <string name="not_support_gps">GPS provider not supported</string>
+    
+    <string name="dialog_map">Press and hold on the map to select a location.</string>
+    <string name="dialog_location">If you check this, you can only upload photos from within the selected location.</string>
+    <string name="dialog_private">Private groups are not visible to everyone. The only way for people to join a private group is when you invite them.</string>
+    <string name="dialog_location_error">You can only lock this group to a location if you have selected a location on the map.</string>
+    <string name="dialog_friends">Here you can select multiple friends who will be invited to this group. You can also invite friends later, after the group is created.</string>   
     
     <!--  Google Cloud Messaging -->
     <string name="gcm_register">cmd=registerc2dm&amp;sid=%1$s&amp;key=%2$s</string> 
@@ -53,6 +60,7 @@
     <string name="groups_http_users">cmd=allusers&amp;sid=%1$s</string>
     
     <string name="group_private">Private Group</string>
+    <string name="group_location">Location locked</string>
     <string name="group_create_friends">Invite Friends</string>
     <string name="group_create_name">Group name</string>
     <string name="group_create_description">Enter a description</string>
@@ -72,9 +80,11 @@
     <string name="sub_select_friend">Follow friend</string>
     <string name="sub_select_location">Follow location</string>
     <string name="subscriptions_http">cmd=listsubscriptions&amp;sid=%1$s</string>
+    <string name="subscriptions_http_photos">cmd=listsubscriptions&amp;sid=%1$s&amp;ssid=%2$s</string>
     <string name="subscriptions_http_create">cmd=addsubscription</string>
     <string name="subscriptions_http_remove">cmd=removescription&amp;sid=%1$s&amp;ssid=%2$s</string>
     <string name="subscription_static_map">http://maps.googleapis.com/maps/api/staticmap?center=%1$s,%2$s&amp;zoom=%3$s&amp;size=100x100&amp;sensor=false&amp;key=%4$s</string>
+    
     <!--  Photo Detail -->
     
     <string name="photo_detail_name">By %1$s</string>
@@ -87,6 +97,7 @@
     
     <string name="profile_name">Loading user data.</string>
     <string name="profile_stats">%1$s groups, %2$s photos</string>
+    <string name="profile_follows">%1$s subscriptions, %2$s followers</string>
             
     <!--  Menu -->
     

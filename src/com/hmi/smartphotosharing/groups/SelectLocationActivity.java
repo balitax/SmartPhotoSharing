@@ -119,7 +119,8 @@ public class SelectLocationActivity extends MapActivity {
         	setupGps();
         }
         
-        Util.createUsageDialog(this);
+        String s = getResources().getString(R.string.dialog_map);
+        Util.createSimpleDialog(this,s);
         
     }
     

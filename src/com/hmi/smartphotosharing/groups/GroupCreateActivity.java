@@ -57,8 +57,28 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
     	startActivityForResult(intent, CODE_LOCATION);
     }	
     
+    public void onLocationHelp(View v) {
+    	Util.createSimpleDialog(this, getResources().getString(R.string.dialog_location));
+    }
+    
+    public void onPrivateHelp(View v) {
+    	Util.createSimpleDialog(this, getResources().getString(R.string.dialog_private));
+    }
+    
 	public void onCreateClick(View v) {
 
+		CheckBox locationCheck = (CheckBox) findViewById(R.id.checkbox_location);
+		boolean locationLocked = locationCheck.isChecked();
+		
+		boolean noLocationSelected = lat1 == 0 && lat2 == 0 && lon1 == 0 && lon2 == 0;
+		if (locationLocked && noLocationSelected) {
+			Util.createSimpleDialog(this, getResources().getString(R.string.dialog_location_error));
+		} else {
+			postData();
+		}
+	} 
+	
+	private void postData() {
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		
@@ -68,8 +88,11 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
 		EditText descView = (EditText) findViewById(R.id.group_create_desc);
 		String desc = descView.getText().toString();
 			
-		CheckBox checkbox = (CheckBox) findViewById(R.id.checkbox_private);
-		String isPrivate = checkbox.isChecked() ? "1" : "0";
+		CheckBox privateCheck = (CheckBox) findViewById(R.id.checkbox_private);
+		String isPrivate = privateCheck.isChecked() ? "1" : "0";
+
+		CheckBox locationCheck = (CheckBox) findViewById(R.id.checkbox_location);
+		String locationLocked = locationCheck.isChecked() ? "1" : "0";
 		
     	// Get group info
 		String createUrl = Util.getUrl(this,R.string.groups_http_create);
@@ -84,6 +107,7 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
 	        map.put("lon1", new StringBody(Double.toString(lon1)));
 	        map.put("lon2", new StringBody(Double.toString(lon2)));
 	        map.put("private", new StringBody(isPrivate));
+	        map.put("locationlink", new StringBody(locationLocked));
 	        
 	        if (friendIds != "") {
 	        	map.put("members", new StringBody(friendIds));
@@ -96,8 +120,7 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
 		
 		Log.d("SmarthPhotoSharing", "Create url: " + createUrl);
 		new PostRequest(this).execute(pr);
-		
-	} 
+	}
 	
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     	

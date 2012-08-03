@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hmi.smartphotosharing.MyGalleryAdapter;
-import com.hmi.smartphotosharing.PhotoDetailActivity;
+import com.hmi.smartphotosharing.PhotoDetailActivity2;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.Subscription;
 import com.hmi.smartphotosharing.util.ImageLoader;
@@ -161,7 +161,7 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         };
         
         // Detect clicking an image
-        holder.picGallery.setOnItemClickListener(new MyOnItemClickListener(context));
+        holder.picGallery.setOnItemClickListener(new MyOnItemClickListener(context,subscription.getId()));
         
         // Detect swipes
         holder.picGallery.setOnTouchListener(gestureListener);
@@ -211,15 +211,17 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
      */
     private class MyOnItemClickListener implements OnItemClickListener{    
         private Context context;
-        
-        public MyOnItemClickListener(Context context){
+        private long ssid;
+        public MyOnItemClickListener(Context context, long ssid){
             this.context = context;
+            this.ssid = ssid;
         }
         
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-        	Intent intent = new Intent(context, PhotoDetailActivity.class);
+        	Intent intent = new Intent(context, PhotoDetailActivity2.class);
+        	intent.putExtra("ssid", ssid);
 		    intent.putExtra("id", id);
 		    context.startActivity(intent);
         	
