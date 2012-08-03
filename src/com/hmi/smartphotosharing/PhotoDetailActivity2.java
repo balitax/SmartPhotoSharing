@@ -1,17 +1,8 @@
 package com.hmi.smartphotosharing;
 
-import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.zip.Inflater;
 
-import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.StringBody;
-
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -21,29 +12,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.hmi.smartphotosharing.json.Comment;
-import com.hmi.smartphotosharing.json.CommentListResponse;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PhotoListResponse;
 import com.hmi.smartphotosharing.json.PhotoResponse;
-import com.hmi.smartphotosharing.json.PostData;
-import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
 
 public class PhotoDetailActivity2 extends NavBarActivity implements OnDownloadListener {
 
 	private static final int CODE_COMMENT_ADD = 2;
-	private static final int CODE_COMMENT_LOAD = 3;
 	private static final int CODE_PHOTOS = 4;
 	
 	public static final String KEY_ID = "id";

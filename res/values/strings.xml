@@ -55,7 +55,7 @@
     <string name="groups_http_public">cmd=allgroups&amp;sid=%1$s&amp;notjoined=1</string>
     <string name="groups_http_join">cmd=joingroup&amp;sid=%1$s&amp;gid=%2$s</string>
     <string name="groups_http_leave">cmd=leavegroup&amp;sid=%1$s&amp;gid=%2$s</string>
-    <string name="groups_http_invite">cmd=add2group&amp;sid=%1$s&amp;gid=%2$s&amp;member=%3$s</string>
+    <string name="groups_http_invite">cmd=add2group</string>
     <string name="groups_http_users_invite">cmd=allusers&amp;sid=%1$s&amp;gid=%2$s</string>
     <string name="groups_http_users">cmd=allusers&amp;sid=%1$s</string>
     
@@ -65,6 +65,7 @@
     <string name="group_create_name">Group name</string>
     <string name="group_create_description">Enter a description</string>
     <string name="group_create_location">Choose a location</string>
+    <string name="group_create_title">Create New Group</string>
     <string name="join_group">Join Group</string> 
     
     <!--  Group Detail -->
@@ -76,6 +77,7 @@
     <string name="group_detail_photos">%1$d photos</string>
     
     <!-- Subscriptions -->
+    <string name="sub_create_title">Create Subscription</string>
     <string name="sub_create_name">Subscription name</string>
     <string name="sub_select_friend">Follow friend</string>
     <string name="sub_select_location">Follow location</string>

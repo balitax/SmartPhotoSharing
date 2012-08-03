@@ -1,24 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
-
-<RelativeLayout 
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
-
-    <EditText
-        android:id="@+id/group_create_name"
-        android:layout_width="fill_parent"
+    <TextView
+        android:id="@+id/subscription_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/group_create_name"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/button_send" >
-
-        <requestFocus />
-    </EditText>
-
+        android:padding="5dp"
+        android:text="@string/group_create_title"
+        android:textSize="25sp" />
     <ImageView 
         android:id="@+id/button_send"
         android:src="@drawable/ic_menu_send"
@@ -27,66 +18,88 @@
         android:layout_alignParentRight="true"
         android:contentDescription="@string/button_send"
         android:onClick="onCreateClick" />
+        
+    <ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_below="@+id/button_send" >
     
-    <EditText
-        android:id="@+id/group_create_desc"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/group_create_name"
-        android:inputType="textMultiLine"
-        android:lines="3"
-        android:hint="@string/group_create_description" />
+	    <RelativeLayout
+	        android:id="@+id/contents"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content">
+		    
+		    <EditText
+		        android:id="@+id/group_create_name"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:hint="@string/group_create_name"
+		        android:layout_alignParentLeft="true"
+		        android:layout_toLeftOf="@+id/button_send" >
+		    </EditText>
+		
+		    
+		    <EditText
+		        android:id="@+id/group_create_desc"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/group_create_name"
+		        android:inputType="textMultiLine"
+		        android:lines="3"
+		        android:hint="@string/group_create_description" />
+		
+		    <CheckBox android:id="@+id/checkbox_private"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/group_create_desc"
+		        android:text="@string/group_private" />
+		    
+		    <ImageView 
+		        android:src="@drawable/ic_menu_help2"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/group_create_desc"
+		        android:layout_marginTop="8dp"
+		        android:layout_alignParentRight="true"
+		        android:contentDescription="@string/button_send"
+		        android:onClick="onPrivateHelp" />  
+		                    
+		    <Button
+		        android:id="@+id/button_invite_friends"
+		        android:text="@string/group_create_friends"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/checkbox_private"
+		    	android:drawableLeft="@drawable/ic_menu_invite"
+		        android:onClick="onClickFriends" />
+		
+		    <CheckBox android:id="@+id/checkbox_location"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/button_invite_friends"
+		        android:text="@string/group_location" />
+		    
+		    <ImageView 
+		        android:src="@drawable/ic_menu_help2"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/button_invite_friends"
+		        android:layout_alignParentRight="true"
+		        android:layout_marginTop="8dp"
+		        android:contentDescription="@string/button_send"
+		        android:onClick="onLocationHelp" />
+		    
+		    <Button
+		        android:id="@+id/button_location"
+		        android:text="@string/group_create_location"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/checkbox_location"
+		    	android:drawableLeft="@drawable/ic_menu_mylocation"
+		        android:onClick="onClickLocation" /> 
+		    	   
+		</RelativeLayout> 
+	</ScrollView>
 
-    <CheckBox android:id="@+id/checkbox_private"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/group_create_desc"
-        android:text="@string/group_private" />
     
-    <ImageView 
-        android:src="@drawable/ic_menu_help2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/group_create_desc"
-        android:layout_marginTop="8dp"
-        android:layout_alignParentRight="true"
-        android:contentDescription="@string/button_send"
-        android:onClick="onPrivateHelp" />  
-                    
-    <Button
-        android:id="@+id/button_invite_friends"
-        android:text="@string/group_create_friends"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/checkbox_private"
-    	android:drawableLeft="@drawable/ic_menu_invite"
-        android:onClick="onClickFriends" />
-
-    <CheckBox android:id="@+id/checkbox_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button_invite_friends"
-        android:text="@string/group_location" />
-    
-    <ImageView 
-        android:src="@drawable/ic_menu_help2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button_invite_friends"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="8dp"
-        android:contentDescription="@string/button_send"
-        android:onClick="onLocationHelp" />
-    
-    <Button
-        android:id="@+id/button_location"
-        android:text="@string/group_create_location"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/checkbox_location"
-    	android:drawableLeft="@drawable/ic_menu_mylocation"
-        android:onClick="onClickLocation" /> 
-    	   
-</RelativeLayout> 
-
-</ScrollView>
+</RelativeLayout>

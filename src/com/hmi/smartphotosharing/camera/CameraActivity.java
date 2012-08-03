@@ -12,16 +12,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SharePhotoActivity;
@@ -37,10 +33,10 @@ public class CameraActivity extends Activity {
 
 
 	private static final int ACTION_TAKE_PHOTO = 1;
+	private static final int ACTION_SHARE = 2;
 
 	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
 	private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
-	private ImageView mImageView;
 	private Bitmap mImageBitmap;
 
 	private String mCurrentPhotoPath;
@@ -106,6 +102,10 @@ public class CameraActivity extends Activity {
 			}
 
 		}
+		
+		else if (resultCode == RESULT_CANCELED) {
+			finish();
+		}
 
 	}
 
@@ -149,7 +149,7 @@ public class CameraActivity extends Activity {
 		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mCurrentPhotoPath));
 		
 		// Create and start the chooser
-		startActivity(intent);
+		startActivityForResult(intent, ACTION_SHARE);
 		
 	}
 

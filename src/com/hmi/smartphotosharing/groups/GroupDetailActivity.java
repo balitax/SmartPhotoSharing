@@ -1,7 +1,12 @@
 package com.hmi.smartphotosharing.groups;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.StringBody;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,6 +39,8 @@ import com.hmi.smartphotosharing.json.GroupResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PhotoListResponse;
+import com.hmi.smartphotosharing.json.PostData;
+import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.StringRepsonse;
 import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
@@ -181,9 +189,37 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
     }
     
     public void onClickInvite(View view) {
-    	Intent intent = new Intent(this, SelectSingleFriendActivity.class);
-    	intent.putExtra("id", id);
+    	Intent intent = new Intent(this,SelectFriendsActivity.class);
     	startActivityForResult(intent, CODE_INVITE);
+    }
+    
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	
+        if (requestCode == CODE_INVITE) {
+        	if (resultCode == RESULT_OK) {
+        		String friendIds = data.getStringExtra("friends");
+	        	Log.d("LIST", "Friends: " + friendIds);
+	        	
+	    		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+	    		String hash = settings.getString(Login.SESSION_HASH, null);
+
+	            String inviteUrl = Util.getUrl(this,R.string.groups_http_invite);	
+	            
+	            HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+	            try {
+	    			map.put("sid", new StringBody(hash));
+	    	        
+	    	        if (friendIds != "") {
+	    	        	map.put("members", new StringBody(friendIds));
+	    	        }
+	    		} catch (UnsupportedEncodingException e) {
+	    			e.printStackTrace();
+	    		}
+	            
+	            PostData pr = new PostData(inviteUrl,map);
+	    		new PostRequest(this,CODE_INVITE).execute(pr);
+	        }
+        }
     }
     
     private class MyOnItemClickListener implements OnItemClickListener {
@@ -258,11 +294,34 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 			case CODE_JOIN:
 				parseJoin(result);
 				break;
+			case CODE_INVITE:
+				parseInvite(result);
+				break;
 			case CODE_LEAVE:
 				parseLeave(result);
 				break;
 			default:
 		}
+	}
+	
+	private void parseInvite(String json) {
+
+		Gson gson = new Gson();
+		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
+		
+		if (response != null) {
+			switch(response.getStatus()) {
+			
+			case(Util.STATUS_OK):
+				Toast.makeText(this, "Users invited to group", Toast.LENGTH_SHORT).show();
+				break;
+								
+			default:
+				Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+			
+			}
+		}
+		
 	}
 	
 	private void parseLeave(String json) {

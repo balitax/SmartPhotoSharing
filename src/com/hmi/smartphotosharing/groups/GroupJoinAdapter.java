@@ -179,7 +179,7 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
         @Override
         public void onClick(View arg0) {
         	//groupClickListener.OnGroupClick(getItemId(mPosition));
-        	SharedPreferences settings = context.getSharedPreferences(Login.SESSION_PREFS, context.MODE_PRIVATE);
+        	SharedPreferences settings = context.getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);
     		String hash = settings.getString(Login.SESSION_HASH, null);
 
             String joinUrl = String.format(Util.getUrl(context,R.string.groups_http_join),hash,getItemId(mPosition));		

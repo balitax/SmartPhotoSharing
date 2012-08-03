@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
@@ -16,7 +15,6 @@ import com.hmi.smartphotosharing.NavBarListActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
-import com.hmi.smartphotosharing.json.StringRepsonse;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserListResponse;
 import com.hmi.smartphotosharing.util.ImageLoader;
@@ -29,9 +27,6 @@ public class SelectSingleFriendActivity extends NavBarListActivity implements On
 	private long id;
 	
 	private static final int CODE_USERS = 1;
-	private static final int CODE_INVITE = 2;
-	
-	private static final int STATUS_OK = 200;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,37 +73,11 @@ public class SelectSingleFriendActivity extends NavBarListActivity implements On
 		case CODE_USERS:
 			parseUsers(result);
 			break;
-			
-		case CODE_INVITE:
-			parseInvite(result);
-			break;
-			
+						
 		default:
 		}
 	}
 	
-	private void parseInvite(String json) {
-
-		Gson gson = new Gson();
-		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
-		
-		if (response != null) {
-			switch(response.getStatus()) {
-			
-			case(STATUS_OK):
-				Toast.makeText(this, "User invited to group", Toast.LENGTH_SHORT).show();
-	    		setResult(RESULT_OK);
-	    		finish();
-				break;
-								
-			default:
-				Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
-			
-			}
-		}
-		
-	}
-
 	public void parseUsers(String json) {
 
 		Gson gson = new Gson();
@@ -137,15 +106,6 @@ public class SelectSingleFriendActivity extends NavBarListActivity implements On
     	data.putExtra("friend", uid);
     	this.setResult(RESULT_OK, data);
     	this.finish();
-
-		/*
-		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
-		String hash = settings.getString(Login.SESSION_HASH, null);
-		Log.d("GroupInvite", "User ID: " + uid);
-        String inviteUrl = String.format(Util.getUrl(this,R.string.groups_http_invite),hash,id,uid);		
-        new FetchJSON(this, CODE_INVITE).execute(inviteUrl);
-		*/
-		
 		
 	}
 }

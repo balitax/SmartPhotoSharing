@@ -10,10 +10,9 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.apache.http.entity.mime.content.ContentBody;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -34,6 +33,12 @@ public class PostRequest extends AsyncTask<PostData,Void,String> {
 		this.c = c;
 		this.code = 0;
 		this.dl = (OnDownloadListener) c;
+		pd = new ProgressDialog(this.c);
+		pd.setMessage("Loading...");
+		pd.setCancelable(false);
+		pd.setIndeterminate(true);
+		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		pd.show();
 	}
 	
 	/**

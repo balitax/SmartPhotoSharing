@@ -65,8 +65,7 @@
         <activity android:label="Invite" 
             android:name=".groups.SelectSingleFriendActivity" />
         <activity android:label="Create Group" 
-            android:name=".groups.GroupCreateActivity"
-            android:theme="@android:style/Theme.Dialog" />
+            android:name=".groups.GroupCreateActivity" />
         <activity android:label="Invite Friends" 
             android:name=".groups.SelectFriendsActivity"
             android:theme="@android:style/Theme.Dialog" />

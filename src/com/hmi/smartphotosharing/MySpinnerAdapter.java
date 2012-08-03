@@ -3,16 +3,12 @@ package com.hmi.smartphotosharing;
 import java.util.List;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hmi.smartphotosharing.json.Group;
-import com.hmi.smartphotosharing.json.Photo;
 
 public class MySpinnerAdapter extends BaseAdapter {
 	private Context mContext;

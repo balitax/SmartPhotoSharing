@@ -33,9 +33,7 @@ import com.hmi.smartphotosharing.util.Util;
 
 public class MyPagerAdapter extends PagerAdapter {
 
-	private static final int CODE_PHOTO = 1;
 	private static final int CODE_COMMENT_ADD = 2;
-	private static final int CODE_COMMENT_LOAD = 3;
 	
 	private Context context;
 	private List<Photo> data;
@@ -160,11 +158,9 @@ public class MyPagerAdapter extends PagerAdapter {
 		}
 	}
 	
-    private class MyOnClickListener implements OnClickListener{       
-        private int mPosition;
+    private class MyOnClickListener implements OnClickListener{    
         private EditText e;
         public MyOnClickListener(int position, EditText e){
-            mPosition = position;
             this.e = e;
         }
         
