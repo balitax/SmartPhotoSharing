@@ -22,7 +22,7 @@
     <string name="not_support_gps">GPS provider not supported</string>
     
     <string name="dialog_map">Press and hold on the map to select a location.</string>
-    <string name="dialog_location">If you check this, you can only upload photos from within the selected location.</string>
+    <string name="dialog_location">If a group is locked to a location, you can only upload photos from within the selected location.</string>
     <string name="dialog_private">Private groups are not visible to everyone. The only way for people to join a private group is when you invite them.</string>
     <string name="dialog_location_error">You can only lock this group to a location if you have selected a location on the map.</string>
     <string name="dialog_friends">Here you can select multiple friends who will be invited to this group. You can also invite friends later, after the group is created.</string>   
@@ -57,7 +57,7 @@
     <string name="groups_http_leave">cmd=leavegroup&amp;sid=%1$s&amp;gid=%2$s</string>
     <string name="groups_http_invite">cmd=add2group</string>
     <string name="groups_http_users_invite">cmd=allusers&amp;sid=%1$s&amp;gid=%2$s</string>
-    <string name="groups_http_users">cmd=allusers&amp;sid=%1$s</string>
+    <string name="groups_http_users">cmd=allusers</string>
     
     <string name="group_private">Private Group</string>
     <string name="group_location">Location locked</string>

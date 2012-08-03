@@ -32,7 +32,8 @@
 		    android:layout_height="wrap_content"
 	       	android:layout_alignParentRight="true"
 	    	android:padding="1dp"
-		    android:src="@drawable/ic_lock_lock" />	
+		    android:src="@drawable/ic_lock_lock"
+		    android:onClick="onPrivateHelp" />	
 		
 		<ImageView 
 		    android:id="@+id/location_icon"
@@ -42,7 +43,8 @@
 	       	android:layout_below="@+id/private_icon"
 	       	android:layout_alignParentRight="true"
 	    	android:padding="1dp"
-		    android:src="@drawable/ic_location_lock" />	
+		    android:src="@drawable/ic_location_lock"
+		    android:onClick="onLocationHelp" />	
 		    
 	    <TextView
 	    	android:id="@+id/group_detail_name"

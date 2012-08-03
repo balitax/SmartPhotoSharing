@@ -155,6 +155,14 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	        new FetchJSON(this, CODE_JOIN).execute(joinUrl);
 		}
     }
+
+    public void onLocationHelp(View v) {
+    	Util.createSimpleDialog(this, getResources().getString(R.string.dialog_location));
+    }
+    
+    public void onPrivateHelp(View v) {
+    	Util.createSimpleDialog(this, getResources().getString(R.string.dialog_private));
+    }
     
     public void onClickShowLocation(View view) {
     	Intent intent = new Intent(this,ShowLocationActivity.class);
@@ -190,6 +198,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
     
     public void onClickInvite(View view) {
     	Intent intent = new Intent(this,SelectFriendsActivity.class);
+    	intent.putExtra("gid", group.getId());
     	startActivityForResult(intent, CODE_INVITE);
     }
     
@@ -208,7 +217,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	            HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
 	            try {
 	    			map.put("sid", new StringBody(hash));
-	    	        
+	    	        map.put("gid", new StringBody(Long.toString(group.getId())));
 	    	        if (friendIds != "") {
 	    	        	map.put("members", new StringBody(friendIds));
 	    	        }
@@ -314,6 +323,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 			
 			case(Util.STATUS_OK):
 				Toast.makeText(this, "Users invited to group", Toast.LENGTH_SHORT).show();
+				loadData();
 				break;
 								
 			default:

@@ -1,7 +1,12 @@
 package com.hmi.smartphotosharing.groups;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.StringBody;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -17,6 +22,8 @@ import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
+import com.hmi.smartphotosharing.json.PostData;
+import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserListResponse;
 import com.hmi.smartphotosharing.util.ImageLoader;
@@ -28,7 +35,7 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
 	private ListView listView;
 		
 	private static final int CODE_USERS = 1;
-		
+	private long gid;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +43,9 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
                 
         setContentView(R.layout.invite_friends);
         dm = new ImageLoader(this);
+        
+        Intent intent = getIntent();
+        gid = intent.getLongExtra("gid", 0);
         
         listView = (ListView) findViewById(android.R.id.list);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -89,10 +99,21 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
-        String usersUrl = String.format(Util.getUrl(this,R.string.groups_http_users),hash);		
-        new FetchJSON(this, CODE_USERS).execute(usersUrl);
+        String usersUrl = Util.getUrl(this,R.string.groups_http_users);
+        
+        HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+        try {
+			map.put("sid", new StringBody(hash));
+	        if (gid != 0) {
+	        	map.put("gid", new StringBody(Long.toString(gid)));
+	        }
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        
+        PostData pr = new PostData(usersUrl,map);
+		new PostRequest(this,CODE_USERS).execute(pr);
 
-        Log.d("FRIENDS", usersUrl);
 	}
 				
 	/**
