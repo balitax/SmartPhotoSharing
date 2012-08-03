@@ -1,68 +1,52 @@
 package com.hmi.smartphotosharing;
 
-import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.StringBody;
-
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.hmi.smartphotosharing.json.Comment;
-import com.hmi.smartphotosharing.json.CommentListResponse;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.Photo;
+import com.hmi.smartphotosharing.json.PhotoListResponse;
 import com.hmi.smartphotosharing.json.PhotoResponse;
-import com.hmi.smartphotosharing.json.PostData;
-import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
 
 public class PhotoDetailActivity extends NavBarActivity implements OnDownloadListener {
 
-	private static final int CODE_PHOTO = 1;
 	private static final int CODE_COMMENT_ADD = 2;
-	private static final int CODE_COMMENT_LOAD = 3;
+	private static final int CODE_PHOTOS = 4;
 	
 	public static final String KEY_ID = "id";
+	public static final String KEY_GID = "gid";
+	public static final String KEY_SSID = "ssid";
 	
-	private long id;
+	private long id, gid, ssid;
 	private ImageLoader dm;
-	private EditText commentInput;
 	
-	private LinearLayout list;
+	private ViewPager vp;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.photo_detail);
         super.onCreate(savedInstanceState);
-
-        commentInput = (EditText) findViewById(R.id.edit_message);
-        list = (LinearLayout) findViewById(R.id.comments);
         
         Intent intent = getIntent();
         id = intent.getLongExtra(KEY_ID, 0);
-
+        gid = intent.getLongExtra(KEY_GID, 0);    
+        ssid = intent.getLongExtra(KEY_SSID, 0); 
+        vp = (ViewPager) findViewById(R.id.viewpager);    
         dm = new ImageLoader(this);
         if (id != 0) {
 			loadData(true,true);
@@ -70,6 +54,13 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         	Log.e("SmartPhotoSharing", "Photo id was 0, url was probably incorrect");
         }
         
+    }
+    
+    @Override
+    protected void onStart() {
+
+		loadData(true,true);
+		super.onStart();
     }
     
     @Override
@@ -106,25 +97,6 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         }
     }
 
-	public void onCommentClick(View v) {
-		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
-		String hash = settings.getString(Login.SESSION_HASH, null);
-
-		String commentTxt = commentInput.getText().toString();
-        String commentUrl = Util.getUrl(this,R.string.photo_detail_addcomment);
-        
-        HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
-        try {
-			map.put("sid", new StringBody(hash));
-	        map.put("iid", new StringBody(Long.toString(id)));
-	        map.put("comment", new StringBody(commentTxt));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-        
-        PostData pr = new PostData(commentUrl,map);
-        new PostRequest(this, CODE_COMMENT_ADD).execute(pr);
-	}
 	
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
@@ -137,17 +109,23 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
         
-		if (photo) {
-	        String photoUrl = String.format(Util.getUrl(this,R.string.photo_detail_url),hash,id);
-	        
-			new FetchJSON(this,CODE_PHOTO).execute(photoUrl);
+		if (gid != 0) {
+			// Get list of photos
+			String photosUrl = String.format(Util.getUrl(this,R.string.group_http_detail_photos),hash,gid);
+			Log.d("JSON", photosUrl);
+			new FetchJSON(this,CODE_PHOTOS).execute(photosUrl);
 		}
 		
-		if (comments) {
-	        String commentsUrl = String.format(Util.getUrl(this,R.string.photo_detail_comments),hash,id);
-	        
-			new FetchJSON(this,CODE_COMMENT_LOAD).execute(commentsUrl);
+		else if (ssid != 0) {
+			String photosUrl = String.format(Util.getUrl(this,R.string.subscriptions_http_photos),hash,ssid);
+			Log.d("JSON", photosUrl);
+			new FetchJSON(this,CODE_PHOTOS).execute(photosUrl);
 		}
+		
+		else {
+			// TODO ERROR
+		}
+		
 	}
 	
 	@Override
@@ -156,69 +134,49 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		Log.i("JSON parse", json);
 		
 		switch(code){
-		case(CODE_PHOTO):
+		case(CODE_PHOTOS):
 			parsePhoto(json);
 			break;
 		case(CODE_COMMENT_ADD):
 			parseCommentAdd(json);
-			break;
-		case(CODE_COMMENT_LOAD):
-			parseCommentLoad(json);
 			break;
 		default:
 		}
         
 	}
 
-	private void parseCommentLoad(String json) {
+	private void parsePhoto(String result) {
 		Gson gson = new Gson();
-		CommentListResponse response = gson.fromJson(json, CommentListResponse.class);
-		
-		if (response.getStatus() == Util.STATUS_OK) {
+		PhotoListResponse list = gson.fromJson(result, PhotoListResponse.class);
 			
-			List<Comment> comments = response.getObject();
-			LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		if (list.getStatus() == Util.STATUS_OK) {
+			List<Photo> photo_list = list.getObject();
 			
-
-			list.removeAllViews();
-			if (comments != null) {
-				for (int i=0; i<comments.size(); i++) {
-				  View vi = inflater.inflate(R.layout.comment, null);
-				  Comment comment = comments.get(i);
-				  
-				  //Icon
-				  ImageView img = (ImageView)vi.findViewById(R.id.comment_icon);
-				  String userPic = Util.USER_DB + comment.picture;
-				  dm.DisplayImage(userPic, img);
-
-				  // Comment text
-				  TextView txt = (TextView)vi.findViewById(R.id.comment_txt);
-				  txt.setText(comment.comment);
-				  
-				  
-				  // Get the timestamp
-		          Date time = new Date(Long.parseLong(comment.time)*1000);
-		          SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		          String datum = sdf.format(time);
-		          				  
-				  // Comment username
-				  TextView user = (TextView)vi.findViewById(R.id.comment_user);
-				  user.setText(comment.rname + " (" + datum + ")");
-				  
-				  
-				  list.addView(vi);
+			// JSON will return null if there are no photos in this group
+			if (photo_list == null)
+				photo_list = new ArrayList<Photo>();
+			
+			int pos = 0;
+			boolean found = false;
+			for (int i = 0; i < photo_list.size() & !found; i++) {
+				if (photo_list.get(i).getId() == id) {
+					pos = i;
+					found = true;
 				}
-			} else {
-
-				TextView txt = new TextView(this);
-				txt.setText("No comments for this photo");
-				list.addView(txt);
 			}
+			
+			MyPagerAdapter adapter = new MyPagerAdapter(this,photo_list,dm);
+			
+			vp.setAdapter(adapter);
+			vp.setCurrentItem(pos);
+			
 		} else {
-			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();			
+			Toast.makeText(this, list.getMessage(), Toast.LENGTH_SHORT).show();
 		}
 	}
+	
 
+	
 	private void parseCommentAdd(String json) {
 		Gson gson = new Gson();
 		PhotoResponse pr = gson.fromJson(json, PhotoResponse.class);
@@ -226,7 +184,8 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		if (pr.getStatus() == Util.STATUS_OK) {
 			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
 			loadData(false,true);
-			commentInput.getEditableText().clear();
+			MyPagerAdapter adapter = (MyPagerAdapter)vp.getAdapter();
+			adapter.notifyDataSetChanged();
 		} else if (pr.getStatus() == Util.STATUS_LOGIN){
 			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
 		} else {
@@ -234,50 +193,5 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		}
 		
 	}
-
-	private void parsePhoto(String json) {
-		Gson gson = new Gson();
-		PhotoResponse pr = gson.fromJson(json, PhotoResponse.class);
-		
-		if (pr.getStatus() == Util.STATUS_OK) {
-			Photo p = pr.getObject();
-			
-			String uri = p.getUrl();
-
-	        ImageView photo = (ImageView) findViewById(R.id.picture);
-	        
-	        dm.DisplayImage(uri, photo);
-
-	        // Update user icon
-	        ImageView pic = (ImageView) findViewById(R.id.photo_detail_icon);
-			String userPic = Util.USER_DB + p.picture;
-			dm.DisplayImage(userPic, pic);
-	        
-			// Update the 'Taken by' text
-	        TextView by = (TextView)findViewById(R.id.photo_detail_name);
-	        String byTxt = getResources().getString(R.string.photo_detail_name);
-	        by.setText(String.format(byTxt, p.rname));
 	
-	        // Update the timestamp
-	        TextView date = (TextView)findViewById(R.id.photo_detail_date);
-	        // Convert Unix timestamp to Date
-	        Date time = new Date(Long.parseLong(p.time)*1000);
-	        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-	        String datum = sdf.format(time);
-	        date.setText(datum);
-	        
-	        // Update the group text
-	        TextView group = (TextView)findViewById(R.id.photo_detail_group);
-	        String groupTxt = getResources().getString(R.string.photo_detail_group);
-	        group.setText(String.format(groupTxt, p.groupname));
-		} else if (pr.getStatus() == Util.STATUS_LOGIN){
-			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
-			
-		}
-		
-	}	
-
-
 }

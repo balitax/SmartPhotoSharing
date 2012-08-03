@@ -70,6 +70,8 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	private static final int CODE_GROUPS = 2;
 	private static final int CODE_UPLOAD = 3;
 	
+	private static final int TEN_SECONDS = 10 * 1000;
+	
 	private boolean isExternal;
 	private ProgressDialog pd;
 	
@@ -530,13 +532,13 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         
         // Network
         String networkProvider = LocationManager.NETWORK_PROVIDER;
-        mLocationManager.requestLocationUpdates(networkProvider, 0, 0, listener);
+        mLocationManager.requestLocationUpdates(networkProvider, TEN_SECONDS, 0, listener);
         
         // GPS
         String gpsProvider = LocationManager.GPS_PROVIDER;
         
         if (mLocationManager.isProviderEnabled(gpsProvider)) {
-            mLocationManager.requestLocationUpdates(gpsProvider, 0, 0, listener);
+            mLocationManager.requestLocationUpdates(gpsProvider, TEN_SECONDS, 0, listener);
             location = mLocationManager.getLastKnownLocation(gpsProvider);
         }
         

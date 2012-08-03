@@ -79,16 +79,16 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		switch(action) {
 
 		case ACTION_PHOTO_UPLOAD:
-			notificationIntent = new Intent(this, PhotoDetailActivity.class);
-			notificationIntent.putExtra(PhotoDetailActivity.KEY_ID, value);
+			notificationIntent = new Intent(this, SinglePhotoDetail.class);
+			notificationIntent.putExtra(SinglePhotoDetail.KEY_ID, value);
 			break;
 		case ACTION_GROUP_INVITE:
 			notificationIntent = new Intent(this, GroupDetailActivity.class);
 			notificationIntent.putExtra(GroupDetailActivity.KEY_ID, value);		
 			break;
 		case ACTION_PHOTO_COMMENT:
-			notificationIntent = new Intent(this, PhotoDetailActivity.class);	
-			notificationIntent.putExtra(PhotoDetailActivity.KEY_ID, value);	
+			notificationIntent = new Intent(this, SinglePhotoDetail.class);	
+			notificationIntent.putExtra(SinglePhotoDetail.KEY_ID, value);	
 			break;
 		case ACTION_DEFAULT:
 		default:

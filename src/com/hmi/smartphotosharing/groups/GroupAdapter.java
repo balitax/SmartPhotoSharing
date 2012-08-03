@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hmi.smartphotosharing.MyGalleryAdapter;
-import com.hmi.smartphotosharing.PhotoDetailActivity2;
+import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.util.ImageLoader;
@@ -223,7 +223,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-        	Intent intent = new Intent(context, PhotoDetailActivity2.class);
+        	Intent intent = new Intent(context, PhotoDetailActivity.class);
 		    intent.putExtra("id", id);
 		    intent.putExtra("gid", gid);
 		    context.startActivity(intent);

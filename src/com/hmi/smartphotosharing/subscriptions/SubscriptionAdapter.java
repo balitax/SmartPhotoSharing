@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hmi.smartphotosharing.MyGalleryAdapter;
-import com.hmi.smartphotosharing.PhotoDetailActivity2;
+import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.Subscription;
 import com.hmi.smartphotosharing.util.ImageLoader;
@@ -220,7 +220,7 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-        	Intent intent = new Intent(context, PhotoDetailActivity2.class);
+        	Intent intent = new Intent(context, PhotoDetailActivity.class);
         	intent.putExtra("ssid", ssid);
 		    intent.putExtra("id", id);
 		    context.startActivity(intent);

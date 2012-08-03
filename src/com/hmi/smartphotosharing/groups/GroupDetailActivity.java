@@ -31,7 +31,7 @@ import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyImageAdapter;
 import com.hmi.smartphotosharing.NavBarActivity;
-import com.hmi.smartphotosharing.PhotoDetailActivity2;
+import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Group;
@@ -240,7 +240,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		// Handle clicks
 		@Override
 	    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-	    	Intent intent = new Intent(c, PhotoDetailActivity2.class);
+	    	Intent intent = new Intent(c, PhotoDetailActivity.class);
 	    	intent.putExtra("id", id);
 	    	intent.putExtra("gid", group.getId());
 	    	startActivity(intent);

@@ -53,10 +53,10 @@
 		</activity>
 		
         <activity android:label="Photo Details" 
-            android:name=".PhotoDetailActivity" />		
+            android:name=".SinglePhotoDetail" />		
         
         <activity android:label="Photo Details" 
-            android:name=".PhotoDetailActivity2" />
+            android:name=".PhotoDetailActivity" />
         	    
         <activity android:label="Groups" 
             android:name=".groups.GroupsActivity" />

@@ -145,7 +145,7 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
         };
         
         // Detect clicking an image
-        holder.picGallery.setOnItemClickListener(new MyOnItemClickListener(context));
+        holder.picGallery.setOnItemClickListener(new MyOnItemClickListener(context,group.getId()));
         
         // Detect swipes
         holder.picGallery.setOnTouchListener(gestureListener);
@@ -215,8 +215,10 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
      */
     private class MyOnItemClickListener implements OnItemClickListener{    
         private Context context;
+        private long gid;
         
-        public MyOnItemClickListener(Context context){
+        public MyOnItemClickListener(Context context, long gid){
+        	this.gid = gid;
             this.context = context;
         }
         
@@ -224,6 +226,7 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
         public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
         	Intent intent = new Intent(context, PhotoDetailActivity.class);
+        	intent.putExtra("gid", gid);
 		    intent.putExtra("id", id);
 		    context.startActivity(intent);
         	
