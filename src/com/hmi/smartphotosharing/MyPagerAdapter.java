@@ -37,7 +37,6 @@ public class MyPagerAdapter extends PagerAdapter {
 	
 	private Context context;
 	private List<Photo> data;
-	private long id;
 	private ImageLoader dm;
 	private LinearLayout list;
 	
@@ -45,7 +44,6 @@ public class MyPagerAdapter extends PagerAdapter {
 		this.context = c;
 		this.data = data;
 		this.dm = dm;
-		id = 1;
 	}
 	
 	@Override
@@ -65,7 +63,7 @@ public class MyPagerAdapter extends PagerAdapter {
 
         Button button = (Button)view.findViewById(R.id.add_comment);
         EditText commentInput = (EditText)view.findViewById(R.id.edit_message);
-        button.setOnClickListener(new MyOnClickListener(position,commentInput));
+        button.setOnClickListener(new MyOnClickListener(position,p.getId(),commentInput));
 		TextView date = (TextView)view.findViewById(R.id.photo_detail_date);
 		TextView group = (TextView)view.findViewById(R.id.photo_detail_group);
 		TextView by = (TextView)view.findViewById(R.id.photo_detail_name);
@@ -160,8 +158,10 @@ public class MyPagerAdapter extends PagerAdapter {
 	
     private class MyOnClickListener implements OnClickListener{    
         private EditText e;
-        public MyOnClickListener(int position, EditText e){
+        private long iid;
+        public MyOnClickListener(int position, long iid, EditText e){
             this.e = e;
+            this.iid = iid;
         }
         
         @Override
@@ -175,7 +175,7 @@ public class MyPagerAdapter extends PagerAdapter {
             HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
             try {
     			map.put("sid", new StringBody(hash));
-    	        map.put("iid", new StringBody(Long.toString(id)));
+    	        map.put("iid", new StringBody(Long.toString(iid)));
     	        map.put("comment", new StringBody(e.getEditableText().toString()));
     		} catch (UnsupportedEncodingException e) {
     			e.printStackTrace();

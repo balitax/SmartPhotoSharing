@@ -59,26 +59,30 @@ import com.hmi.smartphotosharing.util.Util;
 
 public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	
-	public static final int CREATE_GROUP = 4;
-	private Uri imageUri;
+	private static String TAG = "SHARE";
+	
 	private Spinner spinner;
 	private EditText comment;
 	private ImageView imageView;
 	//private String imgPath;
 	private LocationManager locationManager;
 	
+	private static final int TAKE_PICTURE = 5;
 	private static final int CODE_GROUPS = 2;
 	private static final int CODE_UPLOAD = 3;
+	private static final int CREATE_GROUP = 4;
 	
 	private static final int TEN_SECONDS = 10 * 1000;
+	private static final float MIN_DISTANCE = 25;
 	
-	private boolean isExternal;
 	private ProgressDialog pd;
 	
 	private String newGroupName;
 
     private LocationManager mLocationManager;
 	private Location gpsLocation;
+	
+	private Uri fileUri;
 	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -87,8 +91,9 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		// Populate the Spinner
 		spinner = (Spinner) findViewById(R.id.groups_spinner);
 		comment = (EditText) findViewById(R.id.edit_message);
-		isExternal = false;
+        imageView = (ImageView) findViewById(R.id.image1);
 
+		// GPS
         mLocationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         final boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -98,9 +103,13 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         } else {        	
         	setupGps();
         }
-	    
-	    loadData();
-	    
+        
+        if (fileUri == null) {
+		    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
+		    fileUri = Util.getOutputMediaFileUri(Util.MEDIA_TYPE_IMAGE);
+		    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+		    startActivityForResult(cameraIntent, TAKE_PICTURE); 
+        }
 	    
 	}
 	
@@ -123,40 +132,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
       
       setupGps();
     } 
-	
-	protected void onStart () {
-		imageView = (ImageView) findViewById(R.id.image1);
 		
-		// Get intent, action and MIME type
-	    Intent intent = getIntent();
-	    String action = intent.getAction();
-	    String type = intent.getType();
-
-	    // Handle the Intent form another app
-	    if (Intent.ACTION_SEND.equals(action) && type != null) {
-	    	
-	    	isExternal = true;
-	    	
-	        if ("text/plain".equals(type)) {
-	            handleSendText(intent); // Handle text being sent
-	        } else if (type.startsWith("image/")) {
-	            handleImage(intent); // Handle single image being sent
-	        }
-	    } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
-	        if (type.startsWith("image/")) {
-	            handleSendMultipleImages(intent); // Handle multiple images being sent
-	        }
-	    } 
-	    
-	    // Handle the Intent that was sent internally, from another Activity
-	    else {
-	    	if (type.startsWith("image/")) {
-	            handleImage(intent); // Handle single image being sent
-	        }
-	    }
-		super.onStart();
-	}
-	
 	private void loadData() {
 
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
@@ -195,7 +171,9 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	
 	public void onClickShare(View v) {
 		
-		if (imageUri != null) {
+		if (fileUri != null) {
+		    // Stop listening for GPS updates already
+			mLocationManager.removeUpdates(listener);
 			
 			// Find GPS coordinates
 			Criteria criteria = new Criteria();
@@ -237,11 +215,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     		pd.show();
     		
-		} else {
-			
-			setResult(RESULT_CANCELED);
-			finish();
-		}
+		} 
 	}	
 	
 	protected void onActivityResult(int requestCode, int resultCode,
@@ -251,137 +225,25 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         	Toast.makeText(this, "Group '" + newGroupName + "' Created", Toast.LENGTH_SHORT).show();
         	loadData();
         }
-    }	
-	
-	private void handleSendText(Intent intent) {
-	    String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-	    if (sharedText != null) {
-	        // Update UI to reflect text being shared
+        
+        if (requestCode == TAKE_PICTURE && resultCode == Activity.RESULT_OK) { 
+        
+        	if(fileUri != null) {
+				
+	        	imageView.setImageURI(fileUri);
+	        	
+	        	loadData();
+			}
+        	
+		        
+	    } else if (resultCode == RESULT_CANCELED) {
+	        finish();
+	    } else {
+	        // Image capture failed, advise user 
 	    }
 	}
-
-	private void handleImage(Intent intent) {
-	    imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-	    
-	    showImageFromPath(imageUri);
-	    
-	    /*
-	    if (imageUri != null) {
-
-	    	imgPath = getRealPathFromURI(imageUri);
-	    	showImageFromPath(imgPath);
-	    }*/
-	}
-
-	/*
-	private void handleInternalImage(Intent intent) {
-	    imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-	    if (imageUri != null) {
-
-	    	imgPath = imageUri.getPath();
-	    	showImageFromPath(imgPath);
-	    }
-	}*/
-	
-	private void handleSendMultipleImages(Intent intent) {
-	    ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-	    if (imageUris != null) {
-	        // Update UI to reflect multiple images being shared
-	    }
-	}
-	
-	private void showImageFromPath(Uri uri) {
-		// Image can come from different sources, so check the scheme
-		String imgPath = "";
-
-		imgPath = getImgPath(imageUri);
+    
 		
-    	int targetW = imageView.getWidth();
-		int targetH = imageView.getHeight();
-		
-		BitmapFactory.Options o = new BitmapFactory.Options();
-		o.inJustDecodeBounds = true;
-    	BitmapFactory.decodeFile(imgPath,o);
-    	
-    	int photoW = o.outWidth;
-		int photoH = o.outHeight;
-		
-		// Figure out which way needs to be reduced less
-		int scaleFactor = 1;
-		if ((targetW > 0) || (targetH > 0)) {
-			scaleFactor = photoW/targetW;	
-		}
-		
-		imageView.setMaxHeight(photoH*scaleFactor);
-		
-		// Set bitmap options to scale the image decode target
-		o.inJustDecodeBounds = false;
-		o.inSampleSize = scaleFactor;
-		o.inPurgeable = true;
-		
-    	Bitmap myBitmap = BitmapFactory.decodeFile(imgPath,o);
-    	
-    	// Check rotation
-    	
-    	Matrix matrix = new Matrix();
-    	float rotation = rotationForImage(this, imageUri);
-    	if (rotation != 0f) {
-    	     matrix.preRotate(rotation);
-    	}
-
-    	myBitmap = Bitmap.createBitmap(
-    	     myBitmap, 0, 0, photoW, photoH, matrix, true);
-    	
-    	imageView.setImageBitmap(myBitmap);
-	}	
-	
-	private String getImgPath(Uri uri) {
-		if (isExternal)
-			return getRealPathFromURI(uri);
-		else
-			return uri.getPath();
-	}
-
-	public String getRealPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
-
-	public float rotationForImage(Context context, Uri uri) {
-	    if (isExternal) {
-            String[] projection = { Images.ImageColumns.ORIENTATION };
-            Cursor c = context.getContentResolver().query(
-                    uri, projection, null, null, null);
-            if (c.moveToFirst()) {
-                return c.getInt(0);
-            }
-        } else {
-            try {
-                ExifInterface exif = new ExifInterface(uri.getPath());
-                int rotation = (int)exifOrientationToDegrees(
-                        exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                                ExifInterface.ORIENTATION_NORMAL));
-                return rotation;
-            } catch (IOException e) {
-                Log.e("SharePhoto", "Error checking exif", e);
-            }
-        }
-	    return 0f;
-	}
-
-	private static float exifOrientationToDegrees(int exifOrientation) {
-        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
-            return 90;
-        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
-            return 180;
-        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
-            return 270;
-        }
-        return 0;
-    }
 
 	@Override
 	public void parseJson(String json, int code) {
@@ -406,16 +268,10 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		if (response.getStatus() == Util.STATUS_OK) {
         	Toast.makeText(this, "Upload successful", Toast.LENGTH_SHORT).show();
         	
-        	if (isExternal) {
-        		setResult(RESULT_OK);
-        		finish();
-        	} else {
-    			// Send the intent to the class that can handle incoming photos
-    			Intent intent = new Intent(this,GroupsActivity.class);    			
-    			// Create and start the chooser
-    			startActivity(intent);
-        	}
+    		setResult(RESULT_OK);
+    		finish();
 		} else {
+			setupGps();
         	Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();	
 		}
 		
@@ -466,7 +322,6 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     	
     	@Override
     	protected void onPostExecute(String result) {
-    		Log.i("JSON parse", result);
     		
     		try {
     			parseJson(result, CODE_UPLOAD);
@@ -481,7 +336,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		HttpClient httpclient = new DefaultHttpClient();
 
     		HttpPost httppost = new HttpPost(url);
-    		File file = new File(getImgPath(imageUri));
+    		File file = new File(fileUri.getPath());
     		    		
     		MultipartEntity mpEntity = new MultipartEntity();
     		mpEntity.addPart("sid", new StringBody(sid));
@@ -532,13 +387,13 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         
         // Network
         String networkProvider = LocationManager.NETWORK_PROVIDER;
-        mLocationManager.requestLocationUpdates(networkProvider, TEN_SECONDS, 0, listener);
+        mLocationManager.requestLocationUpdates(networkProvider, TEN_SECONDS, MIN_DISTANCE, listener);
         
         // GPS
         String gpsProvider = LocationManager.GPS_PROVIDER;
         
         if (mLocationManager.isProviderEnabled(gpsProvider)) {
-            mLocationManager.requestLocationUpdates(gpsProvider, TEN_SECONDS, 0, listener);
+            mLocationManager.requestLocationUpdates(gpsProvider, TEN_SECONDS, MIN_DISTANCE, listener);
             location = mLocationManager.getLastKnownLocation(gpsProvider);
         }
         
@@ -555,9 +410,9 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         	// Check if we should update or not
         	if (isBetter) {
         		gpsLocation = location;
+            	loadData();
         	}
 
-        	loadData();
         }
 
         @Override
@@ -573,5 +428,25 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
     };
+    
+    // grab the name of the media from the Uri
+    protected String getName(Uri uri) {
+		String filename = null;
 
+		try {
+			String[] projection = { MediaStore.Images.Media.DISPLAY_NAME };
+			Cursor cursor = managedQuery(uri, projection, null, null, null);
+
+			if(cursor != null && cursor.moveToFirst()){
+				int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+				filename = cursor.getString(column_index);
+			} else {
+				filename = null;
+			}
+		} catch (Exception e) {
+			Log.e(TAG, "Error getting file name: " + e.getMessage());
+		}
+
+		return filename;
+	}
 }

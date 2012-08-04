@@ -54,7 +54,7 @@ public class NavBarListener implements OnClickListener {
 	}
 
 	private void action_camera() {
-		Intent intent = new Intent(c, CameraActivity.class);
+		Intent intent = new Intent(c, SharePhotoActivity.class);
 		c.startActivity(intent);			
 	}
 

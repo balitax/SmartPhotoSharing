@@ -33,12 +33,6 @@ public class PostRequest extends AsyncTask<PostData,Void,String> {
 		this.c = c;
 		this.code = 0;
 		this.dl = (OnDownloadListener) c;
-		pd = new ProgressDialog(this.c);
-		pd.setMessage("Loading...");
-		pd.setCancelable(false);
-		pd.setIndeterminate(true);
-		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		pd.show();
 	}
 	
 	/**
@@ -52,12 +46,6 @@ public class PostRequest extends AsyncTask<PostData,Void,String> {
 		this.c = c;
 		this.code = code;
 		this.dl = (OnDownloadListener) c;
-		pd = new ProgressDialog(c);
-		pd.setMessage("Loading...");
-		pd.setCancelable(false);
-		pd.setIndeterminate(true);
-		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		pd.show();
 		
 	}
 	

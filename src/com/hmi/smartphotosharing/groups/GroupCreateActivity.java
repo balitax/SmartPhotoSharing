@@ -45,6 +45,7 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
         // Make the Dialog style appear fullscreen
         getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 
+        friendIds = "";
     }
     	    
     public void onClickFriends(View view) {
@@ -109,7 +110,7 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
 	        map.put("private", new StringBody(isPrivate));
 	        map.put("locationlink", new StringBody(locationLocked));
 	        
-	        if (friendIds != "") {
+	        if (!friendIds.equals("")) {
 	        	map.put("members", new StringBody(friendIds));
 	        }
 		} catch (UnsupportedEncodingException e) {

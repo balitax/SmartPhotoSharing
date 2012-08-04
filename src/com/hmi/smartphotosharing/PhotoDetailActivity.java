@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +38,8 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 	
 	private ViewPager vp;
 	
+	private int currentPage = 0;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.photo_detail);
@@ -49,18 +52,11 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         vp = (ViewPager) findViewById(R.id.viewpager);    
         dm = new ImageLoader(this);
         if (id != 0) {
-			loadData(true,true);
+			loadData();
         } else {
         	Log.e("SmartPhotoSharing", "Photo id was 0, url was probably incorrect");
         }
         
-    }
-    
-    @Override
-    protected void onStart() {
-
-		loadData(true,true);
-		super.onStart();
     }
     
     @Override
@@ -72,7 +68,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
     protected void onResume() {
     	super.onResume();
     	if (id != 0) {
-			loadData(true,true);
+			loadData();
         }
     }
     
@@ -105,7 +101,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 	    return true;
 	}
 
-	public void loadData(boolean photo, boolean comments) {
+	public void loadData() {
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
         
@@ -156,19 +152,21 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 			if (photo_list == null)
 				photo_list = new ArrayList<Photo>();
 			
-			int pos = 0;
 			boolean found = false;
 			for (int i = 0; i < photo_list.size() & !found; i++) {
 				if (photo_list.get(i).getId() == id) {
-					pos = i;
+					currentPage = i;
 					found = true;
 				}
 			}
 			
 			MyPagerAdapter adapter = new MyPagerAdapter(this,photo_list,dm);
-			
+			PageListener pageListener = new PageListener();
+			vp.setOnPageChangeListener(pageListener);
+
 			vp.setAdapter(adapter);
-			vp.setCurrentItem(pos);
+			
+			vp.setCurrentItem(currentPage);
 			
 		} else {
 			Toast.makeText(this, list.getMessage(), Toast.LENGTH_SHORT).show();
@@ -183,7 +181,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		
 		if (pr.getStatus() == Util.STATUS_OK) {
 			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
-			loadData(false,true);
+			loadData();
 			MyPagerAdapter adapter = (MyPagerAdapter)vp.getAdapter();
 			adapter.notifyDataSetChanged();
 		} else if (pr.getStatus() == Util.STATUS_LOGIN){
@@ -194,4 +192,11 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		
 	}
 	
+    private class PageListener extends SimpleOnPageChangeListener{
+        public void onPageSelected(int position) {
+            Log.i("PAGER", "page selected " + position);
+               currentPage = position;
+    }
+}
+
 }
