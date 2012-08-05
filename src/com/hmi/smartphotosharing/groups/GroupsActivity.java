@@ -28,9 +28,10 @@ import com.hmi.smartphotosharing.json.GroupListResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserResponse;
-import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class GroupsActivity extends NavBarListActivity implements OnDownloadListener {
 	
@@ -39,7 +40,7 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
     private static final int CODE_PROFILE = 1;
     private static final int CODE_GROUPS = 2;
         
-	private ImageLoader im;
+	private ImageLoader imageLoader;
 	
 	private ImageView add,groups;
     
@@ -53,7 +54,8 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
         groups = (ImageView) findViewById(R.id.all_groups);
         groups.setOnClickListener(new MyClickListener(this,GroupJoinActivity.class));
                 
-        im = new ImageLoader(this);
+        imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         loadData(true, true);
         
     }
@@ -181,7 +183,7 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 		String userPic = Util.USER_DB + user.picture;
 		ImageView pic = (ImageView) findViewById(R.id.groups_icon);
 		//dm.fetchDrawableOnThread(userPic, pic);
-		im.DisplayImage(userPic, pic);
+		imageLoader.displayImage(userPic, pic);
 	}
 
 	private void parseGroups(String result) {
@@ -199,8 +201,7 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 			GroupAdapter adapter = new GroupAdapter(
 					this, 
 					R.layout.group_item, 
-					group_list.toArray(new Group[group_list.size()]),
-					im
+					group_list.toArray(new Group[group_list.size()])
 				);
 			adapter.sort(Sorter.GROUP_SORTER);
 			setListAdapter(adapter);	

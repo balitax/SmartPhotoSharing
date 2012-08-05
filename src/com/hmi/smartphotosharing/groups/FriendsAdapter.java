@@ -13,8 +13,9 @@ import android.widget.ListView;
 
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.User;
-import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 /**
  * Custom ArrayAdapter class that is used to display a list of items with an icon.
@@ -27,16 +28,17 @@ public class FriendsAdapter extends ArrayAdapter<User>  {
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
 	List<User> data = null;	// A Group array that contains all list items
-	ImageLoader dm;
+	ImageLoader imageLoader;
 	ListView list;
 	
-	public FriendsAdapter(Context context, int resource, List<User> objects, ImageLoader dm, ListView list) {
+	public FriendsAdapter(Context context, int resource, List<User> objects, ListView list) {
 		super(context, resource, objects);
 		
         this.layoutResourceId = resource;
         this.context = context;
         this.data = objects;
-        this.dm = dm;
+        this.imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(context));
         this.list = list;
 	}
 	
@@ -91,7 +93,7 @@ public class FriendsAdapter extends ArrayAdapter<User>  {
 
         // Set the icon for this list item
         String url = Util.USER_DB + user.picture;
-        dm.DisplayImage(url, holder.imgIcon);
+        imageLoader.displayImage(url, holder.imgIcon);
                 
         return row;
     }

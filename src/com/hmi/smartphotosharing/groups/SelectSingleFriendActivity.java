@@ -17,13 +17,11 @@ import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserListResponse;
-import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 
 public class SelectSingleFriendActivity extends NavBarListActivity implements OnDownloadListener {
 
-	private ImageLoader dm;
 	private long id;
 	
 	private static final int CODE_USERS = 1;
@@ -36,7 +34,6 @@ public class SelectSingleFriendActivity extends NavBarListActivity implements On
         Intent intent = getIntent();
         id = intent.getLongExtra("id", 0);
         
-        dm = new ImageLoader(this);
     }
     	
 	@Override
@@ -90,8 +87,7 @@ public class SelectSingleFriendActivity extends NavBarListActivity implements On
 			UserAdapter adapter = new UserAdapter(
 					this, 
 					R.layout.select_friend, 
-					userList,
-					dm
+					userList
 				);
 			
 			adapter.sort(Sorter.USER_SORTER);

@@ -28,8 +28,9 @@ import com.hmi.smartphotosharing.json.Comment;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
-import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class MyPagerAdapter extends PagerAdapter {
 
@@ -37,13 +38,14 @@ public class MyPagerAdapter extends PagerAdapter {
 	
 	private Context context;
 	private List<Photo> data;
-	private ImageLoader dm;
+	private ImageLoader imageLoader;
 	private LinearLayout list;
 	
-	public MyPagerAdapter(Context c, List<Photo> data, ImageLoader dm) {
+	public MyPagerAdapter(Context c, List<Photo> data) {
 		this.context = c;
 		this.data = data;
-		this.dm = dm;
+		this.imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(context));
 	}
 	
 	@Override
@@ -77,7 +79,7 @@ public class MyPagerAdapter extends PagerAdapter {
         
         // Update user icon
 		String userPic = Util.USER_DB + p.picture;
-		dm.DisplayImage(userPic, userIcon);
+		imageLoader.displayImage(userPic, userIcon);
         
 		// Update the 'Taken by' text
         String byTxt = context.getResources().getString(R.string.photo_detail_name);
@@ -89,7 +91,7 @@ public class MyPagerAdapter extends PagerAdapter {
         String datum = sdf.format(time);
         date.setText(datum);
         
-        dm.DisplayImage(p.location + p.name, image);
+        imageLoader.displayImage(p.location + p.name, image);
 		      
         setComments(p.comments);
         
@@ -129,7 +131,7 @@ public class MyPagerAdapter extends PagerAdapter {
 			  //Icon
 			  ImageView img = (ImageView)vi.findViewById(R.id.comment_icon);
 			  String userPic = Util.USER_DB + comment.picture;
-			  dm.DisplayImage(userPic, img);
+			  imageLoader.displayImage(userPic, img);
 	
 			  // Comment text
 			  TextView txt = (TextView)vi.findViewById(R.id.comment_txt);

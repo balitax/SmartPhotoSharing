@@ -21,7 +21,6 @@ import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PhotoListResponse;
 import com.hmi.smartphotosharing.json.PhotoResponse;
-import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
 
 public class PhotoDetailActivity extends NavBarActivity implements OnDownloadListener {
@@ -34,8 +33,6 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 	public static final String KEY_SSID = "ssid";
 	
 	private long id, gid, ssid;
-	private ImageLoader dm;
-	
 	private ViewPager vp;
 	
 	private int currentPage = 0;
@@ -50,7 +47,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         gid = intent.getLongExtra(KEY_GID, 0);    
         ssid = intent.getLongExtra(KEY_SSID, 0); 
         vp = (ViewPager) findViewById(R.id.viewpager);    
-        dm = new ImageLoader(this);
+        
         if (id != 0) {
 			loadData();
         } else {
@@ -160,7 +157,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 				}
 			}
 			
-			MyPagerAdapter adapter = new MyPagerAdapter(this,photo_list,dm);
+			MyPagerAdapter adapter = new MyPagerAdapter(this,photo_list);
 			PageListener pageListener = new PageListener();
 			vp.setOnPageChangeListener(pageListener);
 

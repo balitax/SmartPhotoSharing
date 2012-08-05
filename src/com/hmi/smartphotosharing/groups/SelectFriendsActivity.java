@@ -20,18 +20,15 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserListResponse;
-import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 
 public class SelectFriendsActivity extends ListActivity implements OnDownloadListener {
-	private ImageLoader dm;
 	private ListView listView;
 		
 	private static final int CODE_USERS = 1;
@@ -42,8 +39,7 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
         super.onCreate(savedInstanceState);
                 
         setContentView(R.layout.invite_friends);
-        dm = new ImageLoader(this);
-        
+                
         Intent intent = getIntent();
         gid = intent.getLongExtra("gid", 0);
         
@@ -145,7 +141,6 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
 					this, 
 					R.layout.friends_item, 
 					userList,
-					dm,
 					listView
 				);
 			

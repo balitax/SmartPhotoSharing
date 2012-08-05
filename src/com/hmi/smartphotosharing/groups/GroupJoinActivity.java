@@ -17,12 +17,10 @@ import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.GroupListResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.StringRepsonse;
-import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
 
 public class GroupJoinActivity extends NavBarListActivity implements OnDownloadListener{
 
-	private ImageLoader dm;
 	public static final int CODE_GROUPS = 1;
 	public static final int CODE_JOIN = 2;
 		
@@ -30,7 +28,7 @@ public class GroupJoinActivity extends NavBarListActivity implements OnDownloadL
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.join_group);
         super.onCreate(savedInstanceState);
-        dm = new ImageLoader(this);
+        
     }
     	
 	@Override
@@ -111,8 +109,7 @@ public class GroupJoinActivity extends NavBarListActivity implements OnDownloadL
 			setListAdapter(new GroupJoinAdapter(
 								this, 
 								R.layout.group_item, 
-								group_list.toArray(new Group[group_list.size()]),
-								dm
+								group_list.toArray(new Group[group_list.size()])
 							));	
 		}
 	}

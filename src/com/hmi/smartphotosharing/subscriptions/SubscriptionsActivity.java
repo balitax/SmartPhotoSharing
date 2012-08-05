@@ -22,9 +22,9 @@ import com.hmi.smartphotosharing.json.Subscription;
 import com.hmi.smartphotosharing.json.SubscriptionListResponse;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserResponse;
-import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class SubscriptionsActivity extends NavBarListActivity implements OnDownloadListener {
 	
@@ -33,14 +33,14 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
     private static final int CODE_PROFILE = 1;
     private static final int CODE_SUBSCRIPTS = 2;
 
-	private ImageLoader dm;
+	private ImageLoader imageLoader;
 		    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.subscriptions);
         super.onCreate(savedInstanceState);
 
-        dm = new ImageLoader(this);
+        imageLoader = ImageLoader.getInstance();
         loadData(true, true);
         
     }
@@ -123,7 +123,7 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 		// Set the user icon
 		String userPic = Util.USER_DB + user.picture;
 		ImageView pic = (ImageView) findViewById(R.id.groups_icon);
-		dm.DisplayImage(userPic, pic);
+		imageLoader.displayImage(userPic, pic);
 	}
 
 	private void parseSubscripts(String result) {
@@ -140,7 +140,7 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 					this, 
 					R.layout.subscription_item, 
 					subscription_list.toArray(new Subscription[subscription_list.size()]),
-					dm
+					imageLoader
 				);
 			
 			adapter.sort(Sorter.SUBSCRIPTIONS_SORTER);

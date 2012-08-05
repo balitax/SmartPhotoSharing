@@ -42,8 +42,9 @@ import com.hmi.smartphotosharing.json.PhotoListResponse;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.StringRepsonse;
-import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class GroupDetailActivity extends NavBarActivity implements OnDownloadListener {
 
@@ -68,7 +69,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 
 	private ImageView privateIcon, locationIcon;
 	
-	private ImageLoader dm;
+	private ImageLoader imageLoader;
 			
 	private long id;
 	private boolean isMember;
@@ -80,7 +81,8 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         setContentView(R.layout.group_detail);
         super.onCreate(savedInstanceState);
 
-        dm = new ImageLoader(this);
+        imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         
         groupName = (TextView) findViewById(R.id.group_detail_name);
         groupIcon = (ImageView) findViewById(R.id.group_detail_icon);
@@ -393,8 +395,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		gridView.setAdapter(
 			new MyImageAdapter(
 					this, 
-					photo_list,
-					dm
+					photo_list
 		));
 
         gridView.setOnItemClickListener(new MyOnItemClickListener(this)); 
@@ -415,7 +416,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	
 			groupName.setText(group.name);
 			String logoUrl = Util.GROUP_DB + group.logo;
-			dm.DisplayImage(logoUrl, groupIcon);
+			imageLoader.displayImage(logoUrl, groupIcon);
 	
 			if (!group.isPrivate()) {
 				privateIcon.setVisibility(ImageView.GONE);

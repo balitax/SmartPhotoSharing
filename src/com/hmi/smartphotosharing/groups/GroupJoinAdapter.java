@@ -24,8 +24,9 @@ import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Group;
-import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 /**
  * Custom ArrayAdapter class that is used to display a list of items with an icon.
@@ -43,15 +44,16 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
 	Group data[] = null;	// A Group array that contains all list items
-	ImageLoader dm;
+	ImageLoader imageLoader;
 		
-	public GroupJoinAdapter(Context context, int resource, Group[] objects, ImageLoader dm) {
+	public GroupJoinAdapter(Context context, int resource, Group[] objects) {
 		super(context, resource, objects);
 		
         this.layoutResourceId = resource;
         this.context = context;
         this.data = objects;
-        this.dm = dm;
+        this.imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(context));
 	}
 	
     @Override
@@ -121,7 +123,7 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
         
         // Set the icon for this list item
         String url = Util.GROUP_DB + group.logo;
-        dm.DisplayImage(url, holder.imgIcon);
+        imageLoader.displayImage(url, holder.imgIcon);
         
         // We need to set the onClickListener here to make sure that
         // the row can also be clicked, in addition to the gallery photos
@@ -133,7 +135,7 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
 				new MyGalleryAdapter(
 						context, 
 						group.photos,
-						dm
+						imageLoader
 			));
 		
 		// GestureDetector to detect swipes on the gallery

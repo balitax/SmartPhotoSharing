@@ -11,19 +11,21 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.hmi.smartphotosharing.json.Photo;
-import com.hmi.smartphotosharing.util.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class MyImageAdapter extends BaseAdapter {
 	
 	private static int DIM = 46;
 	
 	private Context mContext;
-	private ImageLoader dm;
+	private ImageLoader imageLoader;
 	private List<Photo> data;
 	
-    public MyImageAdapter(Context c, List<Photo> list, ImageLoader dm) {
+    public MyImageAdapter(Context c, List<Photo> list) {
         mContext = c;
-        this.dm = dm;
+        this.imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(mContext));
         this.data = list;
     }
 
@@ -72,7 +74,7 @@ public class MyImageAdapter extends BaseAdapter {
         Photo photo = data.get(position);
         
         String url = photo.thumb;
-        dm.DisplayImage(url, holder.img);
+        imageLoader.displayImage(url, holder.img);
         
         return v;
     }

@@ -21,8 +21,8 @@ import com.hmi.smartphotosharing.MyGalleryAdapter;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.Subscription;
-import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Custom ArrayAdapter class that is used to display a list of items with an icon.
@@ -42,15 +42,15 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
 	Subscription data[] = null;	// A Group array that contains all list items
-	ImageLoader dm;
+	ImageLoader imageLoader;
 		
-	public SubscriptionAdapter(Context context, int resource, Subscription[] objects, ImageLoader dm) {
+	public SubscriptionAdapter(Context context, int resource, Subscription[] objects, ImageLoader im) {
 		super(context, resource, objects);
 		
         this.layoutResourceId = resource;
         this.context = context;
         this.data = objects;
-        this.dm = dm;
+        this.imageLoader = im;
         
 	}
 	
@@ -102,7 +102,7 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         if (subscription.person != null) {
         	holder.txtTitle.setText(subscription.user.rname);
 	        String url = Util.USER_DB + subscription.user.picture;
-	        dm.DisplayImage(url, holder.imgIcon);
+	        imageLoader.displayImage(url, holder.imgIcon);
         } 
         
         // Show subscription as a location
@@ -131,7 +131,7 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         	String mapUrl = String.format(url, centerLat, centerLong, zoom, Util.API_KEY);
         	
         	Log.d("ZOOM", mapUrl);
-        	dm.DisplayImage(mapUrl, holder.imgIcon);
+        	imageLoader.displayImage(mapUrl, holder.imgIcon);
         	
         }
                 
@@ -149,7 +149,7 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
 				new MyGalleryAdapter(
 						context, 
 						subscription.photos,
-						dm
+						imageLoader
 			));
 		
 		// GestureDetector to detect swipes on the gallery

@@ -35,8 +35,9 @@ import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PhotoResponse;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
-import com.hmi.smartphotosharing.util.ImageLoader;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListener {
 
@@ -47,7 +48,7 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 	public static final String KEY_ID = "id";
 	
 	private long id;
-	private ImageLoader dm;
+	private ImageLoader imageLoader;
 	private EditText commentInput;
 	
 	private LinearLayout list;
@@ -63,7 +64,8 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
         Intent intent = getIntent();
         id = intent.getLongExtra(KEY_ID, 0);
 
-        dm = new ImageLoader(this);
+        imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         if (id != 0) {
 			loadData(true,true);
         } else {
@@ -189,7 +191,7 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 				  //Icon
 				  ImageView img = (ImageView)vi.findViewById(R.id.comment_icon);
 				  String userPic = Util.USER_DB + comment.picture;
-				  dm.DisplayImage(userPic, img);
+				  imageLoader.displayImage(userPic, img);
 
 				  // Comment text
 				  TextView txt = (TextView)vi.findViewById(R.id.comment_txt);
@@ -246,12 +248,12 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 
 	        ImageView photo = (ImageView) findViewById(R.id.picture);
 	        
-	        dm.DisplayImage(uri, photo);
+	        imageLoader.displayImage(uri, photo);
 
 	        // Update user icon
 	        ImageView pic = (ImageView) findViewById(R.id.photo_detail_icon);
 			String userPic = Util.USER_DB + p.picture;
-			dm.DisplayImage(userPic, pic);
+			imageLoader.displayImage(userPic, pic);
 	        
 			// Update the 'Taken by' text
 	        TextView by = (TextView)findViewById(R.id.photo_detail_name);

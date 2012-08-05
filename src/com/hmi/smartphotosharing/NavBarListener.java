@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.hmi.smartphotosharing.camera.CameraActivity;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
 import com.hmi.smartphotosharing.subscriptions.SubscriptionsActivity;
 import com.hmi.smartphotosharing.util.Util;
