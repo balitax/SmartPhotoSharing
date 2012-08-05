@@ -67,9 +67,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	
 	private static final int TEN_SECONDS = 10 * 1000;
 	private static final float MIN_DISTANCE = 25;
-	
-	private ProgressDialog pd;
-	
+		
 	private String newGroupName;
 
     private LocationManager mLocationManager;
@@ -77,9 +75,11 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	
 	private Uri fileUri;
 	
+	private ProgressDialog pd;
+	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.share_photo);
+		setContentView(R.layout.share_photo); 
 				
 		// Populate the Spinner
 		spinner = (Spinner) findViewById(R.id.groups_spinner);
@@ -106,6 +106,19 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	    
 	}
 	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
+		savedInstanceState.putString("uri", fileUri.getPath());
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		String uri = savedInstanceState.getString("uri");
+		fileUri = Uri.parse(uri);
+	}
+
     @Override
     public void onPause() {
       super.onPause();
@@ -198,16 +211,35 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		String commentTxt = comment.getText().toString();
     		
     		String shareUrl = Util.getUrl(this,R.string.url_upload);
-    		
+    		/*
 			new UploadImage(this).execute(shareUrl,hash,group,lat,lon,commentTxt);
-    		
-    		pd = new ProgressDialog(SharePhotoActivity.this);
-    		pd.setMessage("Uploading photo...");
-    		pd.setCancelable(false);
-    		pd.setIndeterminate(true);
-    		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-    		pd.show();
-    		
+    		*/
+
+            HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+            try {
+    			map.put("sid", new StringBody(hash));
+    	        map.put("group", new StringBody(group));
+    	        map.put("lat", new StringBody(lat));
+    	        map.put("lon", new StringBody(lon));
+    	        map.put("comment", new StringBody(commentTxt));
+
+        		File file = new File(fileUri.getPath());
+        		ContentBody cbFile = new FileBody(file, "image/jpeg");
+        		map.put("photo", cbFile);
+
+    		} catch (UnsupportedEncodingException e) {
+    			e.printStackTrace();
+    		}
+            
+            PostData pr = new PostData(shareUrl,map);
+            new PostRequest(this, CODE_UPLOAD).execute(pr);
+            
+            pd = new ProgressDialog(SharePhotoActivity.this);
+            pd.setMessage("Uploading photo...");
+            pd.setCancelable(false);
+            pd.setIndeterminate(true);
+            pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            pd.show();    		
 		} 
 	}	
 	
@@ -241,7 +273,6 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	@Override
 	public void parseJson(String json, int code) {
 
-		Log.d("Json parse",json);
 		
 		switch(code){
 		case(CODE_GROUPS):
@@ -255,6 +286,10 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	}
 
     private void parseUpload(String json) {
+		Log.d("Json parse",json);     
+		
+		if (pd != null) pd.dismiss();
+		
 		Gson gson = new Gson();
 		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
 		
@@ -284,79 +319,6 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 			}
 		}
 	}
-
-	private class UploadImage extends AsyncTask<String,Integer,String> {
-        
-		private Context context;
-		
-		public UploadImage(Context c) {
-			this.context = c;
-			
-		}
-    	@Override
-    	protected String doInBackground(String... args) {
-             
-	       // params comes from the execute() call: params[0] is the url.
-	           try {
-				return sendPost(args[0],args[1],args[2],args[3],args[4],args[5]);
-			} catch (ClientProtocolException e) {
-				Log.e("Upload image", e.getMessage());
-				return null;
-			} catch (IOException e) {
-				Log.e("Upload image", e.getMessage());
-				return null;
-			}
-    	}
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {     
-            pd.setProgress(progress[0]);
-        }
-    	
-    	@Override
-    	protected void onPostExecute(String result) {
-    		
-    		try {
-    			parseJson(result, CODE_UPLOAD);
-    		} catch (JsonSyntaxException e) {
-    			Toast.makeText(context, "Something went wrong with the server, please try again later", Toast.LENGTH_SHORT).show();
-    			Log.e("JSON", "Json syntax exception: " + e.getMessage());
-    		}
-    		pd.dismiss();
-    	}
-    	
-    	public String sendPost(String url, String sid, String group, String lat, String lon, String comment) throws IOException, ClientProtocolException  {
-    		HttpClient httpclient = new DefaultHttpClient();
-
-    		HttpPost httppost = new HttpPost(url);
-    		File file = new File(fileUri.getPath());
-    		    		
-    		MultipartEntity mpEntity = new MultipartEntity();
-    		mpEntity.addPart("sid", new StringBody(sid));
-    		mpEntity.addPart("group", new StringBody(group));
-    		mpEntity.addPart("lat", new StringBody(lat));
-    		mpEntity.addPart("lon", new StringBody(lon));
-    		mpEntity.addPart("comment", new StringBody(comment));
-    		
-    		ContentBody cbFile = new FileBody(file, "image/jpeg");
-    		mpEntity.addPart("photo", cbFile);
-    	
-    		httppost.setEntity(mpEntity);
-    		Log.d("sendPost","executing request " + httppost.getRequestLine());
-    		HttpResponse response = httpclient.execute(httppost);
-    		HttpEntity resEntity = response.getEntity();
-    		Log.d("sendPost",""+response.getStatusLine());
-    		
-    		String res = null;
-    		if (resEntity != null) {
-    			res = EntityUtils.toString(resEntity);
-    			Log.d("sendPost",res);
-    			resEntity.consumeContent();
-    		}
-    		httpclient.getConnectionManager().shutdown();
-    		return res;
-    	}
-    }
 	
     private void setupGps() { 
         // Request updates from just the fine (gps) provider.

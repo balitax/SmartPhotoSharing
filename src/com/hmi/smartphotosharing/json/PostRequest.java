@@ -66,7 +66,13 @@ public class PostRequest extends AsyncTask<PostData,Void,String> {
 	@Override
 	protected void onPostExecute(String result) {
 		try {
-			dl.parseJson(result, code);
+			if (result != "") {
+				dl.parseJson(result, code);
+			} else {
+			   Log.e("API", "API is probably broken: empty string response. ");
+	    	   ErrorResponse err = new ErrorResponse();
+	           dl.parseJson(new Gson().toJson(err), code);
+			}
 		} catch (JsonSyntaxException e) {
 			Log.e("JSON", "Json syntax exception: " + e.getMessage());
 			Log.e("JSON", result);

@@ -30,6 +30,7 @@ import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserResponse;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -55,7 +56,25 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
         groups.setOnClickListener(new MyClickListener(this,GroupJoinActivity.class));
                 
         imageLoader = ImageLoader.getInstance();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+        
+        // Set the config for the ImageLoader
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+        .threadPoolSize(5)
+        .threadPriority(Thread.MIN_PRIORITY)
+        .build();
+
+
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+            .showStubImage(R.drawable.ic_unknown)
+            .showImageForEmptyUri(R.drawable.ic_unknown)
+            .cacheInMemory()
+            .cacheOnDisc()
+            	.build();
+
+        // Init ImageLoader
+        imageLoader.init(config);
+        
+        // Load data
         loadData(true, true);
         
     }

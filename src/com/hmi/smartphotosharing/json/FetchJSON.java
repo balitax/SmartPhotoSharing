@@ -59,6 +59,7 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 			if (result != "") {
 				dl.parseJson(result, code);
 			} else {
+			   Log.e("API", "API is probably broken: empty string response. ");
 	    	   ErrorResponse err = new ErrorResponse();
 	           dl.parseJson(new Gson().toJson(err), code);
 			}
