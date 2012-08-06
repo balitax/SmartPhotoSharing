@@ -12,8 +12,9 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 
 import com.hmi.smartphotosharing.json.Photo;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 /**
  * Base Adapter subclass creates Gallery view
@@ -38,15 +39,7 @@ public class MyGalleryAdapter extends BaseAdapter {
     public MyGalleryAdapter(Context c, List<Photo> list, ImageLoader im) {
         context = c;
         this.data = list;
-        this.imageLoader = ImageLoader.getInstance();
-        
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
-        .memoryCacheExtraOptions(50, 50)
-	        .build();
-        
-        //Initialize ImageLoader with created configuration. Do it once.
-        imageLoader.init(config);
-
+        this.imageLoader = im;
         
     }
 
@@ -74,38 +67,53 @@ public class MyGalleryAdapter extends BaseAdapter {
     //get view specifies layout and display options for each thumbnail in the gallery
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        Photo photo = data.get(position);
+    	
         View v = convertView;
-       
+        ViewHolder holder;
+        
         if(v == null) {
 	    	LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	        v = inflater.inflate(R.layout.simple_image, null);
 	        //specify the bitmap at this position in the array
 
-            ViewHolder h = new ViewHolder();
-            h.imgIcon = (ImageView)v.findViewById(R.id.image1);
-            v.setTag(h);
+            holder = new ViewHolder();
+            holder.imgIcon = (ImageView)v.findViewById(R.id.image1);
+            v.setTag(holder);
+        } else {
+            // view already exists, get the holder instance from the view
+            holder = (ViewHolder) v.getTag();
         }
-
-        ViewHolder holder = (ViewHolder)v.getTag();
 
         //set layout options
         holder.imgIcon.setLayoutParams(new Gallery.LayoutParams(45, 45));
         
-        Photo photo = data.get(position);
-        imageLoader.displayImage(photo.thumb, holder.imgIcon);
+        imageLoader.displayImage(photo.thumb, (ImageView)v.findViewById(R.id.image1));
         
         //scale type within view area
         holder.imgIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        //set default gallery item background
-        //imageView.setBackgroundResource(defaultItemBackground);
+        
         holder.imgIcon.setPadding(2,2,2,2);
         if (getItem(position).isNew)
         	holder.imgIcon.setBackgroundColor(0xFFFF0000);
-        //return the view
-        
-        //imageView.setOnLongClickListener(new OnItemClickListener(context, position));
-        
+
+                
         return v;
+    	
+        /*ImageView imageView = new ImageView(context);
+        //specify the bitmap at this position in the array
+        
+        Photo photo = data.get(position);
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageView.setLayoutParams(new Gallery.LayoutParams(45, 45));
+        imageLoader.displayImage(photo.thumb, imageView);
+        
+        imageView.setPadding(2,2,2,2);
+        
+        if (getItem(position).isNew)
+        	imageView.setBackgroundColor(0xFFFF0000);
+                
+        return imageView;*/
     }
     
     static class ViewHolder {

@@ -136,7 +136,7 @@
 	
 	
 	<!--  Handle Intent -->
-	<string name="intent_intro">How would you like to share this picture?</string>
+	<string name="intent_intro">Share A Photo</string>
 	<string name="intent_img_description">This is the image that was shared.</string>
 	<string name="intent_pick_group">Select a group to share with.</string>
 	    

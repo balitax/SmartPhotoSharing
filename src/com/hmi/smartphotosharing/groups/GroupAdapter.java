@@ -1,5 +1,7 @@
 package com.hmi.smartphotosharing.groups;
 
+import java.util.List;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.GestureDetector;
@@ -23,7 +25,6 @@ import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 /**
  * Custom ArrayAdapter class that is used to display a list of items with an icon.
@@ -40,27 +41,26 @@ public class GroupAdapter extends ArrayAdapter<Group> {
     
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
-	Group data[] = null;	// A Group array that contains all list items
+	List<Group> data;	// A Group array that contains all list items
 	ImageLoader imageLoader;
 		
-	public GroupAdapter(Context context, int resource, Group[] objects) {
+	public GroupAdapter(Context context, int resource, List<Group> objects, ImageLoader im) {
 		super(context, resource, objects);
 		
         this.layoutResourceId = resource;
         this.context = context;
         this.data = objects;
-        this.imageLoader = ImageLoader.getInstance();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(context));
+        this.imageLoader = im;
 	}
 	
     @Override
     public int getCount() {
-        return data.length;
+        return data.size();
     }
 
     @Override
     public Group getItem(int position) {
-        return data[position];
+        return data.get(position);
     }
 
     @Override
@@ -76,27 +76,29 @@ public class GroupAdapter extends ArrayAdapter<Group> {
 	@Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        Group group = getItem(position);
+        
         View v = convertView;
-       
+        GroupHolder holder;
+        
         if(v == null) {
         	
         	// Inflater used to parse the xml file
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(layoutResourceId, null);
            
-            GroupHolder h = new GroupHolder();
-            h.imgIcon = (ImageView)v.findViewById(R.id.icon);
-            h.privateIcon = (ImageView)v.findViewById(R.id.private_icon);
-            h.locationIcon = (ImageView)v.findViewById(R.id.location_icon);
-            h.txtTitle = (TextView)v.findViewById(R.id.item_text);
-            h.totalNew = (TextView)v.findViewById(R.id.total_new);
-            h.picGallery = (Gallery) v.findViewById(R.id.gallery);
-            v.setTag(h);
+            holder = new GroupHolder();
+            holder.imgIcon = (ImageView)v.findViewById(R.id.icon);
+            holder.privateIcon = (ImageView)v.findViewById(R.id.private_icon);
+            holder.locationIcon = (ImageView)v.findViewById(R.id.location_icon);
+            holder.txtTitle = (TextView)v.findViewById(R.id.item_text);
+            holder.totalNew = (TextView)v.findViewById(R.id.total_new);
+            holder.picGallery = (Gallery)v.findViewById(R.id.gallery);
+            v.setTag(holder);
+        } else {
+        	holder = (GroupHolder)v.getTag();
         }
-
-        GroupHolder holder = (GroupHolder)v.getTag();
-          
-        Group group = data[position];
+        
         holder.txtTitle.setText(group.name);
                 
         // Set the icon for this list item
@@ -130,8 +132,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         }
         
         // Set the adapter for the gallery
-        
-		holder.picGallery.setAdapter(
+        holder.picGallery.setAdapter(
 				new MyGalleryAdapter(
 						context, 
 						group.photos,

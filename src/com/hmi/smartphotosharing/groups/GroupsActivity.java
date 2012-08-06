@@ -56,20 +56,20 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
         groups.setOnClickListener(new MyClickListener(this,GroupJoinActivity.class));
                 
         imageLoader = ImageLoader.getInstance();
-        
-        // Set the config for the ImageLoader
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-        .threadPoolSize(5)
-        .threadPriority(Thread.MIN_PRIORITY)
-        .build();
-
 
         DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .showStubImage(R.drawable.ic_unknown)
-            .showImageForEmptyUri(R.drawable.ic_unknown)
+            .showStubImage(R.drawable.ic_launcher)
+            .showImageForEmptyUri(R.drawable.ic_launcher)
             .cacheInMemory()
             .cacheOnDisc()
             	.build();
+
+        // Set the config for the ImageLoader
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+        .threadPoolSize(5)
+        .threadPriority(Thread.MIN_PRIORITY+2)
+        .defaultDisplayImageOptions(options)
+        .build();
 
         // Init ImageLoader
         imageLoader.init(config);
@@ -220,7 +220,8 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 			GroupAdapter adapter = new GroupAdapter(
 					this, 
 					R.layout.group_item, 
-					group_list.toArray(new Group[group_list.size()])
+					group_list,
+					imageLoader
 				);
 			adapter.sort(Sorter.GROUP_SORTER);
 			setListAdapter(adapter);	

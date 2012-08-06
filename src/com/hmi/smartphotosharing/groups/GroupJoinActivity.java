@@ -3,9 +3,12 @@ package com.hmi.smartphotosharing.groups;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -44,7 +47,16 @@ public class GroupJoinActivity extends NavBarListActivity implements OnDownloadL
       // Refresh groups list
       loadData();
     }  
-    	    
+    
+    @Override 
+    public void onListItemClick(ListView l, View v, int position, long id) {
+    	SharedPreferences settings = this.getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);
+		String hash = settings.getString(Login.SESSION_HASH, null);
+
+        String joinUrl = String.format(Util.getUrl(this,R.string.groups_http_join),hash,id);		
+        new FetchJSON(this, GroupJoinActivity.CODE_JOIN).execute(joinUrl);
+    }    
+    
 	private void loadData() {
 		
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
@@ -105,12 +117,13 @@ public class GroupJoinActivity extends NavBarListActivity implements OnDownloadL
 		if (gr != null) {
 			List <Group> group_list = gr.getObject();
 			if (group_list == null) group_list = new ArrayList<Group>();
-			
+
 			setListAdapter(new GroupJoinAdapter(
 								this, 
-								R.layout.group_item, 
-								group_list.toArray(new Group[group_list.size()])
-							));	
+								R.layout.join_group_item, 
+								0,
+								group_list)
+							);	
 		}
 	}
 

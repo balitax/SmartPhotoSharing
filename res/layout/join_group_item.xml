@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="2dp" >
+		    
+	<ImageView 
+	    android:id="@+id/icon"
+	    android:contentDescription="@string/icon_unknown"
+	    android:layout_width="48dp"
+	    android:layout_height="48dp"
+        android:layout_toRightOf="@+id/private_icon"
+	  	android:adjustViewBounds="true"  
+	  	android:scaleType="fitCenter"  
+    	android:padding="2dp"
+	    android:src="@drawable/ic_unknown" />
+	
+	<ImageView 
+	    android:id="@+id/private_icon"
+	    android:contentDescription="@string/private_group"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+       	android:layout_alignParentLeft="true"
+    	android:padding="1dp"
+	    android:src="@drawable/ic_lock_lock" />	
+	
+	<ImageView 
+	    android:id="@+id/location_icon"
+	    android:contentDescription="@string/private_group"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+       	android:layout_below="@+id/private_icon"
+    	android:padding="1dp"
+	    android:src="@drawable/ic_location_lock" />	
+	            	  
+	<TextView 
+	    android:id="@+id/item_text"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+	    android:textSize="20sp"
+        android:layout_toRightOf="@+id/icon"
+    	android:padding="2dp"
+    	android:singleLine="true"
+    	android:ellipsize="marquee" />
+	
+</RelativeLayout>

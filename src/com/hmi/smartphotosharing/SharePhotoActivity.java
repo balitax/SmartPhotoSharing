@@ -42,6 +42,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.hmi.smartphotosharing.groups.GroupCreateActivity;
+import com.hmi.smartphotosharing.groups.GroupJoinAdapter;
 import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.GroupListResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
@@ -308,13 +309,13 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	private void parseGroups(String json) {
 
 		Gson gson = new Gson();
-		GroupListResponse gr = gson.fromJson(json, GroupListResponse.class);
-		List<Group> list = gr.getObject();
-		MySpinnerAdapter spinnerAdapter = new MySpinnerAdapter(this,list);
-		spinner.setAdapter(spinnerAdapter);
+		GroupListResponse response = gson.fromJson(json, GroupListResponse.class);
+		List<Group> list = response.getObject();
+		GroupJoinAdapter adapter = new GroupJoinAdapter(this,R.layout.join_group_item,R.layout.join_group_item_dropdown,list);
+		spinner.setAdapter(adapter);
 
-		for(int i = 0; i < spinnerAdapter.getCount(); i++) {
-			if (spinnerAdapter.getItem(i).name.equals(newGroupName)) {
+		for(int i = 0; i < adapter.getCount(); i++) {
+			if (adapter.getItem(i).name.equals(newGroupName)) {
 				spinner.setSelection(i);
 			}
 		}

@@ -1,63 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-    	android:orientation="vertical"
-    	android:focusable="true" android:focusableInTouchMode="true" >
-
-	    <TextView
-	        android:id="@+id/textView1"
-	        android:layout_width="wrap_content"
+        android:text="@string/intent_intro"
+        android:textSize="25sp"
+        android:padding="5dp" />
+    
+    <ImageView 
+        android:id="@+id/button_send"
+        android:src="@drawable/ic_menu_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@string/button_send"
+		android:onClick="onClickShare" />
+    
+	<ScrollView
+	    android:id="@+id/content"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_below="@+id/button_send" >
+	
+	    <RelativeLayout
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:text="@string/intent_intro" />
-		
-		<ImageView 
-		    android:id="@+id/image1" 
-		    android:contentDescription="@string/intent_img_description"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:adjustViewBounds="true" />
-		
-		<EditText 
-		        android:id="@+id/edit_message"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:hint="@string/add_comment" />
-		
-		<TextView
-	        	android:layout_width="wrap_content"
-	        	android:layout_height="wrap_content"
-	        	android:text="@string/intent_pick_group" />
-		
-		<LinearLayout 
-	    	android:layout_width="fill_parent"
-	    	android:layout_height="wrap_content"
-	    	android:orientation="horizontal">
-	    	
+	    	android:focusable="true" android:focusableInTouchMode="true" >
+	
+			<ImageView 
+			    android:id="@+id/image1" 
+			    android:contentDescription="@string/intent_img_description"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:adjustViewBounds="true" />
+			
+			<EditText 
+			        android:id="@+id/edit_message"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@+id/image1"
+			        android:hint="@string/add_comment" />
+						
+		    	
 	    	<Spinner
 	    		android:id="@+id/groups_spinner"
-	    		android:layout_weight="1"
-	    		android:layout_width="0dp"
-	    		android:layout_height="wrap_content" />
+	    		android:layout_width="fill_parent"
+	    		android:layout_height="wrap_content"
+			    android:layout_below="@+id/edit_message"
+			    android:layout_toLeftOf="@+id/create_group" />
 	    	
 	    	<Button 
 		        android:id="@+id/create_group"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
+			    android:layout_below="@+id/edit_message"
+        		android:layout_alignParentRight="true"
 		        android:text="@string/create_group"
 		        android:onClick="onClickCreateGroup" />    
-		    
-		</LinearLayout>
-		
-		<Button 
-		        android:id="@+id/button_send"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:text="@string/button_share"
-		        android:onClick="onClickShare" />
-	</LinearLayout>
-</ScrollView>
+			    
+			</RelativeLayout>
+	</ScrollView>
+</RelativeLayout>
