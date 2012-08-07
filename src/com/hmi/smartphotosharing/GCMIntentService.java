@@ -19,10 +19,11 @@ import com.hmi.smartphotosharing.util.Util;
 
 public class GCMIntentService extends GCMBaseIntentService implements OnDownloadListener {
 
-	private static final int ACTION_DEFAULT = 0;
-	private static final int ACTION_PHOTO_UPLOAD = 10;
-	private static final int ACTION_PHOTO_COMMENT = 11;
-	private static final int ACTION_GROUP_INVITE = 20;
+	private static final int ACTION_DEFAULT 			= 0;
+	private static final int ACTION_PHOTO_UPLOAD 		= 10;
+	private static final int ACTION_PHOTO_COMMENT 		= 11;
+	private static final int ACTION_GROUP_INVITE 		= 20;
+	private static final int ACTION_SUBSCRIPTION_UPDATE = 30;
 	
 	private static final int CODE_REGISTER = 1;
 	private static final int CODE_UNREGISTER = 2;
@@ -78,21 +79,19 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		// Create intent based on the action received
 		switch(action) {
 
-		case ACTION_PHOTO_UPLOAD:
-			notificationIntent = new Intent(this, SinglePhotoDetail.class);
-			notificationIntent.putExtra(SinglePhotoDetail.KEY_ID, value);
-			break;
-		case ACTION_GROUP_INVITE:
-			notificationIntent = new Intent(this, GroupDetailActivity.class);
-			notificationIntent.putExtra(GroupDetailActivity.KEY_ID, value);		
-			break;
-		case ACTION_PHOTO_COMMENT:
-			notificationIntent = new Intent(this, SinglePhotoDetail.class);	
-			notificationIntent.putExtra(SinglePhotoDetail.KEY_ID, value);	
-			break;
-		case ACTION_DEFAULT:
-		default:
-			notificationIntent = new Intent(this, GroupsActivity.class);
+			case ACTION_GROUP_INVITE:
+				notificationIntent = new Intent(this, GroupDetailActivity.class);
+				notificationIntent.putExtra(GroupDetailActivity.KEY_ID, value);		
+				break;
+			case ACTION_PHOTO_UPLOAD:
+			case ACTION_PHOTO_COMMENT:
+			case ACTION_SUBSCRIPTION_UPDATE:
+				notificationIntent = new Intent(this, SinglePhotoDetail.class);	
+				notificationIntent.putExtra(SinglePhotoDetail.KEY_ID, value);	
+				break;
+			case ACTION_DEFAULT:
+			default:
+				notificationIntent = new Intent(this, GroupsActivity.class);
 		}
 
 		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -141,10 +140,8 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		switch(code){
 		
 		case CODE_REGISTER:
-			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			break;
 		case CODE_UNREGISTER:
-			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			break;
 		default:
 			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();

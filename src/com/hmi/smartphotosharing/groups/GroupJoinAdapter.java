@@ -29,15 +29,14 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 public class GroupJoinAdapter extends ArrayAdapter<Group> {
         
     private Context context;		// The parenting Context that the Adapter is embedded in
-	private int rowResource, dropDownResource;	// The xml layout file for each ListView item
+	private int rowResource;	// The xml layout file for each ListView item
 	private List<Group> data;	// A Group array that contains all list items
 	private ImageLoader imageLoader;
 	
-	public GroupJoinAdapter(Context context, int rowResource, int dropDownResource, List<Group> objects) {
+	public GroupJoinAdapter(Context context, int rowResource, List<Group> objects) {
 		super(context, rowResource, objects);
 		
         this.rowResource = rowResource;
-        this.dropDownResource = dropDownResource;
         this.context = context;
         this.data = objects;
         this.imageLoader = ImageLoader.getInstance();
@@ -61,6 +60,20 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
     
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
+		return getCustomView(position,convertView,parent);
+    }
+
+	/**
+	 * This method overrides the inherited getView() method.
+	 * It is called for every ListView item to create the view with
+	 * the properties that we want.
+	 */
+	@Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+		return getCustomView(position,convertView,parent);
+    }
+		
+	private View getCustomView(int position, View convertView, ViewGroup parent) {
 
         View v = convertView;
         GroupHolder holder = null;
@@ -103,38 +116,9 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
         imageLoader.displayImage(url, holder.imgIcon);
                 
         return v;
-    }
-
-	/**
-	 * This method overrides the inherited getView() method.
-	 * It is called for every ListView item to create the view with
-	 * the properties that we want.
-	 */
-	@Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        View v = convertView;
-        GroupHolder holder = null;
-       
-        if(v == null) {
-        	
-        	// Inflater used to parse the xml file
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(dropDownResource, null);
-           
-            holder = new GroupHolder();
-            holder.txtTitle = (TextView)v.findViewById(R.id.item_text);
-            v.setTag(holder);
-        } else {
-            holder = (GroupHolder)v.getTag();
-        }
-                        
-        Group group = getItem(position);
-        holder.txtTitle.setText(group.name);
-                
-        return v;
-    }
 		
+	}
+
 	/**
 	 * The Groupholder class is used to cache the Views
 	 * so they can be reused for every row in the ListView.

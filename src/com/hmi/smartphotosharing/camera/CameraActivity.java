@@ -18,9 +18,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SharePhotoActivity;
+import com.hmi.smartphotosharing.util.Util;
 
 /**
  * This class handles the Camera page.
@@ -31,222 +33,55 @@ import com.hmi.smartphotosharing.SharePhotoActivity;
  */
 public class CameraActivity extends Activity {
 
-
-	private static final int ACTION_TAKE_PHOTO = 1;
-	private static final int ACTION_SHARE = 2;
-
-	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
-	private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
-	private Bitmap mImageBitmap;
-
-	private String mCurrentPhotoPath;
-
-	private static final String JPEG_FILE_PREFIX = "IMG_";
-	private static final String JPEG_FILE_SUFFIX = ".jpg";
-
-	private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
+	private Uri fileUri;
+	private static final int TAKE_PICTURE = 5;
+	private static final String ACTION_TAKE_PICTURE = "com.hmi.smartphotosharing.TAKE_PICTURE";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.camera);
-		
-		// Check the Android version and decide which album path settings to use
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
-			mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
-		} else {
-			mAlbumStorageDirFactory = new BaseAlbumDirFactory();
-		}
-
-		dispatchTakePhoto();
+        
+	    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
+	    fileUri = Util.getOutputMediaFileUri(Util.MEDIA_TYPE_IMAGE);
+	    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+	    startActivityForResult(cameraIntent, TAKE_PICTURE); 
     }
-
-	
-	private void dispatchTakePhoto() {
-			Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-			File f = null;
-			
-			try {
-				f = setUpPhotoFile();
-				mCurrentPhotoPath = f.getAbsolutePath();
-				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-			} catch (IOException e) {
-				e.printStackTrace();
-				f = null;
-				mCurrentPhotoPath = null;
-			}
-
-			// Handle the result of the Intent
-			startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
-			
-	}
-
-
-	/**
-	 * Method that handles the result of the Intent.
-	 */
+    
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-				
-		if (requestCode == ACTION_TAKE_PHOTO) {
-			
-			// Succesfully taken a picture
-			if (resultCode == RESULT_OK) {
-				handleCameraPhoto();
-			} 
-			
-			// If the user returns from the camera app, we send him back to the previous page
-			else if (resultCode == RESULT_CANCELED) {
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
+		if (fileUri != null) 
+			savedInstanceState.putString("uri", fileUri.getPath());
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		String uri = savedInstanceState.getString("uri");
+		if (uri != null)
+			fileUri = Uri.parse(uri);
+	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        
+        if (requestCode == TAKE_PICTURE && resultCode == Activity.RESULT_OK) { 
+        	
+        	if(fileUri != null) {
+        		Intent res = new Intent(ACTION_TAKE_PICTURE,fileUri);
+
+        		setResult(Activity.RESULT_OK, res);
+        		finish();
+			} else {
+				setResult(Activity.RESULT_CANCELED);
 				finish();
 			}
-
-		}
-		
-		else if (resultCode == RESULT_CANCELED) {
-			finish();
-		}
-
-	}
-
-	/**
-	 * Some lifecycle callbacks so that the image can survive orientation change
-	 */
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		outState.putParcelable(BITMAP_STORAGE_KEY, mImageBitmap);
-		outState.putBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY, (mImageBitmap != null) );
-		super.onSaveInstanceState(outState);
-	}
-
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onSaveInstanceState(savedInstanceState);
-		mImageBitmap = savedInstanceState.getParcelable(BITMAP_STORAGE_KEY);
-	}
-			
-	/**
-	 * Binds the bitmap image to the View and adds it to the gallery.
-	 */
-	private void handleCameraPhoto() {
-
-		if (mCurrentPhotoPath != null) {
-						
-			//setPic();
-			galleryAddPic();
-			sharePic();
-			//mCurrentPhotoPath = null;
-		}
-
-	}	
-	
-	private void sharePic() {
-
-		// Send the intent to the class that can handle incoming photos
-		Intent intent = new Intent(this,SharePhotoActivity.class);
-		intent.setType("image/jpeg");
-
-		// Add the Uri of the current photo as extra value
-		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mCurrentPhotoPath));
-		
-		// Create and start the chooser
-		startActivityForResult(intent, ACTION_SHARE);
-		
-	}
-
-
-	/**
-	 *  Photo album for this application 
-	 */
-	private String getAlbumName() {
-		return getString(R.string.album_name);
-	}
-	
-	/**
-	 * Tries to create the album directory
-	 * @return The created directory or null when it cannot create the directory.
-	 */
-	private File getAlbumDir() {
-		File storageDir = null;
-
-		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-			
-			storageDir = mAlbumStorageDirFactory.getAlbumStorageDir(getAlbumName());
-
-			if (storageDir != null) {
-				if (! storageDir.mkdirs()) {
-					if (! storageDir.exists()){
-						Log.d("CameraSample", "failed to create directory");
-						return null;
-					}
-				}
-			}
-			
-		} else {
-			Log.v(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
-		}
-		
-		return storageDir;
-	}
-
-	/**
-	 * Sets the filename and actually creates the file.
-	 * @return
-	 * @throws IOException
-	 */
-	private File createImageFile() throws IOException {
-		// Create an image file name
-		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-		String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
-		File albumF = getAlbumDir();
-		File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
-		return imageF;
-	}
-
-	/**
-	 * Creates the file and sets the path for the photo
-	 * @return The File where the image is stored.
-	 * @throws IOException Thrown when writing is not possible.
-	 */
-	private File setUpPhotoFile() throws IOException {
-		
-		File f = createImageFile();
-		mCurrentPhotoPath = f.getAbsolutePath();
-		
-		return f;
-	}
-
-	/**
-	 * Method for adding the current photo to the gallery.
-	 * Creates an Intent to rescan the media gallery.
-	 */
-	private void galleryAddPic() {
-		    Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
-			File f = new File(mCurrentPhotoPath);
-		    Uri contentUri = Uri.fromFile(f);
-		    mediaScanIntent.setData(contentUri);
-		    sendBroadcast(mediaScanIntent);
-	}
-	
-	/**
-	 * Indicates whether the specified action can be used as an intent. This
-	 * method queries the package manager for installed packages that can
-	 * respond to an intent with the specified action. If no suitable package is
-	 * found, this method returns false.
-	 * http://android-developers.blogspot.com/2009/01/can-i-use-this-intent.html
-	 *
-	 * @param context The application's environment.
-	 * @param action The Intent action to check for availability.
-	 *
-	 * @return True if an Intent with the specified action can be sent and
-	 *         responded to, false otherwise.
-	 */
-	public static boolean isIntentAvailable(Context context, String action) {
-		final PackageManager packageManager = context.getPackageManager();
-		final Intent intent = new Intent(action);
-		List<ResolveInfo> list =
-			packageManager.queryIntentActivities(intent,
-					PackageManager.MATCH_DEFAULT_ONLY);
-		return list.size() > 0;
+        	
+	    } else if (resultCode == RESULT_CANCELED) {
+			setResult(Activity.RESULT_CANCELED);
+	        finish();
+	    } else {
+	        // Image capture failed, advise user 
+	    }
 	}
 
 }

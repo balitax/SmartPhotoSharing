@@ -6,17 +6,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -24,12 +16,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -40,7 +35,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.hmi.smartphotosharing.camera.CameraActivity;
 import com.hmi.smartphotosharing.groups.GroupCreateActivity;
 import com.hmi.smartphotosharing.groups.GroupJoinAdapter;
 import com.hmi.smartphotosharing.json.Group;
@@ -50,6 +45,8 @@ import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.StringRepsonse;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	
@@ -74,7 +71,10 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     private LocationManager mLocationManager;
 	private Location gpsLocation;
 	
+	private ImageLoader imageLoader;
+	
 	private Uri fileUri;
+	private int rotation;
 	
 	private ProgressDialog pd;
 	
@@ -94,30 +94,33 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 
         if (!gpsEnabled) {
         	Util.createGpsDisabledAlert(this);
-        } else {        	
-        	setupGps();
         }
         
         if (fileUri == null) {
-		    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
-		    fileUri = Util.getOutputMediaFileUri(Util.MEDIA_TYPE_IMAGE);
-		    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+		    Intent cameraIntent = new Intent(this,CameraActivity.class);
 		    startActivityForResult(cameraIntent, TAKE_PICTURE); 
         }
 	    
+        imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+        
+        setupGps();
+        loadData();
 	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
-		savedInstanceState.putString("uri", fileUri.getPath());
+		if (fileUri != null) 
+			savedInstanceState.putString("uri", fileUri.getPath());
 	}
 	
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		String uri = savedInstanceState.getString("uri");
-		fileUri = Uri.parse(uri);
+		if (uri != null)
+			fileUri = Uri.parse(uri);
 	}
 
     @Override
@@ -200,6 +203,8 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 
     		String group = Long.toString(spinner.getSelectedItemId());
     		
+    		String rotate = Integer.toString(rotation);
+    		
     		String lat, lon;
     		
     		if (location != null) {
@@ -223,7 +228,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     	        map.put("lat", new StringBody(lat));
     	        map.put("lon", new StringBody(lon));
     	        map.put("comment", new StringBody(commentTxt));
-
+    	        map.put("rotation", new StringBody(rotate));
         		File file = new File(fileUri.getPath());
         		ContentBody cbFile = new FileBody(file, "image/jpeg");
         		map.put("photo", cbFile);
@@ -244,6 +249,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		} 
 	}	
 	
+	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
             Intent data) {
         if (requestCode == CREATE_GROUP && resultCode == RESULT_OK) {
@@ -252,24 +258,18 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         	loadData();
         }
         
-        if (requestCode == TAKE_PICTURE && resultCode == Activity.RESULT_OK) { 
-        
-        	if(fileUri != null) {
-				
-	        	imageView.setImageURI(fileUri);
-	        	
-	        	loadData();
-			}
+        else if (requestCode == TAKE_PICTURE && resultCode == Activity.RESULT_OK) { 
+                
+        	fileUri = data.getData();
         	
-		        
+        	rotation = Util.getRotationDegrees(fileUri.getPath());
+        	
+        	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(fileUri.getPath(), 200, 200, rotation));
 	    } else if (resultCode == RESULT_CANCELED) {
 	        finish();
-	    } else {
-	        // Image capture failed, advise user 
 	    }
 	}
-    
-		
+	
 
 	@Override
 	public void parseJson(String json, int code) {
@@ -311,7 +311,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		Gson gson = new Gson();
 		GroupListResponse response = gson.fromJson(json, GroupListResponse.class);
 		List<Group> list = response.getObject();
-		GroupJoinAdapter adapter = new GroupJoinAdapter(this,R.layout.join_group_item,R.layout.join_group_item_dropdown,list);
+		GroupJoinAdapter adapter = new GroupJoinAdapter(this,R.layout.join_group_item,list);
 		spinner.setAdapter(adapter);
 
 		for(int i = 0; i < adapter.getCount(); i++) {
@@ -343,13 +343,13 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         
         // Network
         String networkProvider = LocationManager.NETWORK_PROVIDER;
-        mLocationManager.requestLocationUpdates(networkProvider, TEN_SECONDS, MIN_DISTANCE, listener);
+        mLocationManager.requestLocationUpdates(networkProvider, TEN_SECONDS, 0, listener);
         
         // GPS
         String gpsProvider = LocationManager.GPS_PROVIDER;
         
         if (mLocationManager.isProviderEnabled(gpsProvider)) {
-            mLocationManager.requestLocationUpdates(gpsProvider, TEN_SECONDS, MIN_DISTANCE, listener);
+            mLocationManager.requestLocationUpdates(gpsProvider, TEN_SECONDS, 0, listener);
             location = mLocationManager.getLastKnownLocation(gpsProvider);
         }
         

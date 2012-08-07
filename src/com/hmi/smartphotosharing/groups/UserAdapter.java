@@ -85,8 +85,7 @@ public class UserAdapter extends ArrayAdapter<User> {
         holder.txtTitle.setText(user.rname);
         
         // Set the icon for this list item
-        String url = Util.USER_DB + user.picture;
-        imageLoader.displayImage(url, holder.imgIcon);
+        imageLoader.displayImage(user.thumb, holder.imgIcon);
                 
         return row;
     }

@@ -49,6 +49,8 @@
     <!--  Groups -->
     
     <string name="groups_http">cmd=allgroups&amp;sid=%1$s&amp;joined=1</string>
+    <string name="groups_http_owner">cmd=isowner&amp;sid=%1$s&amp;gid=%2$s</string>
+    <string name="groups_http_picture">cmd=uploadGroupPic</string>
     <string name="groups_http_gallery">cmd=listpics&amp;sid=%1$s&amp;max=5&amp;gid=%2$s</string>
     <string name="groups_http_create">cmd=addgroup</string>
     <string name="groups_http_locate">cmd=locategroup</string>
@@ -98,6 +100,10 @@
     
     <!--  Profile -->
     
+    <string name="profile_http_picture">cmd=uploadProfilePic</string>
+    <string name="profile_camera">Change my picture</string>
+    <string name="profile_listpics">Show my photos</string>
+    <string name="profile_logout">Log out</string>
     <string name="profile_name">Loading user data.</string>
     <string name="profile_stats">%1$s groups, %2$s photos</string>
     <string name="profile_follows">%1$s subscriptions, %2$s followers</string>

@@ -102,8 +102,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         holder.txtTitle.setText(group.name);
                 
         // Set the icon for this list item
-        String url = Util.GROUP_DB + group.logo;
-        imageLoader.displayImage(url, holder.imgIcon);
+        imageLoader.displayImage(group.thumb, holder.imgIcon);
         
         // We need to set the onClickListener here to make sure that
         // the row can also be clicked, in addition to the gallery photos

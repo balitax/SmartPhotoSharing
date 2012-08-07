@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
- <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent">  
-
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
     <!-- HEADER -->
     
     <RelativeLayout
@@ -27,14 +28,7 @@
 	    	android:layout_height="wrap_content"
 	        android:layout_toRightOf="@+id/app_icon"
 	        android:textSize="20sp" />
-	    
-	    <TextView
-	    	android:id="@+id/stats"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	        android:layout_toRightOf="@+id/app_icon"
-	        android:layout_below="@+id/groups_name" />	  
-	         
+	    	         
 	   <ImageView 
 	        android:id="@+id/groups_icon"
 	        android:src="@drawable/ic_unknown"
@@ -44,40 +38,40 @@
 	        android:padding="4dp"
 	        android:onClick="onClickProfile" />     
 	</RelativeLayout>
-     
-     <!-- NAV BUTTONS -->
-     
-    <ImageView 
-	    android:id="@+id/subscription_add"
-	    android:contentDescription="@string/icon_unknown"
-	    android:layout_width="wrap_content"
+	
+    <!-- Contents -->
+    
+	<Button 
+	    android:id="@+id/btn_camera"
+	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_below="@+id/header"
-	    android:src="@drawable/ic_menu_add"
-	    android:onClick="onClickCreateSubscription" />	      
-	    
-    <!-- GROUPS LIST -->
+		android:drawableLeft="@drawable/ic_menu_camera"
+	    android:onClick="onClickPicture"
+	    android:text="@string/profile_camera" />
+	
+	<Button 
+	    android:id="@+id/btn_pics"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/btn_camera"
+		android:drawableLeft="@drawable/ic_menu_gallery"
+	    android:onClick="onClickListPics"
+	    android:text="@string/profile_listpics" />    
     
-     <ListView 
-         android:id="@id/android:list"
-	     android:layout_width="match_parent"
-	     android:layout_height="wrap_content"
-	     android:drawSelectorOnTop="false"
-         android:layout_below="@+id/subscription_add"
-         android:layout_marginBottom="50dp" />
-
-     <TextView 
-         android:id="@id/android:empty"
-	     android:layout_width="match_parent"
-	     android:layout_height="match_parent"
-	     android:text="@string/no_data"
-         android:layout_below="@+id/subscription_add" /> 
-         
+	<Button 
+	    android:id="@+id/btn_logout"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/btn_pics"
+		android:drawableLeft="@drawable/ic_menu_stop"
+	    android:onClick="onClickLogout"
+	    android:text="@string/profile_logout" />   
+	    
      <include
          android:id="@+id/navbar"
          android:layout_width="fill_parent"
          android:layout_height="wrap_content"
          android:layout_alignParentBottom="true"
          layout="@layout/navbar" />
-          
 </RelativeLayout>

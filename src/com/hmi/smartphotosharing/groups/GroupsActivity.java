@@ -14,13 +14,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarListActivity;
+import com.hmi.smartphotosharing.ProfileActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Group;
@@ -42,19 +42,12 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
     private static final int CODE_GROUPS = 2;
         
 	private ImageLoader imageLoader;
-	
-	private ImageView add,groups;
-    
+	    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.groups);
         super.onCreate(savedInstanceState);
-        
-        add = (ImageView) findViewById(R.id.group_add);
-        add.setOnClickListener(new MyClickListener(this,GroupCreateActivity.class));
-        groups = (ImageView) findViewById(R.id.all_groups);
-        groups.setOnClickListener(new MyClickListener(this,GroupJoinActivity.class));
-                
+                        
         imageLoader = ImageLoader.getInstance();
 
         DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -78,24 +71,22 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
         loadData(true, true);
         
     }
-    
-    public class MyClickListener implements OnClickListener {
-    	private Context c;
-    	private Class<? extends Activity> cls;
-    	
-    	public MyClickListener(Context c, Class<? extends Activity> cls) {
-    		this.c = c;
-    		this.cls = cls;
-    	}
-    	
-    	@Override
-    	public void onClick(View v) {	
-    		Intent intent = new Intent(c,cls);
-    		c.startActivity(intent);
-    	}
 
+    public void onClickAdd(View view) {
+    	Intent intent = new Intent(this, GroupCreateActivity.class);
+    	startActivity(intent);
     }
-
+    
+    public void onClickJoin(View view) {
+    	Intent intent = new Intent(this, GroupJoinActivity.class);
+    	startActivity(intent);
+    }
+    
+    public void onClickProfile(View view) {
+    	Intent intent = new Intent(this, ProfileActivity.class);
+    	startActivity(intent);
+    }
+    
 	@Override
 	public void onStart() {
         super.onStart();
@@ -107,7 +98,7 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
       super.onResume();
       
       // Refresh groups list
-      loadData(false, true);
+      //loadData(false, true);
     }  
     
 	@Override
@@ -189,20 +180,20 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 		Gson gson = new Gson();
 		UserResponse response = gson.fromJson(result, UserResponse.class);
 		User user = response.getObject();
-		
-		// Set the user name
-		TextView name = (TextView) findViewById(R.id.groups_name);
-		name.setText(user.getName());
-		
-		// Set the user name
-		TextView stats = (TextView) findViewById(R.id.stats);
-		stats.setText(String.format(this.getResources().getString(R.string.profile_stats), user.groups, user.photos));
-		
-		// Set the user icon
-		String userPic = Util.USER_DB + user.picture;
-		ImageView pic = (ImageView) findViewById(R.id.groups_icon);
-		//dm.fetchDrawableOnThread(userPic, pic);
-		imageLoader.displayImage(userPic, pic);
+		if (user != null) {
+			// Set the user name
+			TextView name = (TextView) findViewById(R.id.groups_name);
+			name.setText(user.getName());
+			
+			// Set the user name
+			TextView stats = (TextView) findViewById(R.id.stats);
+			stats.setText(String.format(this.getResources().getString(R.string.profile_stats), user.groups, user.photos));
+			
+			// Set the user icon
+			ImageView pic = (ImageView) findViewById(R.id.groups_icon);
+			//dm.fetchDrawableOnThread(userPic, pic);
+			imageLoader.displayImage(user.thumb, pic);
+		}
 	}
 
 	private void parseGroups(String result) {

@@ -120,8 +120,7 @@ public class GroupJoinActivity extends NavBarListActivity implements OnDownloadL
 
 			setListAdapter(new GroupJoinAdapter(
 								this, 
-								R.layout.join_group_item, 
-								0,
+								R.layout.join_group_item,
 								group_list)
 							);	
 		}

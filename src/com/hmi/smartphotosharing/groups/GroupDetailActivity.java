@@ -33,6 +33,7 @@ import com.hmi.smartphotosharing.MyImageAdapter;
 import com.hmi.smartphotosharing.NavBarActivity;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.json.BooleanResponse;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.GroupResponse;
@@ -53,6 +54,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	private static final int CODE_JOIN = 3;
 	private static final int CODE_LEAVE = 4;
 	private static final int CODE_INVITE = 5;
+	private static final int CODE_OWNER = 6;
 	
 	private static final int DIALOG_INFO = 0;
 	
@@ -143,6 +145,17 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
             dialog = null;
         }
         return dialog;
+    }
+    
+    public void onClickCamera(View view) {
+
+		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+		String hash = settings.getString(Login.SESSION_HASH, null);
+		
+        String ownerUrl = String.format(Util.getUrl(this,R.string.groups_http_owner),hash,id);		
+        new FetchJSON(this, CODE_OWNER).execute(ownerUrl);
+    	
+    	
     }
     
     public void onClickJoinGroup(View view) {
@@ -311,10 +324,28 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 			case CODE_LEAVE:
 				parseLeave(result);
 				break;
+			case CODE_OWNER:
+				parseOwner(result);
+				break;
 			default:
 		}
 	}
 	
+	private void parseOwner(String json) {
+		Gson gson = new Gson();
+		BooleanResponse response = gson.fromJson(json, BooleanResponse.class);
+		
+		if (response.getStatus() == Util.STATUS_OK) {
+			Intent intent = new Intent(this,GroupManageActivity.class);
+			intent.putExtra("id", id);
+			startActivity(intent);
+			
+		} else {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+		
+	}
+
 	private void parseInvite(String json) {
 
 		Gson gson = new Gson();

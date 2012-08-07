@@ -1,6 +1,7 @@
 package com.hmi.smartphotosharing.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -8,7 +9,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Location;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -174,5 +179,72 @@ public class Util {
 
 	    return mediaFile;
 	}
+
+	public static Bitmap decodeSampledBitmapFromFile(String path, int reqWidth, int reqHeight, int rotation) {
+
+	    // First decode with inJustDecodeBounds=true to check dimensions
+	    final BitmapFactory.Options options = new BitmapFactory.Options();
+	    options.inJustDecodeBounds = true;
+	    BitmapFactory.decodeFile(path, options);
+
+	    // Calculate inSampleSize
+	    options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+	    // Decode bitmap with inSampleSize set
+	    options.inJustDecodeBounds = false;
+	    Bitmap tmp = BitmapFactory.decodeFile(path, options);
+	    
+	    Matrix mat = new Matrix();
+	    if (rotation != 0)
+	    	mat.postRotate(rotation);
+	    
+        return Bitmap.createBitmap(tmp, 0, 0, tmp.getWidth(), tmp.getHeight(), mat, true);
+	}
 	
+	public static int getRotationDegrees(String path) {
+
+	    // Calculate rotation
+	    int exifOrientation = 0;
+	    
+	    try {
+			ExifInterface exif = new ExifInterface(path);
+			exifOrientation = Integer.parseInt(exif.getAttribute(ExifInterface.TAG_ORIENTATION));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	    int rotation = 0;
+	    switch (exifOrientation) {
+		    case (ExifInterface.ORIENTATION_ROTATE_90):
+		    	rotation = 90;
+		    	break;
+		    case (ExifInterface.ORIENTATION_ROTATE_180):
+		    	rotation = 180;
+		    	break;
+		    case (ExifInterface.ORIENTATION_ROTATE_270):
+		    	rotation = 270;
+		    	break;
+		    default:	
+	    }
+
+	    return rotation;
+	}
+	
+	public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+	    // Raw height and width of image
+	    final int height = options.outHeight;
+	    final int width = options.outWidth;
+	    int inSampleSize = 1;
+	
+	    if (height > reqHeight || width > reqWidth) {
+	        if (width > height) {
+	            inSampleSize = Math.round((float)height / (float)reqHeight);
+	        } else {
+	            inSampleSize = Math.round((float)width / (float)reqWidth);
+	        }
+	    }
+	    return inSampleSize;
+	}
 }

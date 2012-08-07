@@ -87,16 +87,16 @@ public class MyGalleryAdapter extends BaseAdapter {
 
         //set layout options
         holder.imgIcon.setLayoutParams(new Gallery.LayoutParams(45, 45));
-        
-        imageLoader.displayImage(photo.thumb, (ImageView)v.findViewById(R.id.image1));
-        
+
+        imageLoader.displayImage(photo.thumb, holder.imgIcon);
         //scale type within view area
         holder.imgIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
         
         holder.imgIcon.setPadding(2,2,2,2);
         if (getItem(position).isNew)
         	holder.imgIcon.setBackgroundColor(0xFFFF0000);
-
+        else
+        	holder.imgIcon.setBackgroundColor(NO_SELECTION);
                 
         return v;
     	

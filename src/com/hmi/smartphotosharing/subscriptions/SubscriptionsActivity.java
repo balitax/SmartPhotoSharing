@@ -121,9 +121,8 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 		stats.setText(String.format(this.getResources().getString(R.string.profile_follows), user.following, user.followers));
 		
 		// Set the user icon
-		String userPic = Util.USER_DB + user.picture;
 		ImageView pic = (ImageView) findViewById(R.id.groups_icon);
-		imageLoader.displayImage(userPic, pic);
+		imageLoader.displayImage(user.thumb, pic);
 	}
 
 	private void parseSubscripts(String result) {

@@ -11,6 +11,7 @@ public class User {
 	public String fb_id;
 	public String fb_oauth;
 	public String picture;
+	public String thumb;
 	
 	public String groups;
 	public String photos;

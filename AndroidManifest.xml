@@ -52,6 +52,14 @@
         
         <activity android:label="Photo Details" 
             android:name=".PhotoDetailActivity" />
+        
+        <activity android:label="Profile" 
+            android:name=".ProfileActivity" />
+        <activity android:label="My Photos" 
+            android:name=".MyPicturesActivity" />
+        <activity android:label="Change Profile Picture" 
+            android:configChanges="orientation" 
+            android:name=".ChangePictureActivity" />
         	    
         <activity android:label="Groups" 
             android:name=".groups.GroupsActivity" />
@@ -70,8 +78,14 @@
             android:name=".groups.GroupDetailActivity" />
         <activity android:label="Location Details" 
             android:name=".groups.ShowLocationActivity" />
+        <activity android:label="Manage Group" 
+            android:name=".groups.GroupManageActivity" />
+        <activity android:label="Change Group Picture" 
+            android:configChanges="orientation" 
+            android:name=".groups.ChangeGroupPictureActivity" />
         
         <activity android:label="Camera" 
+            android:configChanges="orientation" 
             android:name=".camera.CameraActivity" />
         
         <activity android:label="Subscriptions" 
