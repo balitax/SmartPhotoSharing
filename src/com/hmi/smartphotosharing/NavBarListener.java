@@ -46,7 +46,7 @@ public class NavBarListener implements OnClickListener {
 	}
 
 	private void action_settings() {
-        Intent intent = new Intent(c, SettingsActivity.class);
+        Intent intent = new Intent(c, ProfileActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         c.startActivity(intent);
 		

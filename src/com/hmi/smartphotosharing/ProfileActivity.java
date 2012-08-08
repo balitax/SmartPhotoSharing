@@ -65,6 +65,11 @@ public class ProfileActivity extends NavBarActivity implements OnDownloadListene
 		startActivityForResult(intent, TAKE_PICTURE);
 	}
 
+	public void onClickPrefs(View view) {         
+		Intent intent = new Intent(this, SettingsActivity.class);
+		startActivity(intent);
+	}
+	
 	public void onClickListPics(View view) {
 		Intent intent = new Intent(this, MyPicturesActivity.class);
 		startActivity(intent);

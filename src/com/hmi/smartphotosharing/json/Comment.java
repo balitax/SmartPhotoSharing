@@ -6,5 +6,5 @@ public class Comment {
 	public String time;
 	public String rname;
 	public String picture;
-	
+	public String thumb;
 }

@@ -2,18 +2,44 @@
 <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-            android:title="@string/pref_cat_network">
-
-            <ListPreference
-		        android:title="@string/pref_title_network"
-		        android:summary="@string/pref_summary_network"
-		        android:key="listPref"
-		        android:defaultValue="Wi-Fi"
-		        android:entries="@array/listArray"
-		        android:entryValues="@array/listValues"
-		     />
-
+	<PreferenceCategory 
+        android:title="@string/pref_notifications_feedback"
+        android:key="pref_key_notifications">
+        <CheckBoxPreference
+            android:key="pref_key_not_use_sound"
+            android:summary="@string/pref_summary_not_use_sound"
+            android:title="@string/pref_title_not_use_sound"
+        	android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="pref_key_not_use_vibrate"
+            android:summary="@string/pref_summary_not_use_vibrate"
+            android:title="@string/pref_title_not_use_vibrate"
+        	android:defaultValue="true" />
+    </PreferenceCategory>    
+    
+	<PreferenceCategory 
+        android:title="@string/pref_notifications"
+        android:key="pref_key_notifications">    
+        <CheckBoxPreference
+            android:key="pref_key_not_photo_upload"
+            android:summary="@string/pref_summary_not_photo_upload"
+            android:title="@string/pref_title_not_photo_upload"
+        	android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="pref_key_not_photo_comment"
+            android:summary="@string/pref_summary_not_photo_comment"
+            android:title="@string/pref_title_not_photo_comment"
+        	android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="pref_key_not_sub"
+            android:summary="@string/pref_summary_not_sub"
+            android:title="@string/pref_title_not_sub"
+        	android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="pref_key_not_invite"
+            android:summary="@string/pref_summary_not_invite"
+            android:title="@string/pref_title_not_invite"
+        	android:defaultValue="true" />
     </PreferenceCategory>
 	
 </PreferenceScreen>

@@ -13,6 +13,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -35,7 +38,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 	private long id, gid, ssid;
 	private ViewPager vp;
 	
-	private int currentPage = 0;
+	private int currentPage;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,31 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         
     }
     
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
+
+		savedInstanceState.putInt("current", currentPage);
+		
+		// Store comment text
+		View currentView = vp.getChildAt(currentPage);
+		EditText edit = (EditText) currentView.findViewById(R.id.edit_message);
+		savedInstanceState.putString("comment", edit.getEditableText().toString());
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		currentPage = savedInstanceState.getInt("current");
+		
+		// Set comment text
+		String commentTxt = savedInstanceState.getString("comment");
+		View currentView = vp.getChildAt(currentPage);
+		EditText edit = (EditText) currentView.findViewById(R.id.edit_message);
+		edit.setText(commentTxt, TextView.BufferType.EDITABLE);
+
+	}
+	
     @Override
     protected void onNewIntent(Intent intent) {
         id = intent.getLongExtra(KEY_ID, 0);

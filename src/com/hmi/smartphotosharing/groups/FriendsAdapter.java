@@ -92,8 +92,7 @@ public class FriendsAdapter extends ArrayAdapter<User>  {
             holder.checkBox.setChecked(false);
 
         // Set the icon for this list item
-        String url = Util.USER_DB + user.picture;
-        imageLoader.displayImage(url, holder.imgIcon);
+        imageLoader.displayImage(user.thumb, holder.imgIcon);
                 
         return row;
     }

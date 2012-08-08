@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -49,6 +50,16 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		String actionStr = intent.getStringExtra("action");
 		String valueStr = intent.getStringExtra("value");
 		
+		// Read preferences
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean notPhotoUpload = sharedPref.getBoolean(SettingsActivity.KEY_NOT_PHOTO_UPLOAD,true);
+		boolean notPhotoComment = sharedPref.getBoolean(SettingsActivity.KEY_NOT_PHOTO_COMMENT,true);
+		boolean notInvite = sharedPref.getBoolean(SettingsActivity.KEY_NOT_INVITE,true);
+		boolean notSub = sharedPref.getBoolean(SettingsActivity.KEY_NOT_SUB,true);
+		
+		boolean notSound = sharedPref.getBoolean(SettingsActivity.KEY_NOT_SOUND,false);
+		boolean notVibrate = sharedPref.getBoolean(SettingsActivity.KEY_NOT_VIBRATE,true);
+		
 		// Get the message contents
 		// See the protocol on dropbox
 		int id = Integer.parseInt(intent.getStringExtra("id"));
@@ -69,23 +80,34 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		Notification notification = new Notification(icon, tickerText, when);
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 		
+		// Sound, vibration, light settings
+		if (notSound)
+			notification.defaults |= Notification.DEFAULT_SOUND;
+		
+		if (notVibrate)
+			notification.defaults |= Notification.DEFAULT_VIBRATE;
+		
 		// Set notification contents
 		Context mcontext = this;
 		CharSequence contentTitle = title;
 		CharSequence contentText = content;
 		
-		Intent notificationIntent;
+		Intent notificationIntent = null;
 
 		// Create intent based on the action received
 		switch(action) {
 
 			case ACTION_GROUP_INVITE:
+				if (!notInvite) break;
 				notificationIntent = new Intent(this, GroupDetailActivity.class);
 				notificationIntent.putExtra(GroupDetailActivity.KEY_ID, value);		
 				break;
 			case ACTION_PHOTO_UPLOAD:
+				if (!notPhotoUpload) break;
 			case ACTION_PHOTO_COMMENT:
+				if (!notPhotoComment) break;
 			case ACTION_SUBSCRIPTION_UPDATE:
+				if (!notSub) break;
 				notificationIntent = new Intent(this, SinglePhotoDetail.class);	
 				notificationIntent.putExtra(SinglePhotoDetail.KEY_ID, value);	
 				break;
@@ -94,13 +116,15 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 				notificationIntent = new Intent(this, GroupsActivity.class);
 		}
 
-		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-		notification.setLatestEventInfo(mcontext, contentTitle, contentText, contentIntent);
-        
-		mNotificationManager.notify(id, notification);
+		if (notificationIntent != null) {
+			notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			
+			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+	
+			notification.setLatestEventInfo(mcontext, contentTitle, contentText, contentIntent);
+	        
+			mNotificationManager.notify(id, notification);
+		}
 	}
 	
 

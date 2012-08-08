@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
-    <string-array name="listArray">
-        <item>Only when on Wi-Fi</item>
-        <item>On any network</item>
-    </string-array>
-    <string-array name="listValues">
-        <item>Wi-Fi</item>
-        <item>Any</item>
-    </string-array>
+	<string-array name="pref_not_entries">
+		<item>All</item>
+		<item>Test1 Display</item>
+		<item>Test2 Display</item>
+	</string-array>
+	<string-array name="pref_not_values">
+		<item>ALL</item>
+		<item>Test1</item>
+		<item>Test2</item>
+	</string-array>
 </resources>

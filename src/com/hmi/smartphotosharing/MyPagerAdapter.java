@@ -91,7 +91,7 @@ public class MyPagerAdapter extends PagerAdapter {
         String datum = sdf.format(time);
         date.setText(datum);
         
-        imageLoader.displayImage(p.location + p.name, image);
+        imageLoader.displayImage(Util.IMG_DB + p.name, image);
 		      
         setComments(p.comments);
         
@@ -129,7 +129,7 @@ public class MyPagerAdapter extends PagerAdapter {
 			  Comment comment = comments.get(i);
 			  
 			  //Icon
-			  ImageView img = (ImageView)vi.findViewById(R.id.comment_icon);
+			  ImageView img = (ImageView)vi.findViewById(R.id.comment_icon);	
 			  String userPic = Util.USER_DB + comment.picture;
 			  imageLoader.displayImage(userPic, img);
 	
@@ -146,7 +146,6 @@ public class MyPagerAdapter extends PagerAdapter {
 			  // Comment username
 			  TextView user = (TextView)vi.findViewById(R.id.comment_user);
 			  user.setText(comment.rname + " (" + datum + ")");
-			  
 			  
 			  list.addView(vi);
 			}
@@ -176,9 +175,11 @@ public class MyPagerAdapter extends PagerAdapter {
             
             HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
             try {
+            	String commentTxt = e.getEditableText().toString();
     			map.put("sid", new StringBody(hash));
     	        map.put("iid", new StringBody(Long.toString(iid)));
-    	        map.put("comment", new StringBody(e.getEditableText().toString()));
+    	        if (!commentTxt.equals(""))
+    	        	map.put("comment", new StringBody(commentTxt));
     		} catch (UnsupportedEncodingException e) {
     			e.printStackTrace();
     		}

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -73,6 +74,9 @@ public class Login extends Activity implements OnDownloadListener{
 			String validateUrl = String.format(Util.getUrl(this,R.string.login_validate), hash);
 	        new FetchJSON(this, CODE_VALIDATE).execute(validateUrl);
 		}
+		
+		// Load preference defaults on first startup
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 	}
 		
 	public void onClickLogin(View v) {

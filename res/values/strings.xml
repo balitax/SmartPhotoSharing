@@ -102,6 +102,7 @@
     
     <string name="profile_http_picture">cmd=uploadProfilePic</string>
     <string name="profile_camera">Change my picture</string>
+    <string name="profile_prefs">Application settings</string>
     <string name="profile_listpics">Show my photos</string>
     <string name="profile_logout">Log out</string>
     <string name="profile_name">Loading user data.</string>
@@ -123,10 +124,28 @@
     
     <!-- Preferences -->
     
-    <string name="pref_cat_network">Network Preferences</string>
-    <string name="pref_title_network">Choose connection type</string>
-    <string name="pref_summary_network">You can choose to only download data when connected to a Wifi network.</string>
-	
+    <string name="pref_notifications_feedback">Notification Feedback</string>
+    
+    <string name="pref_title_not_use_sound">Use sound</string>
+    <string name="pref_summary_not_use_sound">Add sound to notifications</string>
+    
+    <string name="pref_title_not_use_vibrate">Use vibration</string>
+    <string name="pref_summary_not_use_vibrate">Add vibration to notifications</string>
+    
+    <string name="pref_notifications">Select Notifications</string>
+    
+    <string name="pref_title_not_photo_upload">Photo upload</string>
+    <string name="pref_summary_not_photo_upload">When someone uploads a photo to a group I am in</string>
+    
+    <string name="pref_title_not_photo_comment">Comment</string>
+    <string name="pref_summary_not_photo_comment">When someone comments on my photo</string>
+    
+    <string name="pref_title_not_invite">Invitation</string>
+    <string name="pref_summary_not_invite">When someone invites me to a group</string>
+    
+    <string name="pref_title_not_sub">Subscription</string>
+    <string name="pref_summary_not_sub">When a person I am subscribed to uploads a photo</string>
+        
     <!-- Camera -->
     
     <string name="album_name">SPS</string>
