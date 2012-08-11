@@ -15,7 +15,10 @@
     <string name="subscriptions">Subscriptions</string>
     <string name="private_group">Private</string>
     <string name="followers">Followers</string>
-        
+    <string name="locations">Locations</string>
+    <string name="other_groups">My Other groups</string>
+    <string name="select_group">Select group</string>
+    
     <string name="toggle_gps">Update GPS</string>
     <string name="enable_gps">Enable GPS</string>
     <string name="enable_gps_dialog">GPS provider not enabled. Would you like to enable it?</string>
@@ -28,6 +31,7 @@
     <string name="dialog_friends">Here you can select multiple friends who will be invited to this group. You can also invite friends later, after the group is created.</string>   
     
     <!--  Google Cloud Messaging -->
+    
     <string name="gcm_register">cmd=registerc2dm&amp;sid=%1$s&amp;key=%2$s</string> 
     <string name="gcm_unregister">cmd=unregisterc2dm&amp;sid=%1$s&amp;key=%2$s</string> 
         

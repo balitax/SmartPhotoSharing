@@ -1,10 +1,8 @@
 package com.hmi.smartphotosharing;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
@@ -15,20 +13,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -37,9 +30,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.camera.CameraActivity;
 import com.hmi.smartphotosharing.groups.GroupCreateActivity;
-import com.hmi.smartphotosharing.groups.GroupJoinAdapter;
-import com.hmi.smartphotosharing.json.Group;
-import com.hmi.smartphotosharing.json.GroupListResponse;
+import com.hmi.smartphotosharing.groups.SelectGroupActivity;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
@@ -52,14 +43,14 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	
 	private static String TAG = "SHARE";
 	
-	private Spinner spinner;
+	private Button btnSelectGroup;
 	private EditText comment;
 	private ImageView imageView;
 	//private String imgPath;
 	private LocationManager locationManager;
-	
+
+	private static final int CODE_SELECT_GROUP = 2;
 	private static final int TAKE_PICTURE = 5;
-	private static final int CODE_GROUPS = 2;
 	private static final int CODE_UPLOAD = 3;
 	private static final int CREATE_GROUP = 4;
 	
@@ -78,12 +69,14 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	
 	private ProgressDialog pd;
 	
+	private long gid;
+	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.share_photo); 
 				
 		// Populate the Spinner
-		spinner = (Spinner) findViewById(R.id.groups_spinner);
+		btnSelectGroup = (Button) findViewById(R.id.groups_spinner);
 		comment = (EditText) findViewById(R.id.edit_message);
         imageView = (ImageView) findViewById(R.id.image1);
 
@@ -105,12 +98,18 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         
         setupGps();
-        loadData();
+        //loadData();
+	}
+	
+	public void onClickSelectGroup(View view) {
+		Intent intent = new Intent(this,SelectGroupActivity.class);
+		startActivityForResult(intent, CODE_SELECT_GROUP);
 	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
+		savedInstanceState.putLong("gid", gid);
 		if (fileUri != null) 
 			savedInstanceState.putString("uri", fileUri.getPath());
 	}
@@ -119,6 +118,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		String uri = savedInstanceState.getString("uri");
+		gid = savedInstanceState.getLong("gid");
 		if (uri != null)
 			fileUri = Uri.parse(uri);
 	}
@@ -143,37 +143,6 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
       setupGps();
     } 
 		
-	private void loadData() {
-
-		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
-		String hash = settings.getString(Login.SESSION_HASH, null);
-		
-		String groupsUrl = String.format(Util.getUrl(this,R.string.groups_http_locate), hash);
-
-        HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
-
-    	double lat = 0;
-    	double lon = 0;
-    	
-        if (gpsLocation != null ) {
-	        lat = gpsLocation.getLatitude();
-	        lon = gpsLocation.getLongitude();
-        }
-        
-        try {
-			map.put("sid", new StringBody(hash));
-	        map.put("lat", new StringBody(Double.toString(lat)));
-	        map.put("lon", new StringBody(Double.toString(lon)));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-        
-        PostData pr = new PostData(groupsUrl,map);
-		
-		new PostRequest(this,CODE_GROUPS).execute(pr);
-		
-	}
-
 	public void onClickCreateGroup(View v) {
 		Intent intent = new Intent(this, GroupCreateActivity.class);
 		startActivityForResult(intent, CREATE_GROUP);
@@ -201,7 +170,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
     		String hash = settings.getString(Login.SESSION_HASH, null);
 
-    		String group = Long.toString(spinner.getSelectedItemId());
+    		String group = Long.toString(gid);
     		
     		String rotate = Integer.toString(rotation);
     		
@@ -223,8 +192,12 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 
             HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
             try {
+            	
     			map.put("sid", new StringBody(hash));
-    	        map.put("group", new StringBody(group));
+    			
+    			if (gid != 0)
+    				map.put("group", new StringBody(group));
+    			
     	        map.put("lat", new StringBody(lat));
     	        map.put("lon", new StringBody(lon));
     	        map.put("comment", new StringBody(commentTxt));
@@ -255,7 +228,21 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         if (requestCode == CREATE_GROUP && resultCode == RESULT_OK) {
         	newGroupName = data.getStringExtra("name");
         	Toast.makeText(this, "Group '" + newGroupName + "' Created", Toast.LENGTH_SHORT).show();
-        	loadData();
+        	//loadData();
+        }
+        
+        else if (requestCode == CODE_SELECT_GROUP) {
+        	if (resultCode == RESULT_OK) {
+	        	gid = data.getLongExtra("group", 0);
+	        	String groupName = data.getStringExtra("groupName");
+	        	btnSelectGroup.setText(groupName);
+	        	btnSelectGroup.setCompoundDrawablesWithIntrinsicBounds(R.drawable.btn_check_buttonless_on,0,0,0);
+        	} else {
+        		// Canceled group selection, reset button and gid
+        		gid = 0;
+	        	btnSelectGroup.setText(R.string.select_group);
+	        	btnSelectGroup.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        	}
         }
         
         else if (requestCode == TAKE_PICTURE && resultCode == Activity.RESULT_OK) { 
@@ -276,12 +263,9 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 
 		
 		switch(code){
-		case(CODE_GROUPS):
-			parseGroups(json);
-			break;
-		case(CODE_UPLOAD):
-			parseUpload(json);
-			break;
+			case(CODE_UPLOAD):
+				parseUpload(json);
+				break;
 		default:
 		}
 	}
@@ -304,21 +288,6 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         	Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();	
 		}
 		
-	}
-
-	private void parseGroups(String json) {
-
-		Gson gson = new Gson();
-		GroupListResponse response = gson.fromJson(json, GroupListResponse.class);
-		List<Group> list = response.getObject();
-		GroupJoinAdapter adapter = new GroupJoinAdapter(this,R.layout.join_group_item,list);
-		spinner.setAdapter(adapter);
-
-		for(int i = 0; i < adapter.getCount(); i++) {
-			if (adapter.getItem(i).name.equals(newGroupName)) {
-				spinner.setSelection(i);
-			}
-		}
 	}
 	
     private void setupGps() { 
@@ -362,47 +331,22 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         public void onLocationChanged(Location location) {
         	boolean isBetter = Util.isBetterLocation(location, gpsLocation);
         	
-        	Log.d("LocationCheck", "Provider: " + location.getProvider() + " -> better location ? " + Boolean.toString(isBetter));
         	// Check if we should update or not
         	if (isBetter) {
         		gpsLocation = location;
-            	loadData();
+            	//loadData();
         	}
 
         }
 
         @Override
-        public void onProviderDisabled(String provider) {
-        	//createGpsDisabledAlert();
-        }
+        public void onProviderDisabled(String provider) {}
 
         @Override
-        public void onProviderEnabled(String provider) {
-        }
+        public void onProviderEnabled(String provider) {}
 
         @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
     };
     
-    // grab the name of the media from the Uri
-    protected String getName(Uri uri) {
-		String filename = null;
-
-		try {
-			String[] projection = { MediaStore.Images.Media.DISPLAY_NAME };
-			Cursor cursor = managedQuery(uri, projection, null, null, null);
-
-			if(cursor != null && cursor.moveToFirst()){
-				int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
-				filename = cursor.getString(column_index);
-			} else {
-				filename = null;
-			}
-		} catch (Exception e) {
-			Log.e(TAG, "Error getting file name: " + e.getMessage());
-		}
-
-		return filename;
-	}
 }

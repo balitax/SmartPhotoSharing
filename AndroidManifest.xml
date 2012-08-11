@@ -71,6 +71,8 @@
             android:name=".groups.SelectSingleFriendActivity" />
         <activity android:label="Create Group" 
             android:name=".groups.GroupCreateActivity" />
+        <activity android:label="Select Group" 
+            android:name=".groups.SelectGroupActivity" />
         <activity android:label="Invite Friends" 
             android:name=".groups.SelectFriendsActivity"
             android:theme="@android:style/Theme.Dialog" />

@@ -7,7 +7,7 @@
     
     <RelativeLayout
         android:id="@+id/header"
-        android:background="#222"
+        android:background="@color/bg"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
         

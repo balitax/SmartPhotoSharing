@@ -13,7 +13,7 @@
     android:layout_height="match_parent"  
     android:shrinkColumns="*"  
     android:stretchColumns="*"
-    android:background="#222"> 
+    android:background="@color/bg"> 
     
     <TableRow  
         android:id="@+id/tableRow"  

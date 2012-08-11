@@ -14,6 +14,12 @@ public class Sorter
         }
     };
     
+    public static Comparator<Group> GROUP_SORTER_LOC = new Comparator<Group>() {
+        public int compare(Group o1, Group o2) {
+            return Integer.parseInt(o2.locationlink) - Integer.parseInt(o1.locationlink);
+        }
+    };
+    
     public static Comparator<Subscription> SUBSCRIPTIONS_SORTER = new Comparator<Subscription>() {
         public int compare(Subscription o1, Subscription o2) {
             return o2.totalnew - o1.totalnew;
