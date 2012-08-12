@@ -31,6 +31,11 @@
             android:title="@string/pref_title_not_photo_comment"
         	android:defaultValue="true" />
         <CheckBoxPreference
+            android:key="pref_key_not_photo_like"
+            android:summary="@string/pref_summary_not_photo_like"
+            android:title="@string/pref_title_not_photo_like"
+        	android:defaultValue="true" />
+        <CheckBoxPreference
             android:key="pref_key_not_sub"
             android:summary="@string/pref_summary_not_sub"
             android:title="@string/pref_title_not_sub"

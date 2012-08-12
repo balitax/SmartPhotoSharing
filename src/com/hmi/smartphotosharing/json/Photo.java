@@ -21,6 +21,8 @@ public class Photo {
 	
 	public String picname;
 	
+	public String likes;
+	public boolean me;
 	public boolean isNew;
 	
 	// Group attributes
@@ -45,4 +47,7 @@ public class Photo {
 		return Long.parseLong(iid);		
 	}
 	
+	public int getLikes() {
+		return Integer.parseInt(likes);
+	}
 }

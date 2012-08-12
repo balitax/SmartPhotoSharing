@@ -10,7 +10,7 @@
     <string name="button_add_comment">Add</string>      
     <string name="add_comment">Add a comment</string>   
     <string name="create_group">New group</string>   
-    <string name="no_data">This is an empty list</string>
+    <string name="no_data">Loading data...</string>
     <string name="search">Search</string>
     <string name="subscriptions">Subscriptions</string>
     <string name="private_group">Private</string>
@@ -94,10 +94,17 @@
     <string name="subscriptions_http_remove">cmd=removescription&amp;sid=%1$s&amp;ssid=%2$s</string>
     <string name="subscription_static_map">http://maps.googleapis.com/maps/api/staticmap?center=%1$s,%2$s&amp;zoom=%3$s&amp;size=100x100&amp;sensor=false&amp;key=%4$s</string>
     
+    <!-- LIKES -->
+    <string name="like_txt">%1$s people like this.</string>
+    <string name="like_txt_you">You like this.</string>
+    <string name="like_txt_multiple">You and %1$s other people like this.</string>
+    <string name="like_http">cmd=like</string>
+    <string name="unlike_http">cmd=unlike</string>
+    
     <!--  Photo Detail -->
     
     <string name="photo_detail_name">By %1$s</string>
-    <string name="photo_detail_group">Posted in group %1$s</string>
+    <string name="photo_detail_group">Posted in group "%1$s"</string>
     <string name="photo_detail_url">cmd=pic&amp;sid=%1$s&amp;iid=%2$s</string>
     <string name="photo_detail_addcomment">cmd=addcomment</string>
     <string name="photo_detail_comments">cmd=comments&amp;sid=%1$s&amp;iid=%2$s</string>
@@ -143,6 +150,9 @@
     
     <string name="pref_title_not_photo_comment">Comment</string>
     <string name="pref_summary_not_photo_comment">When someone comments on my photo</string>
+    
+    <string name="pref_title_not_photo_like">Likes</string>
+    <string name="pref_summary_not_photo_like">When someone likes my photo</string>
     
     <string name="pref_title_not_invite">Invitation</string>
     <string name="pref_summary_not_invite">When someone invites me to a group</string>

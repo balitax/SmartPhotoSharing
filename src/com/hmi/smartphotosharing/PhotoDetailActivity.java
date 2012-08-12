@@ -67,8 +67,10 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		
 		// Store comment text
 		View currentView = vp.getChildAt(currentPage);
-		EditText edit = (EditText) currentView.findViewById(R.id.edit_message);
-		savedInstanceState.putString("comment", edit.getEditableText().toString());
+		if (currentView != null) {
+			EditText edit = (EditText) currentView.findViewById(R.id.edit_message);
+			savedInstanceState.putString("comment", edit.getEditableText().toString());
+		}
 	}
 	
 	@Override

@@ -23,6 +23,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 	private static final int ACTION_DEFAULT 			= 0;
 	private static final int ACTION_PHOTO_UPLOAD 		= 10;
 	private static final int ACTION_PHOTO_COMMENT 		= 11;
+	private static final int ACTION_PHOTO_LIKE			= 12;
 	private static final int ACTION_GROUP_INVITE 		= 20;
 	private static final int ACTION_SUBSCRIPTION_UPDATE = 30;
 	
@@ -54,6 +55,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		boolean notPhotoUpload = sharedPref.getBoolean(SettingsActivity.KEY_NOT_PHOTO_UPLOAD,true);
 		boolean notPhotoComment = sharedPref.getBoolean(SettingsActivity.KEY_NOT_PHOTO_COMMENT,true);
+		boolean notPhotoLike = sharedPref.getBoolean(SettingsActivity.KEY_NOT_PHOTO_LIKE, true);
 		boolean notInvite = sharedPref.getBoolean(SettingsActivity.KEY_NOT_INVITE,true);
 		boolean notSub = sharedPref.getBoolean(SettingsActivity.KEY_NOT_SUB,true);
 		
@@ -102,6 +104,8 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 				notificationIntent = new Intent(this, GroupDetailActivity.class);
 				notificationIntent.putExtra(GroupDetailActivity.KEY_ID, value);		
 				break;
+			case ACTION_PHOTO_LIKE:
+				if(!notPhotoLike) break;
 			case ACTION_PHOTO_UPLOAD:
 				if (!notPhotoUpload) break;
 			case ACTION_PHOTO_COMMENT:

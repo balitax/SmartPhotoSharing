@@ -86,19 +86,13 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
     	Intent intent = new Intent(this, ProfileActivity.class);
     	startActivity(intent);
     }
-    
-	@Override
-	public void onStart() {
-        super.onStart();
-        
-	}
-	
+    	
     @Override
     public void onResume() {
-      super.onResume();
+    	super.onResume();
       
-      // Refresh groups list
-      //loadData(false, true);
+    	// Refresh groups list
+    	loadData(true, true);
     }  
     
 	@Override

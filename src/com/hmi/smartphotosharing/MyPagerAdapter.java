@@ -65,12 +65,15 @@ public class MyPagerAdapter extends PagerAdapter {
 
         Button button = (Button)view.findViewById(R.id.add_comment);
         EditText commentInput = (EditText)view.findViewById(R.id.edit_message);
-        button.setOnClickListener(new MyOnClickListener(position,p.getId(),commentInput));
+        button.setOnClickListener(new CommentClickListener(position,p.getId(),commentInput));
 		TextView date = (TextView)view.findViewById(R.id.photo_detail_date);
 		TextView group = (TextView)view.findViewById(R.id.photo_detail_group);
 		TextView by = (TextView)view.findViewById(R.id.photo_detail_name);
 		ImageView image = (ImageView) view.findViewById(R.id.picture);
 		ImageView userIcon = (ImageView) view.findViewById(R.id.photo_detail_icon);
+		ImageView myLike = (ImageView) view.findViewById(R.id.like);
+		TextView likes = (TextView) view.findViewById(R.id.like_txt);
+		
         list = (LinearLayout) view.findViewById(R.id.comments);
 
         // GroupText
@@ -90,6 +93,21 @@ public class MyPagerAdapter extends PagerAdapter {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         String datum = sdf.format(time);
         date.setText(datum);
+        
+        myLike.setOnClickListener(new LikeClickListener(position, p.getId(), p.me));
+        
+        // 'Likes'
+        int numLikes = p.getLikes();
+        if (p.me){ 
+        	myLike.setImageResource(R.drawable.btn_star_big_on);
+        	if (numLikes > 1) 
+	        	likes.setText(String.format(context.getResources().getString(R.string.like_txt_multiple), Integer.toString(p.getLikes()-1)));
+        	else
+	        	likes.setText(context.getResources().getString(R.string.like_txt_you));
+        } else {
+        	myLike.setImageResource(R.drawable.btn_star_big_off);
+        	likes.setText(String.format(context.getResources().getString(R.string.like_txt), p.likes));
+        }
         
         imageLoader.displayImage(Util.IMG_DB + p.name, image);
 		      
@@ -157,10 +175,10 @@ public class MyPagerAdapter extends PagerAdapter {
 		}
 	}
 	
-    private class MyOnClickListener implements OnClickListener{    
+    private class CommentClickListener implements OnClickListener{    
         private EditText e;
         private long iid;
-        public MyOnClickListener(int position, long iid, EditText e){
+        public CommentClickListener(int position, long iid, EditText e){
             this.e = e;
             this.iid = iid;
         }
@@ -188,5 +206,41 @@ public class MyPagerAdapter extends PagerAdapter {
             new PostRequest(context, CODE_COMMENT_ADD).execute(pr);
         }       
     }
-    	
+ 
+    private class LikeClickListener implements OnClickListener{    
+
+        private long iid;
+        private boolean myLike;
+        
+        public LikeClickListener(int position, long iid, boolean me){
+            this.iid = iid;
+            this.myLike = me;
+        }
+        
+        @Override
+        public void onClick(View arg0) {
+    		SharedPreferences settings = context.getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);
+    		String hash = settings.getString(Login.SESSION_HASH, null);
+    		
+    		
+    		String like = "";
+    		if (myLike)
+    			like = Util.getUrl(context,R.string.unlike_http);
+    		else
+    			like = Util.getUrl(context,R.string.like_http);
+    			
+    		myLike = !myLike;
+    		
+            HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+            try {
+    			map.put("sid", new StringBody(hash));
+    	        map.put("iid", new StringBody(Long.toString(iid)));
+    		} catch (UnsupportedEncodingException e) {
+    			e.printStackTrace();
+    		}
+            
+            PostData pr = new PostData(like,map);
+            new PostRequest(context, CODE_COMMENT_ADD).execute(pr);
+        }       
+    }
 }

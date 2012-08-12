@@ -110,19 +110,21 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 	private void parseProfile(String result) {
 		Gson gson = new Gson();
 		UserResponse response = gson.fromJson(result, UserResponse.class);
-		User user = response.getObject();
-		
-		// Set the user name
-		TextView name = (TextView) findViewById(R.id.groups_name);
-		name.setText(user.getName());
-		
-		// Set the user name
-		TextView stats = (TextView) findViewById(R.id.stats);
-		stats.setText(String.format(this.getResources().getString(R.string.profile_follows), user.following, user.followers));
-		
-		// Set the user icon
-		ImageView pic = (ImageView) findViewById(R.id.groups_icon);
-		imageLoader.displayImage(user.thumb, pic);
+		if (response != null) {
+			User user = response.getObject();
+			
+			// Set the user name
+			TextView name = (TextView) findViewById(R.id.groups_name);
+			name.setText(user.getName());
+			
+			// Set the user name
+			TextView stats = (TextView) findViewById(R.id.stats);
+			stats.setText(String.format(this.getResources().getString(R.string.profile_follows), user.following, user.followers));
+			
+			// Set the user icon
+			ImageView pic = (ImageView) findViewById(R.id.groups_icon);
+			imageLoader.displayImage(user.thumb, pic);
+		}
 	}
 
 	private void parseSubscripts(String result) {

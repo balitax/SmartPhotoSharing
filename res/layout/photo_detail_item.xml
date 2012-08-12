@@ -26,6 +26,7 @@
 		        android:layout_alignParentLeft="true"
 		        android:padding="4dp" />
 		    
+		        
 		    <TextView
 		    	android:id="@+id/photo_detail_name"
 		    	android:text="@string/photo_detail_name"
@@ -62,11 +63,28 @@
 		    	android:contentDescription="@string/picture"
 		        android:layout_below="@+id/photo_detail_group" />
 		    
+		    <!-- LIKE BUTTON -->
+		    <ImageView
+		        android:id="@+id/like"
+		        android:src="@drawable/btn_star_big_off"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/picture"
+		        android:layout_alignParentLeft="true"
+		        android:padding="4dp" />
+		 	<TextView
+		    	android:id="@+id/like_txt"
+		    	android:text="@string/like_txt"
+		    	android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		        android:layout_below="@+id/picture"
+		        android:layout_toRightOf="@+id/like" />
+		 	
 	        <LinearLayout 
 	            android:id="@+id/comments"
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content"
-		        android:layout_below="@+id/picture"
+		        android:layout_below="@+id/like"
 		        android:orientation="vertical" />
 		         
 		    <EditText 
