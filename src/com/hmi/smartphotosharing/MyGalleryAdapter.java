@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
@@ -86,11 +87,9 @@ public class MyGalleryAdapter extends BaseAdapter {
         }
 
         //set layout options
-        holder.imgIcon.setLayoutParams(new Gallery.LayoutParams(45, 45));
+        holder.imgIcon.setLayoutParams(new Gallery.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.FILL_PARENT));
 
         imageLoader.displayImage(photo.thumb, holder.imgIcon);
-        //scale type within view area
-        holder.imgIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
         
         holder.imgIcon.setPadding(2,2,2,2);
         if (getItem(position).isNew)

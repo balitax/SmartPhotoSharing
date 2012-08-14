@@ -104,7 +104,7 @@
     <!--  Photo Detail -->
     
     <string name="photo_detail_name">By %1$s</string>
-    <string name="photo_detail_group">Posted in group "%1$s"</string>
+    <string name="photo_detail_group">Posted in \"%1$s\"</string>
     <string name="photo_detail_url">cmd=pic&amp;sid=%1$s&amp;iid=%2$s</string>
     <string name="photo_detail_addcomment">cmd=addcomment</string>
     <string name="photo_detail_comments">cmd=comments&amp;sid=%1$s&amp;iid=%2$s</string>

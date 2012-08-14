@@ -1,8 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <color name="picalilly_bg">#DDEEB2</color>
+    <color name="picalilly_divider">#000</color>    
+    
+	<style name="Picalilly" parent="android:Theme.Light.NoTitleBar">
+	    <item name="android:windowBackground">@color/picalilly_bg</item>
+	    <item name="android:colorBackground">@color/picalilly_bg</item>
+	    <item name="android:divider">@color/picalilly_divider</item>
+	</style>
+    
     <style name="Red">
         <item name="android:background">#FF0000</item>
         <item name="android:textColor">#FFFFFF</item>
     </style>
     
+    <style name="Icon">
+        <item name="android:layout_width">@dimen/icon_medium</item>
+        <item name="android:layout_height">@dimen/icon_medium</item>
+    </style>
+    
+    <style name="Icon.Large">
+        <item name="android:layout_width">@dimen/icon_large</item>
+        <item name="android:layout_height">@dimen/icon_large</item>
+    </style>
+    
+    <style name="Icon.XL">
+        <item name="android:layout_width">@dimen/icon_xl</item>
+        <item name="android:layout_height">@dimen/icon_xl</item>
+    </style>
+    
+    <style name="HeaderText">
+        <item name="android:textColor">@color/header_text</item>
+        <item name="android:textSize">@dimen/header_text</item>
+    </style>
+    
+    <style name="HeaderText.Small">
+        <item name="android:textSize">@dimen/header_text_small</item>
+    </style>
+    
+    <style name="HeaderText.Tiny">
+        <item name="android:textSize">@dimen/header_text_tiny</item>
+    </style>
+    
+    <style name="DialogHeaderText">
+        <item name="android:textSize">@dimen/dialog_header_text</item>
+        <item name="android:padding">5dp</item>
+    </style>
 </resources>

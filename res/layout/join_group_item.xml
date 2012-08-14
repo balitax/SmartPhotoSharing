@@ -9,13 +9,12 @@
 	<ImageView 
 	    android:id="@+id/icon"
 	    android:contentDescription="@string/icon_unknown"
-	    android:layout_width="48dp"
-	    android:layout_height="48dp"
         android:layout_toRightOf="@+id/private_icon"
 	  	android:adjustViewBounds="true"  
 	  	android:scaleType="fitCenter"  
     	android:padding="2dp"
-	    android:src="@drawable/ic_unknown" />
+	    android:src="@drawable/ic_unknown"
+	    style="@style/Icon" />
 	
 	<ImageView 
 	    android:id="@+id/private_icon"

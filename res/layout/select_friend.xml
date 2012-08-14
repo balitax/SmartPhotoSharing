@@ -9,13 +9,12 @@
 	<ImageView 
 	    android:id="@+id/icon"
 	    android:contentDescription="@string/icon_unknown"
-	    android:layout_width="50dp"
-	    android:layout_height="50dp"
        	android:layout_alignParentLeft="true"
 	  	android:adjustViewBounds="true"  
 	  	android:scaleType="fitCenter"  
     	android:padding="2dp"
-	    android:src="@drawable/ic_unknown" />
+	    android:src="@drawable/ic_unknown"
+	    style="@style/Icon" />
 	    	  
 	<TextView 
 	    android:id="@+id/item_text"

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:text="@string/sub_create_title"
-        android:textSize="25sp" />
+        style="@style/DialogHeaderText" />
     
     <ImageView 
         android:id="@+id/button_send"
@@ -22,14 +22,14 @@
         android:onClick="onCreateClick" />
     
     <ScrollView
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_below="@+id/button_send" >
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_below="@+id/button_send" >
     
-		    <RelativeLayout
-		        android:id="@+id/contents"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content">
+	    <RelativeLayout
+	        android:id="@+id/contents"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content">
 		        
 		    <EditText
 		        android:id="@+id/sub_create_name"
@@ -37,12 +37,8 @@
 		        android:layout_height="wrap_content"
 		        android:hint="@string/sub_create_name"
 		        android:layout_alignParentLeft="true"
-		        android:layout_toLeftOf="@+id/button_send" >
-		
-		        <requestFocus />
-		    </EditText>
-		
-		            
+		        android:layout_toLeftOf="@+id/button_send" />
+				            
 		    <Button
 		        android:id="@+id/button_invite_friends"
 		        android:text="@string/sub_select_friend"

@@ -189,8 +189,8 @@ public class SelectGroupActivity extends ListActivity implements OnDownloadListe
 	private View buildLabel(int res) {
 	    TextView result = new TextView(this);
 	    result.setText(res);
-	    result.setBackgroundColor(getResources().getColor(R.color.bg));
-	    result.setTextColor(getResources().getColor(R.color.light));
+	    result.setBackgroundColor(getResources().getColor(R.color.header_bg));
+	    result.setTextColor(getResources().getColor(R.color.header_text));
 	    result.setTextSize(20);
 	    result.setLayoutParams(new ListView.LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
 	    result.setGravity(Gravity.CENTER_HORIZONTAL);

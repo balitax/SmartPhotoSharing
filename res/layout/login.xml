@@ -9,10 +9,9 @@
 
     <ImageView
         android:src="@drawable/picalilly"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
         android:layout_margin="10dp"
-        android:contentDescription="@string/app_name" />
+        android:contentDescription="@string/app_name"
+        style="@style/Icon.XL" />
 
     <EditText 
         android:id="@+id/login_username"

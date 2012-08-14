@@ -5,47 +5,13 @@
 
     <!-- HEADER -->
     
-    <RelativeLayout
+    <include
         android:id="@+id/header"
-        android:background="@color/bg"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        
-	    <ImageView 
-	        android:id="@+id/app_icon"
-	        android:src="@drawable/picalilly"
-	        android:layout_width="48dp"
-	        android:layout_height="48dp"
-	        android:layout_alignParentLeft="true"
-	        android:padding="4dp"
-	        android:contentDescription="@string/app_name" />
-	    
-	    <TextView
-	    	android:id="@+id/groups_name"
-	    	android:text="@string/profile_name"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	        android:layout_toRightOf="@+id/app_icon"
-	        android:textSize="20sp" />
-	    
-	    <TextView
-	    	android:id="@+id/stats"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	        android:layout_toRightOf="@+id/app_icon"
-	        android:layout_below="@+id/groups_name" />	  
-	         
-	   <ImageView 
-	        android:id="@+id/groups_icon"
-	        android:src="@drawable/ic_unknown"
-	        android:layout_width="48dp"
-	        android:layout_height="48dp"
-	        android:layout_alignParentRight="true"
-	        android:padding="4dp"
-	        android:onClick="onClickProfile" />     
-	</RelativeLayout>
-     
-     <!-- NAV BUTTONS -->
+        android:layout_height="wrap_content"
+        layout="@layout/header" />
+    
+    <!-- NAV BUTTONS -->
      
     <ImageView 
 	    android:id="@+id/group_add"

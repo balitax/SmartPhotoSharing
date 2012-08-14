@@ -6,39 +6,12 @@
     
     <!-- HEADER -->
     
-    <RelativeLayout
+    <include
         android:id="@+id/header"
-        android:background="#222"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        
-	    <ImageView 
-	        android:id="@+id/app_icon"
-	        android:src="@drawable/picalilly"
-	        android:layout_width="48dp"
-	        android:layout_height="48dp"
-	        android:layout_alignParentLeft="true"
-	        android:padding="4dp"
-	        android:contentDescription="@string/app_name" />
-	    
-	    <TextView
-	    	android:id="@+id/groups_name"
-	    	android:text="@string/profile_name"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	        android:layout_toRightOf="@+id/app_icon"
-	        android:textSize="20sp" />
-	    	         
-	   <ImageView 
-	        android:id="@+id/groups_icon"
-	        android:src="@drawable/ic_unknown"
-	        android:layout_width="48dp"
-	        android:layout_height="48dp"
-	        android:layout_alignParentRight="true"
-	        android:padding="4dp"
-	        android:onClick="onClickProfile" />     
-	</RelativeLayout>
-	
+        android:layout_height="wrap_content"
+        layout="@layout/header" />
+    	
     <!-- Contents -->
     
 	<Button 

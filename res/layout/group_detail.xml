@@ -9,22 +9,19 @@
     
     <RelativeLayout
         android:id="@+id/header"
-        android:background="#222"
+        android:background="@color/header_bg"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
         	        
 	    <ImageView 
 	        android:id="@+id/group_detail_icon"
 	        android:src="@drawable/ic_unknown"
-	        android:layout_width="50dp"
-	        android:layout_height="50dp"
 			android:adjustViewBounds="true"  
-			android:maxWidth="42dp"  
-			android:maxHeight="42dp"  
 			android:scaleType="fitCenter"  
 	        android:layout_alignParentLeft="true"
 	        android:padding="4dp"
-	        android:onClick="onClickCamera" />
+	        android:onClick="onClickCamera"
+	        style="@style/Icon.Large" />
 	    
 		<ImageView 
 		    android:id="@+id/private_icon"
@@ -54,7 +51,7 @@
 	    	android:layout_width="wrap_content"
 	    	android:layout_height="wrap_content"
 	        android:layout_toRightOf="@+id/group_detail_icon"
-	        android:textSize="15sp" />
+			style="@style/HeaderText" />
 	    
 	    <TextView 
 	    	android:id="@+id/group_detail_members"
@@ -62,7 +59,7 @@
 	    	android:layout_height="wrap_content"
 	        android:layout_toRightOf="@+id/group_detail_icon"
 	        android:layout_below="@+id/group_detail_name"
-	        android:textSize="10sp" />
+			style="@style/HeaderText.Small" />
 	    
 	   <TextView
 	    	android:id="@+id/group_detail_photos"
@@ -70,7 +67,8 @@
 	    	android:layout_height="wrap_content"
 	        android:layout_toRightOf="@+id/group_detail_icon"
 	        android:layout_below="@+id/group_detail_members"
-	        android:textSize="10sp" />
+			style="@style/HeaderText.Small" />
+	   
     </RelativeLayout>
     
      <!-- NAV BUTTONS -->
@@ -116,7 +114,7 @@
 	      
     <!-- GRID -->
     
-	<GridView xmlns:android="http://schemas.android.com/apk/res/android" 
+	<GridView 
 	    android:id="@+id/grid"
 	    android:layout_width="fill_parent" 
 	    android:layout_height="fill_parent"
@@ -131,10 +129,10 @@
         android:layout_marginBottom="50dp"
 	/>
    
-     <include
-         android:id="@+id/navbar"
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:layout_alignParentBottom="true"
-         layout="@layout/navbar" />
+    <include
+        android:id="@+id/navbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/navbar" />
 </RelativeLayout>

@@ -25,6 +25,7 @@ import com.hmi.smartphotosharing.json.UserResponse;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class SubscriptionsActivity extends NavBarListActivity implements OnDownloadListener {
 	
@@ -41,6 +42,7 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
         super.onCreate(savedInstanceState);
 
         imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         loadData(true, true);
         
     }
