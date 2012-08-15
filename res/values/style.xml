@@ -2,12 +2,39 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     
     <color name="picalilly_bg">#DDEEB2</color>
-    <color name="picalilly_divider">#000</color>    
+    <color name="picalilly_divider">#000</color>
+    <color name="picalilly_text_primary">#000</color>   
+    <color name="picalilly_text_secondary">#000</color>     
+    <color name="picalilly_text_tertiary">#000</color>   
+    <color name="picalilly_hint_light">#000</color>     
+    <color name="picalilly_hint_dark">#000</color>          
     
 	<style name="Picalilly" parent="android:Theme.Light.NoTitleBar">
 	    <item name="android:windowBackground">@color/picalilly_bg</item>
 	    <item name="android:colorBackground">@color/picalilly_bg</item>
-	    <item name="android:divider">@color/picalilly_divider</item>
+        <item name="android:colorForeground">#000</item>
+        <item name="android:colorForegroundInverse">#000</item>
+	    
+	    <item name="android:textColorPrimary">@color/picalilly_text_primary</item>
+	    <item name="android:textColorSecondary">@color/picalilly_text_secondary</item>
+	    <item name="android:textColorTertiary">@color/picalilly_text_tertiary</item>
+	    <item name="android:textColorPrimaryInverse">@color/picalilly_text_primary</item>
+	    <item name="android:textColorSecondaryInverse">@color/picalilly_text_secondary</item>
+	    <item name="android:textColorTertiaryInverse">@color/picalilly_text_tertiary</item>
+	    
+	    <item name="android:textColorPrimaryDisableOnly">#000</item>
+        <item name="android:textColorPrimaryInverseDisableOnly">#000</item>
+        <item name="android:textColorPrimaryNoDisable">#000</item>
+        <item name="android:textColorSecondaryNoDisable">#000</item>
+        <item name="android:textColorPrimaryInverseNoDisable">#000</item>
+        <item name="android:textColorSecondaryInverseNoDisable">#000</item>
+	    
+        <item name="android:textColorHint">@color/picalilly_hint_light</item>
+        <item name="android:textColorHintInverse">@color/picalilly_hint_dark</item>   
+        <item name="android:textColorHighlight">#000</item>
+        <item name="android:textColorLink">#000</item>
+        
+        <item name="android:divider">@color/picalilly_divider</item>
 	</style>
     
     <style name="Red">

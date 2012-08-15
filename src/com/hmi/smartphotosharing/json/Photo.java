@@ -36,7 +36,9 @@ public class Photo {
 	public String fb_id;
 	public String fb_oauth;
 	public String picture;
-		
+	
+	public boolean dummy;
+	
 	public List<Comment> comments;
 	
 	public String getUrl() {

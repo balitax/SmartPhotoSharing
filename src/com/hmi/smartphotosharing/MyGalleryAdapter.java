@@ -13,6 +13,7 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 
 import com.hmi.smartphotosharing.json.Photo;
+import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -42,10 +43,17 @@ public class MyGalleryAdapter extends BaseAdapter {
         this.data = list;
         this.imageLoader = im;
         
+        // Add a dummy item if there is only 1 photo in the gallery
+        // This is a fix to make the gallery start from the left
+        if (data != null && data.size() == 1) {
+        	Photo p = new Photo();
+        	p.iid = "0";
+        	p.thumb = Util.DUMMY_PHOTO;
+        	p.dummy = true;
+        	data.add(p);
+        }
     }
 
-    //BaseAdapter methods
-    
     @Override
     public int getCount() {
     	if (data == null) {
@@ -96,7 +104,14 @@ public class MyGalleryAdapter extends BaseAdapter {
         	holder.imgIcon.setBackgroundColor(0xFFFF0000);
         else
         	holder.imgIcon.setBackgroundColor(NO_SELECTION);
-                
+         
+        // Hide the dummy item from the gallery
+        if (photo.dummy) {
+        	holder.imgIcon.setVisibility(ImageView.INVISIBLE);
+        } else {
+        	holder.imgIcon.setVisibility(ImageView.VISIBLE);
+        }
+        
         return v;
     	
         /*ImageView imageView = new ImageView(context);

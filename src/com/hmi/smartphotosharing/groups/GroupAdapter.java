@@ -138,6 +138,10 @@ public class GroupAdapter extends ArrayAdapter<Group> {
 						imageLoader
 			));
 		
+        // Make the gallery start from the left
+        if (group.photos != null && group.photos.size() > 1)
+        	holder.picGallery.setSelection(1);
+
 		// GestureDetector to detect swipes on the gallery
         gestureDetector = new GestureDetector(new MyGestureDetector());
         gestureListener = new View.OnTouchListener() {

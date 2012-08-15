@@ -44,7 +44,10 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         loadData(true, true);
-        
+
+        // Show selection in nav bar
+        ImageView fav = (ImageView) findViewById(R.id.favourite);
+        fav.setImageResource(R.drawable.ic_menu_star_selected);
     }
     
 	public void onClickCreateSubscription(View v) {	

@@ -33,6 +33,11 @@ public class ProfileActivity extends NavBarActivity implements OnDownloadListene
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         
         loadData();
+        
+        // Show selection in nav bar
+        ImageView settings = (ImageView) findViewById(R.id.settings);
+        settings.setImageResource(R.drawable.ic_menu_preferences_selected);
+        
     }
 	
     @Override

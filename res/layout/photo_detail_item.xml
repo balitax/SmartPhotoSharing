@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fillViewport="true"
-    android:layout_marginBottom="48dp"
+    android:layout_marginBottom="@dimen/navbar_margin"
     android:focusable="true" android:focusableInTouchMode="true">
     
 	<RelativeLayout 
@@ -24,6 +24,7 @@
 	        android:id="@+id/picture"
 	    	android:layout_width="fill_parent"
 	    	android:layout_height="wrap_content"
+	    	android:layout_marginTop="2dp"
 	    	android:scaleType="centerInside"
 	    	android:adjustViewBounds="true"
 	    	android:contentDescription="@string/picture"

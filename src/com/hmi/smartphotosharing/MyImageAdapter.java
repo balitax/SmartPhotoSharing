@@ -6,6 +6,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -65,8 +66,8 @@ public class MyImageAdapter extends BaseAdapter {
         	holder = (ViewHolder) v.getTag();
         }
 
-        holder.img.setLayoutParams(new GridView.LayoutParams(DIM, DIM));
-        holder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        holder.img.setLayoutParams(new GridView.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        //holder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
         
         if (getItem(position).isNew)
         	holder.img.setBackgroundColor(0xFFFF0000);

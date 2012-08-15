@@ -97,7 +97,10 @@
         <activity android:label="Create Subscription" 
             android:name=".subscriptions.SubscriptionCreateActivity" />
         
-		<activity android:label="SettingsActivity" android:name=".SettingsActivity">
+		<activity 
+		    android:label="Picalilly Settings" 
+		    android:name=".SettingsActivity"
+		    android:theme="@android:style/Theme.Light">
              <intent-filter>
                 <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
                 <category android:name="android.intent.category.DEFAULT" />

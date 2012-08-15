@@ -8,7 +8,7 @@
 	     android:layout_height="wrap_content"
 	     android:drawSelectorOnTop="false"
          android:layout_alignParentLeft="true"
-         android:layout_marginBottom="50dp" />
+         android:layout_marginBottom="@dimen/navbar_margin" />
 
      <TextView android:id="@id/android:empty"
 	     android:layout_width="match_parent"

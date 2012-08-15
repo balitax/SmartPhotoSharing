@@ -49,6 +49,8 @@ public class Util {
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
     
+    public static final String DUMMY_PHOTO = "http://sps.juursema.com/thumb.php?src=logodb/default.jpg&w=100&h=100";
+    
     public static String getUrl(Context c, int resource) {
     	return API + c.getResources().getString(resource);
     }

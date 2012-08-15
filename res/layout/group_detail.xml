@@ -122,12 +122,11 @@
 	    android:verticalSpacing="2dp"
 	    android:horizontalSpacing="2dp"
 	    android:numColumns="auto_fit"
-	    android:columnWidth="50dp"
+	    android:columnWidth="@dimen/icon_large"
 	    android:stretchMode="columnWidth"
 	    android:gravity="center"
         android:layout_below="@+id/group_info"
-        android:layout_marginBottom="50dp"
-	/>
+        android:layout_marginBottom="@dimen/navbar_margin" />
    
     <include
         android:id="@+id/navbar"

@@ -159,6 +159,10 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
                 return gestureDetector.onTouchEvent(event);
             }
         };
+
+        // Make the gallery start from the left
+        if (subscription.photos != null && subscription.photos.size() > 1)
+        	holder.picGallery.setSelection(1);
         
         // Detect clicking an image
         holder.picGallery.setOnItemClickListener(new MyOnItemClickListener(context,subscription.getId()));
