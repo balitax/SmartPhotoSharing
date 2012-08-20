@@ -29,7 +29,9 @@ import com.hmi.smartphotosharing.util.Util;
 public class PhotoDetailActivity extends NavBarActivity implements OnDownloadListener {
 
 	private static final int CODE_COMMENT_ADD = 2;
+	private static final int CODE_LIKE = 3;
 	private static final int CODE_PHOTOS = 4;
+	private static final int CODE_COMMENT_REMOVE = 5;
 	
 	public static final String KEY_ID = "id";
 	public static final String KEY_GID = "gid";
@@ -163,9 +165,45 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		case(CODE_COMMENT_ADD):
 			parseCommentAdd(json);
 			break;
+		case(CODE_LIKE):
+			parseLike(json);
+			break;
+		case(CODE_COMMENT_REMOVE):
+			parseCommentRemove(json);
+			break;
 		default:
 		}
         
+	}
+
+	private void parseCommentRemove(String json) {
+		Gson gson = new Gson();
+		PhotoResponse response = gson.fromJson(json, PhotoResponse.class);
+		
+		if (response.getStatus() == Util.STATUS_OK) {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+			loadData();
+			vp.setCurrentItem(currentPage);
+			
+		} else {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+		
+	}
+
+	private void parseLike(String json) {
+		Gson gson = new Gson();
+		PhotoResponse response = gson.fromJson(json, PhotoResponse.class);
+		
+		if (response.getStatus() == Util.STATUS_OK) {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+			loadData();
+			vp.setCurrentItem(currentPage);
+			
+		} else {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+		
 	}
 
 	private void parsePhoto(String result) {
@@ -209,8 +247,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		if (pr.getStatus() == Util.STATUS_OK) {
 			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
 			loadData();
-			MyPagerAdapter adapter = (MyPagerAdapter)vp.getAdapter();
-			adapter.notifyDataSetChanged();
+			vp.setCurrentItem(currentPage);
 		} else if (pr.getStatus() == Util.STATUS_LOGIN){
 			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
 		} else {

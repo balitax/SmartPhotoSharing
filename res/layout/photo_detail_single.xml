@@ -2,12 +2,14 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:focusable="true" android:focusableInTouchMode="true">
     
     <include
         android:id="@+id/photo_content"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/navbar_margin"
         layout="@layout/photo_detail_item" />
 
     <include

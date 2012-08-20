@@ -2,18 +2,27 @@
  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
          android:layout_width="match_parent"
          android:layout_height="match_parent">
-                       
+     
+    <TextView
+        android:id="@+id/group_join_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/group_join_title"
+        style="@style/DialogHeaderText" />
+     
      <ListView android:id="@id/android:list"
 	     android:layout_width="match_parent"
 	     android:layout_height="wrap_content"
 	     android:drawSelectorOnTop="false"
          android:layout_alignParentLeft="true"
-         android:layout_marginBottom="@dimen/navbar_margin" />
+         android:layout_marginBottom="@dimen/navbar_margin"
+         android:layout_below="@+id/group_join_title" />
 
      <TextView android:id="@id/android:empty"
 	     android:layout_width="match_parent"
 	     android:layout_height="match_parent"
          android:layout_alignParentLeft="true"
+         android:layout_below="@+id/group_join_title"
 	     android:text="@string/no_data" /> 
       
      <include

@@ -211,7 +211,10 @@ public class SelectLocationActivity extends MapActivity {
         
         // Network
         String networkProvider = LocationManager.NETWORK_PROVIDER;
-        mLocationManager.requestLocationUpdates(networkProvider, 0, 0, listener);
+
+        if (mLocationManager.isProviderEnabled(networkProvider)) {
+        	mLocationManager.requestLocationUpdates(networkProvider, 0, 0, listener);
+        }
         
         // GPS
         String gpsProvider = LocationManager.GPS_PROVIDER;

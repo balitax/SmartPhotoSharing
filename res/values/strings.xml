@@ -73,7 +73,10 @@
     <string name="group_create_location">Choose a location</string>
     <string name="group_create_title">Create New Group</string>
     <string name="join_group">Join Group</string> 
+    <string name="group_join_title">Join A Public Group</string>
     
+    <string name="groups_no_location">You are not in a location based group</string> 
+    <string name="groups_no_other">You are not in any other group</string> 
     <!--  Group Detail -->
     
     <string name="group_http_detail">cmd=group&amp;sid=%1$s&amp;gid=%2$s</string>
@@ -107,6 +110,7 @@
     <string name="photo_detail_group">Posted in \"%1$s\"</string>
     <string name="photo_detail_url">cmd=pic&amp;sid=%1$s&amp;iid=%2$s</string>
     <string name="photo_detail_addcomment">cmd=addcomment</string>
+    <string name="photo_detail_removecomment">cmd=removecomment</string>
     <string name="photo_detail_comments">cmd=comments&amp;sid=%1$s&amp;iid=%2$s</string>
     
     <!--  Profile -->

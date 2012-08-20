@@ -24,7 +24,7 @@ import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
-import com.hmi.smartphotosharing.json.StringRepsonse;
+import com.hmi.smartphotosharing.json.StringResponse;
 import com.hmi.smartphotosharing.util.Util;
 
 public class GroupCreateActivity extends Activity implements OnDownloadListener {
@@ -166,7 +166,7 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
 	@Override
 	public void parseJson(String json, int code) {
 		Gson gson = new Gson();
-		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
+		StringResponse response = gson.fromJson(json, StringResponse.class);
 		
 		Log.i("Json parse", json);
 		

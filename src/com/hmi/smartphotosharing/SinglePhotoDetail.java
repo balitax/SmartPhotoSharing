@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,6 +45,7 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 	private static final int CODE_PHOTO = 1;
 	private static final int CODE_COMMENT_ADD = 2;
 	private static final int CODE_COMMENT_LOAD = 3;
+	private static final int CODE_LIKE = 4;
 	
 	public static final String KEY_ID = "id";
 	
@@ -167,9 +169,25 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 		case(CODE_COMMENT_LOAD):
 			parseCommentLoad(json);
 			break;
+		case(CODE_LIKE):
+			parseLike(json);
+			break;
 		default:
 		}
         
+	}
+
+	private void parseLike(String json) {
+		Gson gson = new Gson();
+		PhotoResponse response = gson.fromJson(json, PhotoResponse.class);
+		
+		if (response.getStatus() == Util.STATUS_OK) {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+			loadData(true,true);
+		} else {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+		
 	}
 
 	private void parseCommentLoad(String json) {
@@ -181,9 +199,8 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 			List<Comment> comments = response.getObject();
 			LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			
-
 			list.removeAllViews();
-			if (comments != null) {
+			if (comments != null && comments.size() > 0) {
 				for (int i=0; i<comments.size(); i++) {
 				  View vi = inflater.inflate(R.layout.comment, null);
 				  Comment comment = comments.get(i);
@@ -223,16 +240,14 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 
 	private void parseCommentAdd(String json) {
 		Gson gson = new Gson();
-		PhotoResponse pr = gson.fromJson(json, PhotoResponse.class);
+		PhotoResponse response = gson.fromJson(json, PhotoResponse.class);
 		
-		if (pr.getStatus() == Util.STATUS_OK) {
-			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
+		if (response.getStatus() == Util.STATUS_OK) {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			loadData(false,true);
 			commentInput.getEditableText().clear();
-		} else if (pr.getStatus() == Util.STATUS_LOGIN){
-			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
 		} else {
-			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 		}
 		
 	}
@@ -262,16 +277,36 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 	
 	        // Update the timestamp
 	        TextView date = (TextView)findViewById(R.id.photo_detail_date);
+	        
 	        // Convert Unix timestamp to Date
 	        Date time = new Date(Long.parseLong(p.time)*1000);
 	        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	        String datum = sdf.format(time);
 	        date.setText(datum);
+
+	        // 'Likes'
+			ImageView myLike = (ImageView) findViewById(R.id.like);
+			TextView likes = (TextView) findViewById(R.id.like_txt);
+
+	        myLike.setOnClickListener(new LikeClickListener(this,p.getId(), p.me));
+	        
+	        int numLikes = p.getLikes();
+	    	myLike.setImageResource(R.drawable.like);
+	    	
+	        if (p.me){ 
+	        	if (numLikes > 1) 
+		        	likes.setText(String.format(getResources().getString(R.string.like_txt_multiple), Integer.toString(p.getLikes()-1)));
+	        	else
+		        	likes.setText(getResources().getString(R.string.like_txt_you));
+	        } else {
+	        	likes.setText(String.format(getResources().getString(R.string.like_txt), p.likes));
+	        }
 	        
 	        // Update the group text
 	        TextView group = (TextView)findViewById(R.id.photo_detail_group);
 	        String groupTxt = getResources().getString(R.string.photo_detail_group);
 	        group.setText(String.format(groupTxt, p.groupname));
+	        
 		} else if (pr.getStatus() == Util.STATUS_LOGIN){
 			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
 		} else {
@@ -281,5 +316,42 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 		
 	}	
 
+   private class LikeClickListener implements OnClickListener{    
 
+        private long iid;
+        private boolean myLike;
+        private Context context;
+        
+        public LikeClickListener(Context context, long iid, boolean me){
+            this.iid = iid;
+            this.myLike = me;
+            this.context = context;
+        }
+        
+        @Override
+        public void onClick(View arg0) {
+    		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);
+    		String hash = settings.getString(Login.SESSION_HASH, null);
+    		
+    		
+    		String like = "";
+    		if (myLike)
+    			like = Util.getUrl(context,R.string.unlike_http);
+    		else
+    			like = Util.getUrl(context,R.string.like_http);
+    			
+    		myLike = !myLike;
+    		
+            HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+            try {
+    			map.put("sid", new StringBody(hash));
+    	        map.put("iid", new StringBody(Long.toString(iid)));
+    		} catch (UnsupportedEncodingException e) {
+    			e.printStackTrace();
+    		}
+            
+            PostData pr = new PostData(like,map);
+            new PostRequest(context, CODE_LIKE).execute(pr);
+        }       
+    }
 }

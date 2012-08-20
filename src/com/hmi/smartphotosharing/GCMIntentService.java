@@ -15,7 +15,7 @@ import com.hmi.smartphotosharing.groups.GroupDetailActivity;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
-import com.hmi.smartphotosharing.json.StringRepsonse;
+import com.hmi.smartphotosharing.json.StringResponse;
 import com.hmi.smartphotosharing.util.Util;
 
 public class GCMIntentService extends GCMBaseIntentService implements OnDownloadListener {
@@ -163,7 +163,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		Log.i("GCM JSON Parse", json);
 		
 		Gson gson = new Gson();
-		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
+		StringResponse response = gson.fromJson(json, StringResponse.class);
 		
 		switch(code){
 		
@@ -172,7 +172,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		case CODE_UNREGISTER:
 			break;
 		default:
-			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			
 		}
 		

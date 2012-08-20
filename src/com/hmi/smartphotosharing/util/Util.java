@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -16,6 +17,8 @@ import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.content.CursorLoader;
 import android.util.Log;
 
 public class Util {
@@ -250,4 +253,14 @@ public class Util {
 	    }
 	    return inSampleSize;
 	}
+	
+	public static String getRealPathFromURI(Context mContext, Uri contentUri) {
+	    String[] proj = { MediaStore.Images.Media.DATA };
+	    CursorLoader loader = new CursorLoader(mContext, contentUri, proj, null, null, null);
+	    Cursor cursor = loader.loadInBackground();
+	    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+	    cursor.moveToFirst();
+	    return cursor.getString(column_index);
+	}
+
 }

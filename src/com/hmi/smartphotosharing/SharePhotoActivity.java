@@ -34,7 +34,7 @@ import com.hmi.smartphotosharing.groups.SelectGroupActivity;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
-import com.hmi.smartphotosharing.json.StringRepsonse;
+import com.hmi.smartphotosharing.json.StringResponse;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -80,6 +80,10 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		comment = (EditText) findViewById(R.id.edit_message);
         imageView = (ImageView) findViewById(R.id.image1);
 
+        // ImageLoader
+        imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+        
 		// GPS
         mLocationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -89,14 +93,33 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         	Util.createGpsDisabledAlert(this);
         }
         
-        if (fileUri == null) {
-		    Intent cameraIntent = new Intent(this,CameraActivity.class);
-		    startActivityForResult(cameraIntent, TAKE_PICTURE); 
-        }
-	    
-        imageLoader = ImageLoader.getInstance();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+        // Intent from gallery
+        Intent intent = getIntent();
+        Uri data = intent.getData();
+
+        // Figure out what to do based on the intent type
+        if (intent.getType().indexOf("image/") != -1) {
+
+        	fileUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        	
+            if (fileUri != null) {
+            	        
+            	String path = Util.getRealPathFromURI(this,fileUri);
+            	
+            	rotation = Util.getRotationDegrees(fileUri.getPath());
+            	
+            	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(path, 200, 200, rotation));
+            }
+        	
+        } else {
+            // Handle intents with text ...
         
+	        if (fileUri == null) {
+			    Intent cameraIntent = new Intent(this,CameraActivity.class);
+			    startActivityForResult(cameraIntent, TAKE_PICTURE); 
+	        }
+	    
+        }
         setupGps();
         //loadData();
 	}
@@ -276,7 +299,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		if (pd != null) pd.dismiss();
 		
 		Gson gson = new Gson();
-		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
+		StringResponse response = gson.fromJson(json, StringResponse.class);
 		
 		if (response.getStatus() == Util.STATUS_OK) {
         	Toast.makeText(this, "Upload successful", Toast.LENGTH_SHORT).show();
@@ -312,7 +335,10 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         
         // Network
         String networkProvider = LocationManager.NETWORK_PROVIDER;
-        mLocationManager.requestLocationUpdates(networkProvider, TEN_SECONDS, 0, listener);
+
+        if (mLocationManager.isProviderEnabled(networkProvider)) {
+        	mLocationManager.requestLocationUpdates(networkProvider, TEN_SECONDS, 0, listener);
+        }
         
         // GPS
         String gpsProvider = LocationManager.GPS_PROVIDER;

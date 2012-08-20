@@ -46,7 +46,13 @@
         
         <activity android:label="@string/app_name"
             android:configChanges="orientation" 
-            android:name=".SharePhotoActivity" />
+            android:name=".SharePhotoActivity">
+                <intent-filter>
+			        <action android:name="android.intent.action.SEND"/>
+			        <category android:name="android.intent.category.DEFAULT"/>
+			        <data android:mimeType="image/jpeg"/>
+			    </intent-filter>
+        </activity>
 		
         <activity android:label="Photo Details" 
             android:name=".SinglePhotoDetail" />		

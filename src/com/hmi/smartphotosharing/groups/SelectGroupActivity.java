@@ -157,14 +157,20 @@ public class SelectGroupActivity extends ListActivity implements OnDownloadListe
 			}
 		}
 
+		adapter.addView(buildLabel(R.string.locations));
+		
 		if (hasLocationLocked) {
-			adapter.addView(buildLabel(R.string.locations));
 			adapter.addAdapter(buildLocAdapter(list.subList(0, otherStart)));
+		} else {
+			adapter.addView(buildText(R.string.groups_no_location));
 		}
+
+		adapter.addView(buildLabel(R.string.other_groups));
 		
 		if (found) {
-			adapter.addView(buildLabel(R.string.other_groups));
 			adapter.addAdapter(buildOtherAdapter(list.subList(otherStart+1, list.size())));		
+		} else {
+			adapter.addView(buildText(R.string.groups_no_other));
 		}
 		
 		listView.setAdapter(adapter);
@@ -197,6 +203,14 @@ public class SelectGroupActivity extends ListActivity implements OnDownloadListe
 	    return(result);
 	}
 	
+	private View buildText(int res) {
+	    TextView result = new TextView(this);
+	    result.setText(res);
+	    result.setLayoutParams(new ListView.LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
+	    result.setGravity(Gravity.CENTER_HORIZONTAL);
+	    return(result);
+	}	
+	
     private void setupGps() { 
         // Request updates from just the fine (gps) provider.
     	gpsLocation = requestUpdatesFromProvider();
@@ -208,7 +222,10 @@ public class SelectGroupActivity extends ListActivity implements OnDownloadListe
         
         // Network
         String networkProvider = LocationManager.NETWORK_PROVIDER;
-        mLocationManager.requestLocationUpdates(networkProvider, TEN_SECONDS, 0, listener);
+
+        if (mLocationManager.isProviderEnabled(networkProvider)) {
+        	mLocationManager.requestLocationUpdates(networkProvider, TEN_SECONDS, 0, listener);
+        }
         
         // GPS
         String gpsProvider = LocationManager.GPS_PROVIDER;

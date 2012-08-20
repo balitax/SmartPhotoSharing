@@ -9,14 +9,15 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gcm.GCMRegistrar;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
 import com.hmi.smartphotosharing.json.FetchJSON;
+import com.hmi.smartphotosharing.json.LongResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
-import com.hmi.smartphotosharing.json.StringRepsonse;
+import com.hmi.smartphotosharing.json.StringResponse;
+import com.hmi.smartphotosharing.json.UserResponse;
 import com.hmi.smartphotosharing.util.Util;
 
 public class Login extends Activity implements OnDownloadListener{
@@ -25,6 +26,7 @@ public class Login extends Activity implements OnDownloadListener{
 	public static int INCORRECT = 403;
 	public static final String SESSION_PREFS = "session";
 	public static final String SESSION_HASH = "sessionhash";
+	public static final String SESSION_UID = "sessionuid";
 	
 	public static final int CODE_VALIDATE = 1;
 	public static final int CODE_LOGIN = 2;
@@ -116,13 +118,13 @@ public class Login extends Activity implements OnDownloadListener{
 	private void parseRegister(String json) {
 		Gson gson = new Gson();
 		Log.d("JSON parse", json);
-		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
+		StringResponse response = gson.fromJson(json, StringResponse.class);
 		
 		if (response.getStatus() == Util.STATUS_OK) {
-			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			//GCMRegistrar.setRegisteredOnServer(this, true);			
 		} else {
-			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			GCMRegistrar.unregister(this);
 		}
 	}
@@ -130,10 +132,16 @@ public class Login extends Activity implements OnDownloadListener{
 	private void parseValidate(String json) {
 		
 		Gson gson = new Gson();
-		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
+		UserResponse response = gson.fromJson(json, UserResponse.class);
 		
 		if (response.getStatus() == CORRECT) {
 
+			// Store the sessionhash in sharedpreferences
+			SharedPreferences settings = getSharedPreferences(SESSION_PREFS,MODE_PRIVATE);
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putLong(SESSION_UID, response.getObject().getId());
+			editor.commit();
+			
 			// GCM
 			checkGCM();
 			
@@ -147,7 +155,7 @@ public class Login extends Activity implements OnDownloadListener{
 		Gson gson = new Gson();
 		Log.i("Json fetch", json);
 		
-		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
+		LongResponse response = gson.fromJson(json, LongResponse.class);
 
 		if (response.getStatus() == Util.STATUS_OK) {
 			
@@ -158,12 +166,13 @@ public class Login extends Activity implements OnDownloadListener{
 			SharedPreferences settings = getSharedPreferences(SESSION_PREFS,MODE_PRIVATE);
 			SharedPreferences.Editor editor = settings.edit();
 			editor.putString(SESSION_HASH, response.getMessage());
+			editor.putLong(SESSION_UID, response.getObject());
 			editor.commit();
 			
 			Intent intent = new Intent(this, GroupsActivity.class);
 		    startActivity(intent);	
 		} else {
-			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 		}
 	
 		

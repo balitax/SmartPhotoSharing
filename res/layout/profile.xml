@@ -22,7 +22,7 @@
 		android:drawableLeft="@drawable/ic_menu_camera"
 	    android:onClick="onClickPicture"
 	    android:text="@string/profile_camera" />
-	
+	<!--  
 	<Button 
 	    android:id="@+id/btn_pics"
 	    android:layout_width="fill_parent"
@@ -31,12 +31,13 @@
 		android:drawableLeft="@drawable/ic_menu_gallery"
 	    android:onClick="onClickListPics"
 	    android:text="@string/profile_listpics" />    
+    -->
     
 	<Button 
 	    android:id="@+id/btn_prefs"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/btn_pics"
+	    android:layout_below="@+id/btn_camera"
 		android:drawableLeft="@drawable/ic_menu_preferences"
 	    android:onClick="onClickPrefs"
 	    android:text="@string/profile_prefs" />   

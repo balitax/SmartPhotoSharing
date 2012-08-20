@@ -19,7 +19,7 @@ import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.GroupListResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
-import com.hmi.smartphotosharing.json.StringRepsonse;
+import com.hmi.smartphotosharing.json.StringResponse;
 import com.hmi.smartphotosharing.util.Util;
 
 public class GroupJoinActivity extends NavBarListActivity implements OnDownloadListener{
@@ -89,7 +89,7 @@ public class GroupJoinActivity extends NavBarListActivity implements OnDownloadL
 	private void parseJoin(String json) {
 
 		Gson gson = new Gson();
-		StringRepsonse response = gson.fromJson(json, StringRepsonse.class);
+		StringResponse response = gson.fromJson(json, StringResponse.class);
 		
 		if (response != null) {
 			switch(response.getStatus()) {

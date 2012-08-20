@@ -1,6 +1,6 @@
 package com.hmi.smartphotosharing.json;
 
-public class StringRepsonse extends Response {
+public class StringResponse extends Response {
 
 	@Override
 	public Object getObject() {
