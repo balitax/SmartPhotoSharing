@@ -20,6 +20,7 @@ import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.GroupListResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.StringResponse;
+import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 
 public class GroupJoinActivity extends NavBarListActivity implements OnDownloadListener{
@@ -112,17 +113,18 @@ public class GroupJoinActivity extends NavBarListActivity implements OnDownloadL
 
 		Log.d("JOIN", json);
 		Gson gson = new Gson();
-		GroupListResponse gr = gson.fromJson(json, GroupListResponse.class);
+		GroupListResponse response = gson.fromJson(json, GroupListResponse.class);
 		
-		if (gr != null) {
-			List <Group> group_list = gr.getObject();
+		if (response != null) {
+			List <Group> group_list = response.getObject();
 			if (group_list == null) group_list = new ArrayList<Group>();
 
-			setListAdapter(new GroupJoinAdapter(
-								this, 
-								R.layout.join_group_item,
-								group_list)
-							);	
+			GroupJoinAdapter adapter = new GroupJoinAdapter(
+											this, 
+											R.layout.join_group_item,
+											group_list);
+			adapter.sort(Sorter.GROUP_SORTER_ABC);
+			setListAdapter(adapter);	
 		}
 	}
 

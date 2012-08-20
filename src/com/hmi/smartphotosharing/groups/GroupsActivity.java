@@ -1,6 +1,5 @@
 package com.hmi.smartphotosharing.groups;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -10,11 +9,13 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -186,6 +187,7 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 			
 			// Set the user name
 			TextView stats = (TextView) findViewById(R.id.stats);
+			
 			stats.setText(String.format(this.getResources().getString(R.string.profile_stats), user.groups, user.photos));
 			
 			// Set the user icon
@@ -198,23 +200,28 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 	private void parseGroups(String result) {
 		
 		Gson gson = new Gson();
-		GroupListResponse gr = gson.fromJson(result, GroupListResponse.class);
+		GroupListResponse response = gson.fromJson(result, GroupListResponse.class);
 		
-		if (gr != null) {
-			List <Group> group_list = gr.getObject();
+		if (response != null) {
+			List <Group> group_list = response.getObject();
 			
-			// Sort the group on newest
-			
-			if (group_list == null) group_list = new ArrayList<Group>();
-			
-			GroupAdapter adapter = new GroupAdapter(
-					this, 
-					R.layout.group_item, 
-					group_list,
-					imageLoader
-				);
-			adapter.sort(Sorter.GROUP_SORTER);
-			setListAdapter(adapter);	
+			if (group_list == null) {
+				ListView listView = getListView();
+				TextView emptyView = (TextView) listView.getEmptyView();
+				emptyView.setGravity(Gravity.CENTER_HORIZONTAL);
+				emptyView.setText(getResources().getString(R.string.groups_empty));
+			} else {
+
+				// Sort the group on newest
+				GroupAdapter adapter = new GroupAdapter(
+						this, 
+						R.layout.group_item, 
+						group_list,
+						imageLoader
+					);
+				adapter.sort(Sorter.GROUP_SORTER_UPDATES);
+				setListAdapter(adapter);	
+			}
 		}
 	}
  

@@ -95,10 +95,9 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         
         // Intent from gallery
         Intent intent = getIntent();
-        Uri data = intent.getData();
 
         // Figure out what to do based on the intent type
-        if (intent.getType().indexOf("image/") != -1) {
+        if (intent.getType() != null && intent.getType().indexOf("image/") != -1) {
 
         	fileUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
         	

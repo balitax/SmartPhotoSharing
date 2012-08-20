@@ -80,8 +80,7 @@
         <activity android:label="Select Group" 
             android:name=".groups.SelectGroupActivity" />
         <activity android:label="Invite Friends" 
-            android:name=".groups.SelectFriendsActivity"
-            android:theme="@android:style/Theme.Dialog" />
+            android:name=".groups.SelectFriendsActivity" />
         <activity android:label="Select Location" 
             android:name=".groups.SelectLocationActivity" />
         <activity android:label="Group Details" 

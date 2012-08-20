@@ -8,7 +8,7 @@
     
     <RelativeLayout
         android:id="@+id/header"
-        android:background="#222"
+        android:background="@color/header_bg"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
         	        
@@ -81,7 +81,7 @@
 	    android:layout_below="@+id/header"
 		android:drawableLeft="@drawable/ic_menu_camera"
 	    android:onClick="onClickPicture"
-	    android:text="@string/profile_camera" />
+	    android:text="@string/group_change_pic" />
 	
      <include
          android:id="@+id/navbar"

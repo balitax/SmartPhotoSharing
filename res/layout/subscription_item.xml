@@ -40,6 +40,13 @@
     	android:singleLine="true"
     	android:ellipsize="marquee" />
 	
+    <ImageView 
+        android:id="@+id/sub_delete"
+        android:src="@drawable/ic_delete"
+        android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+        android:layout_alignParentRight="true" />
+    
 	<Gallery
     	android:id="@+id/gallery"
     	android:layout_width="fill_parent"

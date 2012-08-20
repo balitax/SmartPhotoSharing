@@ -28,7 +28,7 @@ public class SelectSingleFriendActivity extends NavBarListActivity implements On
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.join_group);
+        setContentView(R.layout.select_friend);
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();

@@ -171,7 +171,7 @@ public class GroupCreateActivity extends Activity implements OnDownloadListener 
 		Log.i("Json parse", json);
 		
 		if (response.getStatus() == Util.STATUS_OK) {
-        	Toast.makeText(this, "Group created", Toast.LENGTH_SHORT).show();
+        	Toast.makeText(this, "Group created. To change the group icon, press the icon in the group detail page.", Toast.LENGTH_LONG).show();
         	Intent data = new Intent();
 
     		EditText nameView = (EditText) findViewById(R.id.group_create_name);

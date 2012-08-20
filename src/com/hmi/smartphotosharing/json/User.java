@@ -13,10 +13,10 @@ public class User {
 	public String picture;
 	public String thumb;
 	
-	public String groups;
-	public String photos;
-	public String following;
-	public String followers;
+	public int groups;
+	public int photos;
+	public int following;
+	public int followers;
 	
 	public long getId() {
 		return Long.parseLong(uid);

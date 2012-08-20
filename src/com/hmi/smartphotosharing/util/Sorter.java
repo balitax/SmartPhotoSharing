@@ -8,9 +8,15 @@ import com.hmi.smartphotosharing.json.User;
 
 public class Sorter
 {
-    public static Comparator<Group> GROUP_SORTER = new Comparator<Group>() {
+    public static Comparator<Group> GROUP_SORTER_UPDATES = new Comparator<Group>() {
         public int compare(Group o1, Group o2) {
             return o2.totalnew - o1.totalnew;
+        }
+    };
+
+    public static Comparator<Group> GROUP_SORTER_ABC = new Comparator<Group>() {
+        public int compare(Group o1, Group o2) {
+            return o1.name.compareTo(o2.name);
         }
     };
     

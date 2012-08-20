@@ -1,6 +1,5 @@
 package com.hmi.smartphotosharing.subscriptions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -8,9 +7,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
@@ -18,6 +20,7 @@ import com.hmi.smartphotosharing.NavBarListActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
+import com.hmi.smartphotosharing.json.StringResponse;
 import com.hmi.smartphotosharing.json.Subscription;
 import com.hmi.smartphotosharing.json.SubscriptionListResponse;
 import com.hmi.smartphotosharing.json.User;
@@ -33,6 +36,7 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 
     private static final int CODE_PROFILE = 1;
     private static final int CODE_SUBSCRIPTS = 2;
+    private static final int CODE_SUB_REMOVE = 3;
 
 	private ImageLoader imageLoader;
 		    
@@ -100,16 +104,34 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 	public void parseJson(String result, int code) {
 		
 		switch (code) {
-		case CODE_SUBSCRIPTS:
-			parseSubscripts(result);
-			break;
-			
-		case CODE_PROFILE:
-			parseProfile(result);
-			break;
-			
-		default:
+			case CODE_SUBSCRIPTS:
+				parseSubscripts(result);
+				break;
+				
+			case CODE_PROFILE:
+				parseProfile(result);
+				break;
+
+			case CODE_SUB_REMOVE:
+				parseSubRemove(result);
+				break;
+			default:
 		}
+	}
+
+	private void parseSubRemove(String result) {
+
+		Gson gson = new Gson();
+		StringResponse response = gson.fromJson(result, StringResponse.class);
+		
+		if (response.getStatus() == Util.STATUS_OK) {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+			loadData(true, true);
+			
+		} else {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+		
 	}
 
 	private void parseProfile(String result) {
@@ -118,17 +140,19 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 		if (response != null) {
 			User user = response.getObject();
 			
-			// Set the user name
-			TextView name = (TextView) findViewById(R.id.groups_name);
-			name.setText(user.getName());
-			
-			// Set the user name
-			TextView stats = (TextView) findViewById(R.id.stats);
-			stats.setText(String.format(this.getResources().getString(R.string.profile_follows), user.following, user.followers));
-			
-			// Set the user icon
-			ImageView pic = (ImageView) findViewById(R.id.groups_icon);
-			imageLoader.displayImage(user.thumb, pic);
+			if (user != null) {
+				// Set the user name
+				TextView name = (TextView) findViewById(R.id.groups_name);
+				name.setText(user.getName());
+				
+				// Set the user name
+				TextView stats = (TextView) findViewById(R.id.stats);
+				stats.setText(String.format(this.getResources().getString(R.string.profile_follows), user.following, user.followers));
+				
+				// Set the user icon
+				ImageView pic = (ImageView) findViewById(R.id.groups_icon);
+				imageLoader.displayImage(user.thumb, pic);
+			}
 		}
 	}
 
@@ -136,21 +160,28 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 
 		Log.d("JSON Parse", result);
 		Gson gson = new Gson();
-		SubscriptionListResponse gr = gson.fromJson(result, SubscriptionListResponse.class);
+		SubscriptionListResponse response = gson.fromJson(result, SubscriptionListResponse.class);
 		
-		if (gr != null) {
-			List <Subscription> subscription_list = gr.getObject();
-			if (subscription_list == null) subscription_list = new ArrayList<Subscription>();
-			
-			SubscriptionAdapter adapter = new SubscriptionAdapter(
-					this, 
-					R.layout.subscription_item, 
-					subscription_list.toArray(new Subscription[subscription_list.size()]),
-					imageLoader
-				);
-			
-			adapter.sort(Sorter.SUBSCRIPTIONS_SORTER);
-			setListAdapter(adapter);	
+		if (response != null) {
+			List <Subscription> subscription_list = response.getObject();
+			if (subscription_list == null) {
+				ListView listView = getListView();
+				TextView emptyView = (TextView) listView.getEmptyView();
+				emptyView.setGravity(Gravity.CENTER_HORIZONTAL);
+				emptyView.setText(getResources().getString(R.string.subscriptions_empty));
+				
+			} else {
+				
+				SubscriptionAdapter adapter = new SubscriptionAdapter(
+						this, 
+						R.layout.subscription_item, 
+						subscription_list.toArray(new Subscription[subscription_list.size()]),
+						imageLoader
+					);
+				
+				adapter.sort(Sorter.SUBSCRIPTIONS_SORTER);
+				setListAdapter(adapter);	
+			}
 		}
 	}
  

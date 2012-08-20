@@ -138,25 +138,26 @@ public class SelectGroupActivity extends ListActivity implements OnDownloadListe
 		GroupListResponse response = gson.fromJson(json, GroupListResponse.class);
 		List<Group> list = response.getObject();
 
-		// Make sure the list is sorted
-		Collections.sort(list, Sorter.GROUP_SORTER_LOC);
-		
 		adapter = new MergeAdapter();
-		
-		// Find where to split the list
-		int otherStart = 0;
+
 		boolean found = false;
 		boolean hasLocationLocked = false;
+		int otherStart = 0;
 		
-		for (int i = 0; !found && i < list.size(); i++) {
-			if (list.get(i).isLocationLocked()) {
-				hasLocationLocked = true;
-				otherStart++;
-			} else {
-				found = true;
+		// Make sure the list is sorted
+		if (list != null) {
+			Collections.sort(list, Sorter.GROUP_SORTER_LOC);
+				
+			// Find where to split the list
+			for (int i = 0; !found && i < list.size(); i++) {
+				if (list.get(i).isLocationLocked()) {
+					hasLocationLocked = true;
+					otherStart++;
+				} else {
+					found = true;
+				}
 			}
 		}
-
 		adapter.addView(buildLabel(R.string.locations));
 		
 		if (hasLocationLocked) {
@@ -168,7 +169,7 @@ public class SelectGroupActivity extends ListActivity implements OnDownloadListe
 		adapter.addView(buildLabel(R.string.other_groups));
 		
 		if (found) {
-			adapter.addAdapter(buildOtherAdapter(list.subList(otherStart+1, list.size())));		
+			adapter.addAdapter(buildOtherAdapter(list.subList(otherStart, list.size())));		
 		} else {
 			adapter.addView(buildText(R.string.groups_no_other));
 		}
