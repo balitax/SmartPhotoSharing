@@ -58,7 +58,7 @@ public class PostRequest extends AsyncTask<PostData,Void,String> {
            return sendPost(data[0]);
        } catch (IOException e) {
     	   ErrorResponse err = new ErrorResponse();
-    	   
+    	   Log.e("JSON Error", e.getMessage());
            return new Gson().toJson(err);
        }
 	}

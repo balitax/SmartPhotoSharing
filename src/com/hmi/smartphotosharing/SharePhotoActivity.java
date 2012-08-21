@@ -104,7 +104,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
             if (fileUri != null) {
             	        
             	String path = Util.getRealPathFromURI(this,fileUri);
-            	
+            	fileUri = Uri.parse(path);
             	rotation = Util.getRotationDegrees(fileUri.getPath());
             	
             	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(path, 200, 200, rotation));
