@@ -70,7 +70,7 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
       super.onResume();
       
       // Refresh groups list
-      loadData(false, true);
+      loadData(true, true);
     }  
     	
 	private void loadData(boolean profile, boolean subs) {

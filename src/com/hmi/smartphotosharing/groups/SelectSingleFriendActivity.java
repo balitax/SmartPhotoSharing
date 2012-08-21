@@ -80,7 +80,7 @@ public class SelectSingleFriendActivity extends NavBarListActivity implements On
 			
 			UserAdapter adapter = new UserAdapter(
 					this, 
-					R.layout.select_friend, 
+					R.layout.select_friend_item, 
 					userList
 				);
 			
