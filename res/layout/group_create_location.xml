@@ -3,13 +3,22 @@
     android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
     
-    <CheckBox 
-        android:id="@+id/toggle_gps_updates"
-        android:checked="true"
-	    android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-	    android:layout_toLeftOf="@+id/button_send"
-		android:text="@string/toggle_gps" />
+    <EditText
+        android:id="@+id/et_location"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/btn_find"
+        android:inputType="text"
+        android:hint="@string/group_create_location_search" />
+    
+    <ImageView
+        android:id="@+id/btn_find"
+        android:src="@drawable/ic_menu_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/button_send"
+        android:contentDescription="@string/group_create_location_button"
+        android:onClick="onSearchClick" />
     
     <ImageView 
         android:id="@+id/button_send"
@@ -19,13 +28,12 @@
         android:layout_alignParentRight="true"
         android:contentDescription="@string/button_send"
         android:onClick="onSendClick" />
-    
-    <com.hmi.smartphotosharing.maps.MyMapView 
-	    android:id="@+id/mapview"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:layout_below="@+id/toggle_gps_updates"
-	    android:clickable="true"
-	    android:apiKey="0LgN0zWElNFwdv-WBdvjWVOrLwwPTy_3zzWmRkg" />
-    	   
+     
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+	  android:id="@+id/map"
+	  android:layout_width="fill_parent"
+	  android:layout_height="fill_parent"
+	  android:layout_below="@+id/button_send"
+	  class="com.google.android.gms.maps.SupportMapFragment"/>
+     	   
 </RelativeLayout>

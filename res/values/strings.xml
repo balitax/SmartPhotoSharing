@@ -46,7 +46,7 @@
     <string name="login_http">cmd=login&amp;u=%1$s&amp;p=%2$s</string> 
     <string name="login_validate">cmd=status&amp;sid=%1$s</string> 
     <string name="select_friend">Select A Friend</string>
-    
+    <string name="login_connection">Unable to connect</string>
     <!--  Placeholder strings -->
     
     <string name="url_upload">cmd=upload</string> 
@@ -73,6 +73,9 @@
     <string name="group_create_name">Group name</string>
     <string name="group_create_description">Enter a description</string>
     <string name="group_create_location">Choose a location</string>
+    <string name="group_create_location_search">Enter location</string>
+    <string name="group_create_location_button">Find</string>
+    
     <string name="group_create_title">Create a new group</string>
     <string name="join_group">Join Group</string> 
     <string name="group_join_title">Join a public group</string>

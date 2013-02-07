@@ -1,106 +1,79 @@
 package com.hmi.smartphotosharing.groups;
 
+import java.io.IOException;
 import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapController;
-import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.maps.MyItemizedOverlay;
-import com.hmi.smartphotosharing.maps.MyMapView;
-import com.hmi.smartphotosharing.maps.RectangleOverlay;
 import com.hmi.smartphotosharing.util.Util;
 
-public class SelectLocationActivity extends MapActivity {
+public class SelectLocationActivity extends FragmentActivity implements OnMapLongClickListener, OnCameraChangeListener {
 
-    private MapController mc;
-    private MyMapView mapView;
+    private Location gps1, gps2;
     
-    private LocationManager mLocationManager;
-    private Location gpsLocation, gps1, gps2;
+    private GoogleMap map;
+    private MarkerOptions markerOptions;
     
-    private static final int OVERLAY_RECT = 0;
-    private static final int OVERLAY_MY_POS = 1;
-    
-    private CheckBox gpsUpdates;
+    private Polygon rect;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.group_create_location);
-        
-        gpsUpdates = (CheckBox) findViewById(R.id.toggle_gps_updates);
-        
+                
         // Make the Dialog style appear fullscreen
         getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 
-        // MapView
-        //------------------
-        
-        mapView = (MyMapView) findViewById(R.id.mapview);
+        setUpMapIfNeeded();
 
-        mapView.getOverlays().add(new RectangleOverlay(new GeoPoint(0,0),new GeoPoint(0,0)));
-        mapView.getOverlays().add(new RectangleOverlay(new GeoPoint(0,0),new GeoPoint(0,0)));
-        
-        mc = mapView.getController();
-                        
         gps1 = new Location(LocationManager.GPS_PROVIDER);
         gps2 = new Location(LocationManager.GPS_PROVIDER);
-
-        // Listen for long-press on the map
         
-        mapView.setOnLongpressListener(new MyMapView.OnLongpressListener() {
-		    public void onLongpress(final MapView view, final GeoPoint longpressLocation) {
-			        runOnUiThread(new Runnable() {
-				    public void run() {
-			            Toast.makeText(getApplicationContext(), "Location updated", Toast.LENGTH_SHORT).show();
-				        setRectangle(view);
-				        
-				    }
-
-					private void setRectangle(MapView view) {
-						List<Overlay> overlays = view.getOverlays();
-						
-				        GeoPoint topLeft = view.getProjection().fromPixels(5, 5);
-				        GeoPoint bottomRight = view.getProjection().fromPixels(view.getWidth()-4, view.getHeight()-4);
-				        RectangleOverlay rect = new RectangleOverlay(topLeft,bottomRight);
-				        overlays.set(OVERLAY_RECT, rect);
-						
-				        gps1.setLatitude(topLeft.getLatitudeE6()/1E6);
-				        gps1.setLongitude(topLeft.getLongitudeE6()/1E6);
-				        
-				        gps2.setLatitude(bottomRight.getLatitudeE6()/1E6);
-				        gps2.setLongitude(bottomRight.getLongitudeE6()/1E6);
-				        
-				        Log.d("GPS", "New location: (" + gps1.getLatitude() + ", " + gps1.getLongitude() + ") - (" + gps2.getLatitude() + ", " + gps2.getLongitude() + ")");
-					}
-				});
-			    }
-		});
+        map.setOnCameraChangeListener(this);
     }
     
-	@Override
-	protected boolean isRouteDisplayed() {
-		return false;
-	}
-	
+    private void setUpMapIfNeeded() {
+        
+    	// Do a null check to confirm that we have not already instantiated the map.
+        if (map == null) {
+            map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                                .getMap();
+            
+            // Check if we were successful in obtaining the map.
+            if (map != null) {
+            	map.setMyLocationEnabled(true);
+            	map.setOnMapLongClickListener(this);
+            }
+        }
+    }
+    
     @Override
     protected void onStart() {
         super.onStart();
@@ -109,14 +82,12 @@ public class SelectLocationActivity extends MapActivity {
         // This verification should be done during onStart() because the system calls this method
         // when the user returns to the activity, which ensures the desired location provider is
         // enabled each time the activity resumes from the stopped state.
-        mLocationManager =
+        LocationManager mLocationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         final boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!gpsEnabled) {
         	Util.createGpsDisabledAlert(this);
-        } else {        	
-        	setupGps();
         }
         
         String s = getResources().getString(R.string.dialog_map);
@@ -128,22 +99,9 @@ public class SelectLocationActivity extends MapActivity {
     public void onResume() {
       super.onResume();
       
-      setupGps();
+      setUpMapIfNeeded();
     }    
     
-    @Override
-    public void onPause() {
-      super.onPause();
-      
-      mLocationManager.removeUpdates(listener);
-    }
-    
-	@Override
-    protected void onStop() {
-        super.onStop();
-        mLocationManager.removeUpdates(listener);
-    }  
-	
 	@Override
 	public void onBackPressed() {
 	    this.setResult(RESULT_CANCELED);
@@ -162,100 +120,105 @@ public class SelectLocationActivity extends MapActivity {
     	this.setResult(RESULT_OK, data);
     	this.finish();
     }
-	
-    private void moveToLocation(int lat, int lon) {
-        GeoPoint point = new GeoPoint(lat,lon);
-    	
-    	List<Overlay> mapOverlays = mapView.getOverlays();
-        Drawable drawable = this.getResources().getDrawable(R.drawable.pushpin);
-        MyItemizedOverlay itemizedoverlay = new MyItemizedOverlay(drawable);
+    
+    public void onSearchClick(View view) {
 
-        OverlayItem overlayitem = new OverlayItem(point, null, null);
-        itemizedoverlay.addOverlay(overlayitem);
-        
-        mapOverlays.set(OVERLAY_MY_POS,itemizedoverlay);
-        
-        if (gpsUpdates.isChecked()) 
-        	mc.setCenter(point);
-        
-        //mc.setZoom(ZOOM_LEVEL); 
-        mapView.invalidate();
+        // Getting reference to EditText to get the user input location
+        EditText etLocation = (EditText) findViewById(R.id.et_location);
+
+        // Getting user input location
+        String location = etLocation.getText().toString();
+
+        if(location!=null && !location.equals("")) {
+            new GeocoderTask().execute(location);
+        }
+    }
+
+	@Override
+	public void onCameraChange(CameraPosition pos) {
+		Log.d("SmarthPhotoSharing", "z: " + pos.zoom + " /p: " + pos.target.latitude + "," + pos.target.longitude);
 		
+	}   
+	
+	@Override
+	public void onMapLongClick(LatLng point) {		
+		
+		// Get boundaries of the screen from the projection
+		LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
+		
+		// Find the other two corners
+		LatLng northWest = new LatLng(bounds.northeast.latitude,bounds.southwest.longitude);
+		LatLng southEast = new LatLng(bounds.southwest.latitude,bounds.northeast.longitude);
+		
+		// Remove previously drawn rect
+		if (rect != null) {
+			rect.remove();
+		}
+		
+		// Add rectangle to the map
+		rect = map.addPolygon(new PolygonOptions()
+		    .add(bounds.northeast, northWest, bounds.southwest, southEast) // 4 corners, ccw
+		    .strokeWidth(5)
+		    .strokeColor(Color.GREEN)
+		    .fillColor(0x6600ff00));
+		
+		// Set coordinates that will be passed back to the group creation activity
+		gps1.setLatitude(northWest.latitude); gps1.setLongitude(northWest.longitude);
+		gps2.setLatitude(southEast.latitude); gps2.setLongitude(southEast.longitude);
+		
+		// Show a toast
+        Toast.makeText(getApplicationContext(), "Location updated", Toast.LENGTH_SHORT).show();
 	}
-    
-
-    // Set up fine and/or coarse location providers depending on whether the fine provider or
-    // both providers button is pressed.
-    private void setupGps() { 
-    	
-        // Request updates from just the fine (gps) provider.
-        gpsLocation = requestUpdatesFromProvider();
-    	
-        if (gpsLocation != null)
-        	moveToLocation((int)(gpsLocation.getLatitude()*1E6),(int)(gpsLocation.getLongitude()*1E6));   
-    }
-    
-    /**
-     * Method to register location updates with a desired location provider.  If the requested
-     * provider is not available on the device, the app displays a Toast with a message referenced
-     * by a resource id.
-     *
-     * @param provider Name of the requested provider.
-     * @param errorResId Resource id for the string message to be displayed if the provider does
-     *                   not exist on the device.
-     * @return A previously returned {@link android.location.Location} from the requested provider,
-     *         if exists.
-     */
-    private Location requestUpdatesFromProvider() {
-        Location location = null;
-        
-        // Network
-        String networkProvider = LocationManager.NETWORK_PROVIDER;
-
-        if (mLocationManager.isProviderEnabled(networkProvider)) {
-        	mLocationManager.requestLocationUpdates(networkProvider, 0, 0, listener);
-        }
-        
-        // GPS
-        String gpsProvider = LocationManager.GPS_PROVIDER;
-        
-        if (mLocationManager.isProviderEnabled(gpsProvider)) {
-            mLocationManager.requestLocationUpdates(gpsProvider, 0, 0, listener);
-            location = mLocationManager.getLastKnownLocation(gpsProvider);
-        }
-
-        return location;
-    }
-
-    private final LocationListener listener = new LocationListener() {
-
-        @Override
-        public void onLocationChanged(Location location) {
-        	boolean isBetter = Util.isBetterLocation(location, gpsLocation);
-        	
-        	Log.d("LocationCheck", "Provider: " + location.getProvider() + " -> better location ? " + Boolean.toString(isBetter));
-        	// Check if we should update or not
-        	if (isBetter) {
-        		gpsLocation = location;
-        	}
-
-        	if (gpsLocation != null)            	
-        		moveToLocation((int)(gpsLocation.getLatitude()*1E6),(int)(gpsLocation.getLongitude()*1E6));   
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-        	//createGpsDisabledAlert();
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-    };
 	
-	
+	private class GeocoderTask extends AsyncTask<String, Void, List<Address>>{
+
+	        @Override
+	        protected List<Address> doInBackground(String... locationName) {
+	            // Creating an instance of Geocoder class
+	            Geocoder geocoder = new Geocoder(getBaseContext());
+	            List<Address> addresses = null;
+
+	            try {
+	                // Getting a maximum of 3 Address that matches the input text
+	                addresses = geocoder.getFromLocationName(locationName[0], 3);
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	            }
+	            return addresses;
+	        }
+
+	        @Override
+	        protected void onPostExecute(List<Address> addresses) {
+
+	            if(addresses==null || addresses.size()==0){
+	                Toast.makeText(getBaseContext(), "No Location found", Toast.LENGTH_SHORT).show();
+	            }
+
+	            // Clears all the existing markers on the map
+	            map.clear();
+
+	            // Adding Markers on Google Map for each matching address
+	            for(int i=0;i<addresses.size();i++){
+
+	                Address address = (Address) addresses.get(i);
+
+	                // Creating an instance of GeoPoint, to display in Google Map
+	                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+
+	                String addressText = String.format("%s, %s",
+	                address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0) : "",
+	                address.getCountryName());
+
+	                markerOptions = new MarkerOptions();
+	                markerOptions.position(latLng);
+	                markerOptions.title(addressText);
+
+	                map.addMarker(markerOptions);
+
+	                // Locate the first location
+	                if(i==0)
+	                    map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+	            }
+	        }
+	    }
 }

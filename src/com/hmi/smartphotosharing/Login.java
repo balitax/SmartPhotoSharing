@@ -1,14 +1,18 @@
 package com.hmi.smartphotosharing;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gcm.GCMRegistrar;
 import com.google.gson.Gson;
@@ -82,14 +86,18 @@ public class Login extends Activity implements OnDownloadListener{
 	}
 		
 	public void onClickLogin(View v) {
-			
-		String url = String.format(
-				Util.getUrl(this, R.string.login_http), 
-				username.getText().toString(), 
-				password.getText().toString()
-				);
-		Log.d("Json fetch",url);
-        new FetchJSON(this,CODE_LOGIN).execute(url);
+		
+		if (hasConnection(this)) {
+			String url = String.format(
+					Util.getUrl(this, R.string.login_http), 
+					username.getText().toString(), 
+					password.getText().toString()
+					);
+			Log.d("Json fetch",url);
+	        new FetchJSON(this,CODE_LOGIN).execute(url);
+		} else {
+			Toast.makeText(this, this.getResources().getString(R.string.login_connection), Toast.LENGTH_SHORT).show();			
+		}
 	}
 
 	public void onClickRegister(View v) {
@@ -121,10 +129,9 @@ public class Login extends Activity implements OnDownloadListener{
 		StringResponse response = gson.fromJson(json, StringResponse.class);
 		
 		if (response.getStatus() == Util.STATUS_OK) {
-			//Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			//GCMRegistrar.setRegisteredOnServer(this, true);			
 		} else {
-			//Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			GCMRegistrar.unregister(this);
 		}
 	}
@@ -172,7 +179,7 @@ public class Login extends Activity implements OnDownloadListener{
 			Intent intent = new Intent(this, GroupsActivity.class);
 		    startActivity(intent);	
 		} else {
-			//Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 		}
 	
 		
@@ -191,7 +198,18 @@ public class Login extends Activity implements OnDownloadListener{
 			String registerUrl = String.format(Util.getUrl(this,R.string.gcm_register),hash,regId);		
 			new FetchJSON(this, CODE_REGISTER).execute(registerUrl);
 		
-		
 	}	
 
+	public boolean hasConnection(Context c) {
+		ConnectivityManager cm = (ConnectivityManager)c.getSystemService(Context.CONNECTIVITY_SERVICE);;
+		NetworkInfo i = cm.getActiveNetworkInfo();
+		if (i == null)
+			return false;
+		if (!i.isConnected())
+		    return false;
+		if (!i.isAvailable())
+		    return false;
+		return true;
+		
+	}
 }
