@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
    
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fillViewport="true"
@@ -34,19 +35,57 @@
 	    
 	    <ImageView
 	        android:id="@+id/like"
-	        android:src="@drawable/btn_star_big_off"
+	        android:src="@drawable/btn_star_off_normal_holo_light"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_below="@+id/picture"
-	        android:layout_alignParentLeft="true"
-	        android:padding="4dp" />
+	        android:layout_alignParentLeft="true" />
 	    
 	 	<TextView
 	    	android:id="@+id/like_txt"
 	    	android:layout_width="wrap_content"
 	    	android:layout_height="wrap_content"
 	        android:layout_below="@+id/picture"
-	        android:layout_toRightOf="@+id/like" />
+	        android:layout_toRightOf="@+id/like"
+	        android:text="12"
+	        style="@style/StatsText" />
+
+	 	<!-- SPOTS -->
+	 	<ImageView
+	        android:id="@+id/spots"
+	        android:src="@drawable/ic_menu_myplaces"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/picture"
+	        android:layout_toRightOf="@+id/like_txt" />
+	    
+	 	<TextView
+	    	android:id="@+id/spots_txt"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	        android:layout_below="@+id/picture"
+	        android:text="12"
+	        style="@style/StatsText"
+	        android:layout_toRightOf="@+id/spots" />	 	
+	        
+	 	<!-- COMMENTS TOTAL -->
+	 	<ImageView
+	        android:id="@+id/comment_total"
+	        android:src="@drawable/ic_menu_start_conversation"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/picture"
+	        android:layout_toRightOf="@+id/spots_txt"  />
+	    
+	 	<TextView
+	    	android:id="@+id/comment_txt"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	        android:layout_below="@+id/picture"
+	        android:text="12"
+	        style="@style/StatsText"
+	        android:layout_toRightOf="@+id/comment_total" />	 
+	    	 	
 	 	
 	 	<!-- COMMENTS -->
 	 	

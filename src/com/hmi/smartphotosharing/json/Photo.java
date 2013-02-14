@@ -10,8 +10,10 @@ public class Photo {
 	public String iid;
 	public String gid;
 	
-	public String longtitude;
+	public String longitude;
 	public String latitude;
+	
+	public String description;
 	
 	public String time;
 	public String active;

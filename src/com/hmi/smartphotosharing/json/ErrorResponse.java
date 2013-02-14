@@ -10,7 +10,7 @@ public class ErrorResponse {
 	
 	public ErrorResponse() {
 		status = Util.STATUS_ERROR;
-		msg = "Something went wrong with the server. Please try again later.";
+		msg = "Could not connect to the server.";
 		obj = null;
 	}
 }

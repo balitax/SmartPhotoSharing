@@ -13,6 +13,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -28,7 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hmi.smartphotosharing.json.Comment;
-import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
@@ -38,6 +38,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class MyPagerAdapter extends PagerAdapter {
 
+	
 	private static final int CODE_COMMENT_ADD = 2;
 	private static final int CODE_LIKE = 3;
 	private static final int CODE_COMMENT_REMOVE = 5;
@@ -64,6 +65,8 @@ public class MyPagerAdapter extends PagerAdapter {
 
         Photo p = data.get(position);
         
+        String url = Util.IMG_DB + p.name;
+        
         LayoutInflater inflater = (LayoutInflater) collection.getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -72,10 +75,13 @@ public class MyPagerAdapter extends PagerAdapter {
         Button button = (Button)view.findViewById(R.id.add_comment);
         EditText commentInput = (EditText)view.findViewById(R.id.edit_message);
         button.setOnClickListener(new CommentClickListener(position,p.getId(),commentInput));
-		TextView date = (TextView)view.findViewById(R.id.photo_detail_date);
+		
+        TextView date = (TextView)view.findViewById(R.id.photo_detail_date);
 		TextView group = (TextView)view.findViewById(R.id.photo_detail_group);
 		TextView by = (TextView)view.findViewById(R.id.photo_detail_name);
 		ImageView image = (ImageView) view.findViewById(R.id.picture);
+		image.setOnClickListener(new PictureClickListener(context, url));
+		
 		ImageView userIcon = (ImageView) view.findViewById(R.id.photo_detail_icon);
 		ImageView myLike = (ImageView) view.findViewById(R.id.like);
 		TextView likes = (TextView) view.findViewById(R.id.like_txt);
@@ -104,7 +110,8 @@ public class MyPagerAdapter extends PagerAdapter {
         
         // 'Likes'
         int numLikes = p.getLikes();
-    	myLike.setImageResource(R.drawable.like);
+    	likes.setText(p.likes);
+        /*myLike.setImageResource(R.drawable.like);
     	
         if (p.me){ 
         	if (numLikes > 1) 
@@ -113,10 +120,12 @@ public class MyPagerAdapter extends PagerAdapter {
 	        	likes.setText(context.getResources().getString(R.string.like_txt_you));
         } else {
         	likes.setText(String.format(context.getResources().getString(R.string.like_txt), p.likes));
-        }
+        }*/
         
+        // Load the actual picture in the imageView
         imageLoader.displayImage(Util.IMG_DB + p.name, image);
 		      
+        // Load all the comments
         setComments(p.comments);
         
 		((ViewPager) collection).addView(view, 0);
@@ -277,6 +286,24 @@ public class MyPagerAdapter extends PagerAdapter {
         }       
     }
     
+    private class PictureClickListener implements OnClickListener {
+    	
+    	private String url;
+    	private Context c;
+    	
+    	private PictureClickListener(Context c, String url) {
+    		this.url = url;
+    		this.c = c;
+    	}
+
+		@Override
+		public void onClick(View arg0) {
+			Intent intent = new Intent(c, FullscreenImageActivity.class);
+			intent.putExtra(Util.URL_MESSAGE, url);
+			c.startActivity(intent);
+		}
+    	
+    }
     private void confirmDeleteCommentDialog(final Context c, final long cid) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage("Are you sure you want to delete this comment?")

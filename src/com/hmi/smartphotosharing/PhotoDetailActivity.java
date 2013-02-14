@@ -27,7 +27,7 @@ import com.hmi.smartphotosharing.json.PhotoResponse;
 import com.hmi.smartphotosharing.util.Util;
 
 public class PhotoDetailActivity extends NavBarActivity implements OnDownloadListener {
-
+	
 	private static final int CODE_COMMENT_ADD = 2;
 	private static final int CODE_LIKE = 3;
 	private static final int CODE_PHOTOS = 4;

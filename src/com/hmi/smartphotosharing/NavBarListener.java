@@ -34,6 +34,9 @@ public class NavBarListener implements OnClickListener {
 		case Util.ACTION_SETTINGS:
 			action_settings();
 			break;
+		case Util.ACTION_MAP:
+			action_map();
+			break;
 		default:
 		}			
 		
@@ -61,5 +64,9 @@ public class NavBarListener implements OnClickListener {
         Intent intent = new Intent(c, GroupsActivity.class);
         c.startActivity(intent);		
 	}
-	
+
+	private void action_map() {
+        Intent intent = new Intent(c, MapActivity.class);
+        c.startActivity(intent);		
+	}
 };

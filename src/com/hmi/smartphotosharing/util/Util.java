@@ -26,18 +26,19 @@ public class Util {
 	private static String APP_NAME = "Picalilly";
 	
 	// JSON response statuses
-	public static final int STATUS_OK = 200;
-	public static final int STATUS_LOGIN = 304;
-	public static final int STATUS_DENIED = 403;
-	public static final int STATUS_404 = 404;
-	public static final int STATUS_ERROR = 500;
+	public static final int STATUS_OK 			= 200;
+	public static final int STATUS_LOGIN 		= 304;
+	public static final int STATUS_DENIED 		= 403;
+	public static final int STATUS_404 			= 404;
+	public static final int STATUS_ERROR 		= 500;
 	
 	// Nav bar actions
-    public static final int ACTION_ARCHIVE = 1;
-    public static final int ACTION_CAMERA = 2;
-    public static final int ACTION_SETTINGS = 3;
-    public static final int ACTION_FAVOURITE = 4;
-
+    public static final int ACTION_ARCHIVE 		= 1;
+    public static final int ACTION_CAMERA 		= 2;
+    public static final int ACTION_SETTINGS 	= 3;
+    public static final int ACTION_FAVOURITE 	= 4;
+    public static final int ACTION_MAP 			= 5;
+    
     public static final String API_KEY = "AIzaSyCKN-AGNHA7ZYTPQ_-IXZUHFGT8UlXlZig";
     public static final String API_KEY_MAPS ="0LgN0zWElNFx2cMBe0vH1UtWShWq1VlUPUeUb9w";
     
@@ -53,7 +54,9 @@ public class Util {
     public static final int MEDIA_TYPE_VIDEO = 2;
     
     public static final String DUMMY_PHOTO = "http://sps.juursema.com/thumb.php?src=logodb/default.jpg&w=100&h=100";
-    
+
+	public static String URL_MESSAGE = "com.hmi.smartphotosharing.URL_MESSAGE";
+	
     public static String getUrl(Context c, int resource) {
     	return API + c.getResources().getString(resource);
     }

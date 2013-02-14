@@ -33,7 +33,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.util.Util;
 
-public class SelectLocationActivity extends FragmentActivity implements OnMapLongClickListener, OnCameraChangeListener {
+public class SelectLocationActivity extends FragmentActivity implements OnMapLongClickListener {
 
     private Location gps1, gps2;
     
@@ -56,7 +56,6 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapLon
         gps1 = new Location(LocationManager.GPS_PROVIDER);
         gps2 = new Location(LocationManager.GPS_PROVIDER);
         
-        map.setOnCameraChangeListener(this);
     }
     
     private void setUpMapIfNeeded() {
@@ -109,16 +108,22 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapLon
 	}
 
     public void onSendClick(View view) {
-    	Intent data = new Intent();
-    	    	
-    	data.putExtra("lat1", gps1.getLatitude());
-    	data.putExtra("lon1", gps1.getLongitude());
-
-    	data.putExtra("lat2", gps2.getLatitude());
-    	data.putExtra("lon2", gps2.getLongitude());
     	
-    	this.setResult(RESULT_OK, data);
-    	this.finish();
+
+		if (gps1.getLatitude() == 0 && gps1.getLongitude() == 0 && gps2.getLatitude() == 0 && gps2.getLongitude() == 0) {
+			Util.createSimpleDialog(this, getResources().getString(R.string.dialog_location_select));
+		} else {
+			Intent data = new Intent();
+			
+	    	data.putExtra("lat1", gps1.getLatitude());
+	    	data.putExtra("lon1", gps1.getLongitude());
+	
+	    	data.putExtra("lat2", gps2.getLatitude());
+	    	data.putExtra("lon2", gps2.getLongitude());
+	    	
+	    	this.setResult(RESULT_OK, data);
+	    	this.finish();
+		}
     }
     
     public void onSearchClick(View view) {
@@ -133,12 +138,6 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapLon
             new GeocoderTask().execute(location);
         }
     }
-
-	@Override
-	public void onCameraChange(CameraPosition pos) {
-		Log.d("SmarthPhotoSharing", "z: " + pos.zoom + " /p: " + pos.target.latitude + "," + pos.target.longitude);
-		
-	}   
 	
 	@Override
 	public void onMapLongClick(LatLng point) {		

@@ -43,6 +43,13 @@
 		    android:src="@drawable/ic_menu_camera" />
 	    
 	    <ImageView 
+		    android:id="@+id/map"
+		    android:contentDescription="@string/icon_unknown"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:src="@drawable/ic_menu_mapmode" />
+	    
+	    <ImageView 
 		    android:id="@+id/settings"
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"

@@ -29,6 +29,7 @@
     <string name="dialog_location">If a group is locked to a location, you can only upload photos from within the selected location.</string>
     <string name="dialog_private">Private groups are not visible to everyone. The only way for people to join a private group is when you invite them.</string>
     <string name="dialog_location_error">You can only lock this group to a location if you have selected a location on the map.</string>
+    <string name="dialog_location_select">No location was selected. Press and hold to select a location.</string>
     <string name="dialog_friends">Here you can select multiple friends who will be invited to this group. You can also invite friends later, after the group is created.</string>   
     
     <!--  Google Cloud Messaging -->
@@ -91,6 +92,10 @@
     <string name="group_detail_name">Loading group data..</string>
     <string name="group_detail_members">%1$d members</string>
     <string name="group_detail_photos">%1$d photos</string>
+    
+    <!--  Map View -->
+    
+    <string name="map_http">cmd=locateradius</string>
     
     <!-- Subscriptions -->
     

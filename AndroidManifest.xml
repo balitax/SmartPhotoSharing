@@ -69,6 +69,12 @@
         <activity android:label="Photo Details" 
             android:name=".SinglePhotoDetail" />		
         
+        <activity android:label="Fullscreen Image" 
+            android:name=".FullscreenImageActivity" />	
+            
+        <activity android:label="Map Activity" 
+            android:name=".MapActivity" />	
+            
         <activity android:label="Photo Details" 
             android:configChanges="orientation" 
             android:name=".PhotoDetailActivity" />

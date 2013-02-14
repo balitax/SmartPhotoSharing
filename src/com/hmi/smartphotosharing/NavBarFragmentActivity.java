@@ -1,7 +1,7 @@
 package com.hmi.smartphotosharing;
 
-import android.app.ListActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
@@ -16,10 +16,10 @@ import com.hmi.smartphotosharing.util.Util;
  * @author Edwin
  *
  */
-public class NavBarListActivity extends ListActivity {
+public class NavBarFragmentActivity extends FragmentActivity {
 
 	// ImageViews that function as buttons
-	private ImageView camera,home,favourite,settings, map;
+	private ImageView camera,home,favourite,map,settings;
 	 
 	// Nav bar listeners
 	private OnClickListener cameraListener = new NavBarListener(this, Util.ACTION_CAMERA);
@@ -41,7 +41,6 @@ public class NavBarListActivity extends ListActivity {
        favourite.setOnClickListener(favouriteListener);
        settings = (ImageView) findViewById(R.id.settings);
        settings.setOnClickListener(settingsListener);
-
        map = (ImageView) findViewById(R.id.map);
        map.setOnClickListener(mapListener);
 	}

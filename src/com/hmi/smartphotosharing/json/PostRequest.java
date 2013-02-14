@@ -84,10 +84,9 @@ public class PostRequest extends AsyncTask<PostData,Void,String> {
 		
 		HttpClient httpclient = new DefaultHttpClient();
 
-		HttpPost httppost = new HttpPost(pr.url);
-		    		
-		MultipartEntity mpEntity = new MultipartEntity();
+		HttpPost httppost = new HttpPost(pr.url); 
 		
+		MultipartEntity mpEntity = new MultipartEntity();
 		// For each <String,ContentBody> pair in the map, add it as an entity to the post entity
 	    Iterator<Map.Entry<String,ContentBody>> it = pr.map.entrySet().iterator();
 	    while (it.hasNext()) {

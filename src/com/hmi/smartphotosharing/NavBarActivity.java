@@ -19,13 +19,14 @@ import android.widget.ImageView;
 public class NavBarActivity extends Activity {
 
 	// ImageViews that function as buttons
-	private ImageView camera,home,favourite,settings;
+	private ImageView camera,home,favourite,map,settings;
 	 
 	// Nav bar listeners
 	private OnClickListener cameraListener = new NavBarListener(this, Util.ACTION_CAMERA);
 	private OnClickListener homeListener = new NavBarListener(this, Util.ACTION_ARCHIVE);
 	private OnClickListener favouriteListener = new NavBarListener(this, Util.ACTION_FAVOURITE);
 	private OnClickListener settingsListener = new NavBarListener(this, Util.ACTION_SETTINGS);
+	private OnClickListener mapListener = new NavBarListener(this, Util.ACTION_MAP);
    
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ public class NavBarActivity extends Activity {
        favourite.setOnClickListener(favouriteListener);
        settings = (ImageView) findViewById(R.id.settings);
        settings.setOnClickListener(settingsListener);
-              
+       map = (ImageView) findViewById(R.id.map);
+       map.setOnClickListener(mapListener);
 	}
 }
