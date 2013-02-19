@@ -27,11 +27,12 @@ public class NavBarFragmentActivity extends FragmentActivity {
 	private OnClickListener favouriteListener = new NavBarListener(this, Util.ACTION_FAVOURITE);
 	private OnClickListener settingsListener = new NavBarListener(this, Util.ACTION_SETTINGS);
 	private OnClickListener mapListener = new NavBarListener(this, Util.ACTION_MAP);
-   
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
+
+
+	public void onCreate(Bundle savedInstanceState, int res) {
        super.onCreate(savedInstanceState);       
-       
+
+       setContentView(res);   
        // Set the nav bar listeners
        camera = (ImageView) findViewById(R.id.camera);
        camera.setOnClickListener(cameraListener);

@@ -24,6 +24,7 @@ public class FullscreenImageActivity extends Activity {
         ws.setBuiltInZoomControls(true);
         ws.setUseWideViewPort(true);
         
+        // Maybe replace by cached image
         w.loadUrl(url);
     }
 

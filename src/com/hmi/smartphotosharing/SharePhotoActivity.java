@@ -47,7 +47,6 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	private EditText comment;
 	private ImageView imageView;
 	//private String imgPath;
-	private LocationManager locationManager;
 
 	private static final int CODE_SELECT_GROUP = 2;
 	private static final int TAKE_PICTURE = 5;
@@ -184,9 +183,9 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 			criteria.setCostAllowed(false);
 			criteria.setPowerRequirement(Criteria.POWER_LOW);
 			
-			locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-			String provider = locationManager.getBestProvider(criteria, true);
-			Location location = locationManager.getLastKnownLocation(provider);
+			mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+			String provider = mLocationManager.getBestProvider(criteria, true);
+			Location location = mLocationManager.getLastKnownLocation(provider);
 			
 			// Get user session ID
     		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);

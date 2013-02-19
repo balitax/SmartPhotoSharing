@@ -26,14 +26,29 @@
 	        android:onClick="onClickMapMode" />     
 	</RelativeLayout>  
 	  
-    <fragment 
-	  android:id="@+id/googlemap"
+    <GridView 
+	  android:id="@+id/gridview"
 	  android:layout_width="fill_parent"
 	  android:layout_height="fill_parent"
 	  android:layout_below="@+id/header"
       android:layout_marginBottom="@dimen/navbar_margin"
-	  class="com.google.android.gms.maps.SupportMapFragment"/>
-    
+      
+	  android:verticalSpacing="2dp"
+	  android:horizontalSpacing="2dp"
+	  android:numColumns="auto_fit"
+	  android:columnWidth="@dimen/icon_large"
+	  android:stretchMode="columnWidth"
+	  android:gravity="center" />
+   
+    <TextView
+        android:id="@+id/empty_list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/local_empty_text"
+	    android:layout_below="@+id/header"
+        android:gravity="center"
+        android:visibility="gone" />
+     
    <include
       android:id="@+id/navbar"
       android:layout_width="fill_parent"

@@ -127,7 +127,7 @@
 	    android:gravity="center"
         android:layout_below="@+id/group_info"
         android:layout_marginBottom="@dimen/navbar_margin" />
-   
+       
     <include
         android:id="@+id/navbar"
         android:layout_width="fill_parent"

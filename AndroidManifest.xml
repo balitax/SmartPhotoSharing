@@ -72,9 +72,12 @@
         <activity android:label="Fullscreen Image" 
             android:name=".FullscreenImageActivity" />	
             
-        <activity android:label="Map Activity" 
+        <activity android:label="Map View" 
             android:name=".MapActivity" />	
-            
+        
+        <activity android:label="Local Photos" 
+            android:name=".LocalPhotoActivity" />
+        	    
         <activity android:label="Photo Details" 
             android:configChanges="orientation" 
             android:name=".PhotoDetailActivity" />

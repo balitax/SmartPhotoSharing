@@ -1,22 +1,19 @@
 package com.hmi.smartphotosharing;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.ViewGroup.LayoutParams;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -27,32 +24,37 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
-import com.hmi.smartphotosharing.json.FetchJSON;
+import com.hmi.smartphotosharing.groups.SelectFriendsActivity;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PhotoListResponse;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
+import com.hmi.smartphotosharing.maps.MyInfoWindowAdapter;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-public class MapActivity extends FragmentActivity implements OnCameraChangeListener, OnDownloadListener {
+public class MapActivity extends NavBarFragmentActivity implements OnCameraChangeListener, OnDownloadListener {
 
-    private GoogleMap map;
+    private GoogleMap googleMap;
     private long lastChange;
     private LatLng lastPos;
     
     private static long MAP_TIME_THRESHOLD = 5000;
     private static int MAP_ZOOM_THRESHOLD = 15;
     private static int MAP_DISTANCE_THRESHOLD = 500;
-    
+
+	private ImageLoader imageLoader;
     @Override
     public void onCreate(Bundle savedInstanceState) {  
-        super.onCreate(savedInstanceState);   
-        setContentView(R.layout.map);   
-                
-        // Make the Dialog style appear fullscreen
-        getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        super.onCreate(savedInstanceState,R.layout.map);
+        
 
+        // ImageLoader
+        imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+        
         setUpMapIfNeeded();
     }
     
@@ -60,15 +62,18 @@ public class MapActivity extends FragmentActivity implements OnCameraChangeListe
     private void setUpMapIfNeeded() {
         
     	// Do a null check to confirm that we have not already instantiated the map.
-        if (map == null) {
-            map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+        if (googleMap == null) {
+            googleMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.googlemap))
                                 .getMap();
             
             // Check if we were successful in obtaining the map.
-            if (map != null) {
-            	map.setMyLocationEnabled(true);
+            if (googleMap != null) {
+            	googleMap.setMyLocationEnabled(true);
                 // One time fix to set the camera when the map is done loading
-                map.setOnCameraChangeListener(this);
+                googleMap.setOnCameraChangeListener(this);
+                
+                // Set the infowindow adapter
+                googleMap.setInfoWindowAdapter(new MyInfoWindowAdapter(imageLoader, getLayoutInflater()));
                 
             }
         }
@@ -121,15 +126,20 @@ public class MapActivity extends FragmentActivity implements OnCameraChangeListe
         		
         		loadData();
         	}
-        	
-        }
-		
-		
+        }		
 	}
-
+	public void onClickListMode(View view) {
+    	Intent intent = new Intent(this,LocalPhotoActivity.class);
+    	startActivity(intent);
+	}
+	
+	public void onClickMapMode(View view) {
+		// do nothing
+	}	
+	
 	private void loadData() {
 		
-		LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
+		LatLngBounds bounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
 		
 		// Find the other two corners
 		LatLng nw = new LatLng(bounds.northeast.latitude,bounds.southwest.longitude);
@@ -146,7 +156,7 @@ public class MapActivity extends FragmentActivity implements OnCameraChangeListe
         HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
         try {
         	
-			map.put("sid", new StringBody(hash));
+			map.put("sid",new StringBody(hash));
 			
 			map.put("lat1", new StringBody(Double.toString(nw.latitude)));
 			map.put("lon1", new StringBody(Double.toString(nw.longitude)));
@@ -182,9 +192,9 @@ public class MapActivity extends FragmentActivity implements OnCameraChangeListe
 					
 					MarkerOptions markerOptions = new MarkerOptions()
 	                	.position(new LatLng(lat,lon))
-	                	.title(p.uid);
+	                	.title(p.thumb);
 
-	                map.addMarker(markerOptions);
+	                googleMap.addMarker(markerOptions);
 				}
 			}
 			

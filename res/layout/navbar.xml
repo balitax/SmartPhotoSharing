@@ -47,7 +47,7 @@
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_menu_mapmode" />
+		    android:src="@drawable/ic_menu_mylocation" />
 	    
 	    <ImageView 
 		    android:id="@+id/settings"
