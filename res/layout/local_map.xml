@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	
+	<include
+      android:id="@+id/header"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      layout="@layout/local_header" /> 
+	  
+    <fragment 
+	  android:id="@+id/googlemap"
+	  android:layout_width="fill_parent"
+	  android:layout_height="fill_parent"
+	  android:layout_below="@+id/header"
+      android:layout_marginBottom="@dimen/navbar_margin"
+	  class="com.google.android.gms.maps.SupportMapFragment"/>
+    
+   <include
+      android:id="@+id/navbar"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      layout="@layout/navbar" /> 
+      
+</RelativeLayout>

@@ -304,6 +304,7 @@ public class MyPagerAdapter extends PagerAdapter {
 		}
     	
     }
+    
     private void confirmDeleteCommentDialog(final Context c, final long cid) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage("Are you sure you want to delete this comment?")

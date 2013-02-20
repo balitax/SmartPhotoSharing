@@ -19,41 +19,56 @@
         android:id="@+id/tableRow"  
         android:layout_height="wrap_content"  
         android:layout_width="match_parent"  
-        android:gravity="center_horizontal">  
+        android:gravity="center_horizontal"
+        android:background="#36401C">  
         
 	    <ImageView 
 		    android:id="@+id/home"
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_menu_home" />
+		    android:src="@drawable/ic_menu_home"
+		    android:layout_marginRight="1dip"
+		    android:layout_marginTop="1dip"
+		    style="@style/NavButton" />
 	    
 	    <ImageView 
 		    android:id="@+id/favourite"
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_menu_star" />
+		    android:src="@drawable/ic_menu_star"
+		    android:layout_marginRight="1dip"
+		    android:layout_marginTop="1dip"
+		    style="@style/NavButton" />
 	    
 	    <ImageView 
 		    android:id="@+id/camera"
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_menu_camera" />
+		    android:src="@drawable/ic_menu_camera"
+		    android:layout_marginRight="1dip"
+		    android:layout_marginTop="1dip"
+		    style="@style/NavButton" />
 	    
 	    <ImageView 
-		    android:id="@+id/map"
+		    android:id="@+id/local"
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_menu_mylocation" />
+		    android:src="@drawable/ic_menu_compass"
+		    android:layout_marginRight="1dip"
+		    android:layout_marginTop="1dip"
+		    style="@style/NavButton" />
 	    
 	    <ImageView 
 		    android:id="@+id/settings"
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_menu_preferences" />
+		    android:src="@drawable/ic_menu_preferences"
+		    android:layout_marginTop="1dip"
+		    style="@style/NavButton" />
 	</TableRow>
 </TableLayout>

@@ -1,4 +1,4 @@
-package com.hmi.smartphotosharing;
+package com.hmi.smartphotosharing.local;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -17,11 +17,20 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.hmi.smartphotosharing.Login;
+import com.hmi.smartphotosharing.MyImageAdapter;
+import com.hmi.smartphotosharing.NavBarActivity;
+import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.SinglePhotoDetail;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PhotoListResponse;
@@ -45,7 +54,7 @@ public class LocalPhotoActivity extends NavBarActivity implements OnDownloadList
 	private ImageLoader imageLoader;
     @Override
     public void onCreate(Bundle savedInstanceState) {  
-        setContentView(R.layout.localphotos);   
+        setContentView(R.layout.local_gridview);   
         super.onCreate(savedInstanceState);
         
         gridView = (GridView) findViewById(R.id.gridview);
@@ -56,7 +65,10 @@ public class LocalPhotoActivity extends NavBarActivity implements OnDownloadList
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         
-
+        // Show selection in nav bar
+        ImageView settings = (ImageView) findViewById(R.id.local);
+        Util.setSelectedBackground(getApplicationContext(), settings);
+        
 		// GPS
         mLocationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -96,6 +108,21 @@ public class LocalPhotoActivity extends NavBarActivity implements OnDownloadList
     	startActivity(intent);
 	}
 
+    private class MyOnItemClickListener implements OnItemClickListener {
+		private Context c;
+		
+		public MyOnItemClickListener(Context c) {
+			this.c = c;
+		}
+		// Handle clicks
+		@Override
+	    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+	    	Intent intent = new Intent(c, SinglePhotoDetail.class);
+	    	intent.putExtra("id", id);
+	    	startActivity(intent);
+	    }
+    }
+    
 	private void loadData() {
 		
 		/*LatLngBounds bounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
@@ -173,7 +200,8 @@ public class LocalPhotoActivity extends NavBarActivity implements OnDownloadList
 					this, 
 					photo_list
 		));
-        
+
+        gridView.setOnItemClickListener(new MyOnItemClickListener(this)); 
 		
 	}
     private void setupGps() { 

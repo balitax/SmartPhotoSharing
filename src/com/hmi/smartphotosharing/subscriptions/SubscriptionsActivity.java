@@ -51,7 +51,7 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 
         // Show selection in nav bar
         ImageView fav = (ImageView) findViewById(R.id.favourite);
-        fav.setImageResource(R.drawable.ic_menu_star_selected);
+        Util.setSelectedBackground(getApplicationContext(), fav);
     }
     
 	public void onClickCreateSubscription(View v) {	

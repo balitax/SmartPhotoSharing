@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.hmi.smartphotosharing.R;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +22,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
 import android.util.Log;
+import android.view.View;
 
 public class Util {
 
@@ -114,7 +117,13 @@ public class Util {
 	    }
 	    return provider1.equals(provider2);
 	}
-	
+
+	/**
+	 * This method shows a pop-up to the user where he is asked
+	 * to enable his GPS receiver. If the user confirms, he is
+	 * directed to the GPS settings screen.
+	 * @param c The application context
+	 */
 	public static void createGpsDisabledAlert(final Context c){
 		AlertDialog.Builder builder = new AlertDialog.Builder(c);
 		builder.setMessage("Your GPS is disabled! Would you like to enable it?")
@@ -135,6 +144,11 @@ public class Util {
 		alert.show();
 	}  
 	
+	/**
+	 * Creates a simple dialog with an OK button for the given string message.
+	 * @param c The application context
+	 * @param s The message that should be displayed
+	 */
 	public static void createSimpleDialog(Context c, String s) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(c);
 		builder.setMessage(s)
@@ -145,10 +159,22 @@ public class Util {
 		
 	}
     
+	/**
+	 * Method to redirect the user to the GPS settings screen.
+	 * @param c The application context
+	 */
 	private static void showGpsOptions(Context c){
 		Intent gpsOptionsIntent = new Intent(
 				android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 		c.startActivity(gpsOptionsIntent);
+	}
+	
+	/**
+	 * Sets the background of a view to a light green color.
+	 * @param c The application context
+	 */
+	public static void setSelectedBackground(Context c, View v) {
+		v.setBackgroundColor(c.getResources().getColor(R.color.button_hilight));
 	}
 	
 	/** Create a file Uri for saving an image or video */

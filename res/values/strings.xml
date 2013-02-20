@@ -93,9 +93,10 @@
     <string name="group_detail_members">%1$d members</string>
     <string name="group_detail_photos">%1$d photos</string>
     
-    <!--  Map View -->
+    <!--  Local pictures -->
     
     <string name="local_empty_text">No local pictures are available at the moment.</string>
+    <string name="local_title">Explore</string>
     <string name="map_http">cmd=locateradius</string>
     
     <!-- Subscriptions -->
@@ -129,6 +130,7 @@
     
     <!--  Profile -->
     
+    <string name="profile_header_title">Settings</string>
     <string name="profile_http_picture">cmd=uploadProfilePic</string>
     <string name="profile_camera">Change my picture</string>
     <string name="profile_prefs">Application settings</string>

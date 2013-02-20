@@ -19,7 +19,7 @@ import com.hmi.smartphotosharing.util.Util;
 public class NavBarFragmentActivity extends FragmentActivity {
 
 	// ImageViews that function as buttons
-	private ImageView camera,home,favourite,map,settings;
+	private ImageView camera,home,favourite,local,settings;
 	 
 	// Nav bar listeners
 	private OnClickListener cameraListener = new NavBarListener(this, Util.ACTION_CAMERA);
@@ -42,7 +42,7 @@ public class NavBarFragmentActivity extends FragmentActivity {
        favourite.setOnClickListener(favouriteListener);
        settings = (ImageView) findViewById(R.id.settings);
        settings.setOnClickListener(settingsListener);
-       map = (ImageView) findViewById(R.id.map);
-       map.setOnClickListener(mapListener);
+       local = (ImageView) findViewById(R.id.local);
+       local.setOnClickListener(mapListener);
 	}
 }

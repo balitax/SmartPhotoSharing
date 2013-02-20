@@ -2,4 +2,5 @@
 <resources>
     <color name="header_bg">#5E6F31</color>
     <color name="header_text">#CAEE69</color>   
+    <color name="button_hilight">#87A044</color>
 </resources>

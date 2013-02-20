@@ -130,6 +130,24 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
         new PostRequest(this, CODE_COMMENT_ADD).execute(pr);
 	}
 	
+    private class PictureClickListener implements OnClickListener {
+    	
+    	private String url;
+    	private Context c;
+    	
+    	private PictureClickListener(Context c, String url) {
+    		this.url = url;
+    		this.c = c;
+    	}
+
+		@Override
+		public void onClick(View arg0) {
+			Intent intent = new Intent(c, FullscreenImageActivity.class);
+			intent.putExtra(Util.URL_MESSAGE, url);
+			startActivity(intent);
+		}
+    	
+    }
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
     	MenuInflater inflater = getMenuInflater();
@@ -262,6 +280,7 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 			String uri = p.getUrl();
 
 	        ImageView photo = (ImageView) findViewById(R.id.picture);
+			photo.setOnClickListener(new PictureClickListener(getApplicationContext(), uri));
 	        
 	        imageLoader.displayImage(uri, photo);
 
@@ -290,6 +309,8 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 
 	        myLike.setOnClickListener(new LikeClickListener(this,p.getId(), p.me));
 	        
+	        likes.setText(p.likes);
+	        /*
 	        int numLikes = p.getLikes();
 	    	myLike.setImageResource(R.drawable.like);
 	    	
@@ -300,7 +321,7 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 		        	likes.setText(getResources().getString(R.string.like_txt_you));
 	        } else {
 	        	likes.setText(String.format(getResources().getString(R.string.like_txt), p.likes));
-	        }
+	        }*/
 	        
 	        // Update the group text
 	        TextView group = (TextView)findViewById(R.id.photo_detail_group);

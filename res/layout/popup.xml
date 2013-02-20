@@ -6,9 +6,9 @@
 	
 	<ImageView 
 	    android:id="@+id/image1" 
-	    android:layout_width="32dp"
-	    android:layout_height="32dp" 
+	    android:layout_width="100dp"
+	    android:layout_height="100dp" 
 	   	android:scaleType="centerInside"
 	   	android:adjustViewBounds="true"
-	   	android:src="@drawable/ic_launcher" />
+	   	android:src="@drawable/ic_loading" />
 </LinearLayout>

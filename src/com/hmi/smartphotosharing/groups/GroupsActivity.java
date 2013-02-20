@@ -70,7 +70,7 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
         
         // Show selection in nav bar
         ImageView home = (ImageView) findViewById(R.id.home);
-        home.setImageResource(R.drawable.ic_menu_home_selected);
+        Util.setSelectedBackground(getApplicationContext(), home);
         
         // Load data
         loadData(true, true);

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.hmi.smartphotosharing.groups.GroupsActivity;
+import com.hmi.smartphotosharing.local.MapActivity;
 import com.hmi.smartphotosharing.subscriptions.SubscriptionsActivity;
 import com.hmi.smartphotosharing.util.Util;
 

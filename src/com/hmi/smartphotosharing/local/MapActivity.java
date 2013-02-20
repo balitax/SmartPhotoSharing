@@ -1,4 +1,4 @@
-package com.hmi.smartphotosharing;
+package com.hmi.smartphotosharing.local;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -10,34 +10,49 @@ import org.apache.http.entity.mime.content.StringBody;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
-import com.hmi.smartphotosharing.groups.SelectFriendsActivity;
+import com.hmi.smartphotosharing.Login;
+import com.hmi.smartphotosharing.NavBarFragmentActivity;
+import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.SinglePhotoDetail;
+import com.hmi.smartphotosharing.R.id;
+import com.hmi.smartphotosharing.R.layout;
+import com.hmi.smartphotosharing.R.string;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PhotoListResponse;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
-import com.hmi.smartphotosharing.maps.MyInfoWindowAdapter;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-public class MapActivity extends NavBarFragmentActivity implements OnCameraChangeListener, OnDownloadListener {
+public class MapActivity extends NavBarFragmentActivity implements LocationListener, LocationSource, OnCameraChangeListener, OnDownloadListener {
 
     private GoogleMap googleMap;
+    private Marker lastClicked, lastInfoWindowClicked;
+    
     private long lastChange;
     private LatLng lastPos;
     
@@ -45,12 +60,24 @@ public class MapActivity extends NavBarFragmentActivity implements OnCameraChang
     private static int MAP_ZOOM_THRESHOLD = 15;
     private static int MAP_DISTANCE_THRESHOLD = 500;
 
+	private OnLocationChangedListener mListener;
+	private LocationManager mLocationManager;
+
 	private ImageLoader imageLoader;
+	
+	// The first time the camera centers on the user's location it should zoom to street level
+	// Afterwards, it should only center on the position without zooming
+	private boolean firstZoomCamera;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {  
-        super.onCreate(savedInstanceState,R.layout.map);
+        super.onCreate(savedInstanceState,R.layout.local_map);
         
 
+        // Show selection in nav bar
+        ImageView settings = (ImageView) findViewById(R.id.local);
+        Util.setSelectedBackground(getApplicationContext(), settings);
+        
         // ImageLoader
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
@@ -68,13 +95,20 @@ public class MapActivity extends NavBarFragmentActivity implements OnCameraChang
             
             // Check if we were successful in obtaining the map.
             if (googleMap != null) {
+            	
+            	firstZoomCamera = true;
+            	
             	googleMap.setMyLocationEnabled(true);
                 // One time fix to set the camera when the map is done loading
                 googleMap.setOnCameraChangeListener(this);
                 
                 // Set the infowindow adapter
                 googleMap.setInfoWindowAdapter(new MyInfoWindowAdapter(imageLoader, getLayoutInflater()));
+                googleMap.setOnInfoWindowClickListener(new MyInfoWindowClickListener(this));
+                googleMap.setOnMarkerClickListener(new MyMarkerClickListener());
                 
+                // Set the source of location updates to this activity
+                googleMap.setLocationSource(this);
             }
         }
     }
@@ -87,14 +121,32 @@ public class MapActivity extends NavBarFragmentActivity implements OnCameraChang
         // This verification should be done during onStart() because the system calls this method
         // when the user returns to the activity, which ensures the desired location provider is
         // enabled each time the activity resumes from the stopped state.
-        LocationManager mLocationManager =
+        mLocationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        final boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        
+        if(mLocationManager != null) {
+        	boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        	boolean networkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-        if (!gpsEnabled) {
-        	Util.createGpsDisabledAlert(this);
+        	if(gpsEnabled) {
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 10F, this);
+            	mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000L, 10F, this);
+            } else {
+            	Util.createGpsDisabledAlert(this);
+            }
         }
+
+        
                 
+    }
+    
+    @Override
+    public void onPause() {
+        if(mLocationManager != null) {
+            mLocationManager.removeUpdates(this);
+        }
+
+        super.onPause();
     }
     
 	@Override
@@ -102,6 +154,9 @@ public class MapActivity extends NavBarFragmentActivity implements OnCameraChang
       super.onResume();
       
       setUpMapIfNeeded();
+      if(mLocationManager != null) {
+          googleMap.setMyLocationEnabled(true);
+      }
     }
 
 
@@ -137,6 +192,49 @@ public class MapActivity extends NavBarFragmentActivity implements OnCameraChang
 		// do nothing
 	}	
 	
+	private class MyInfoWindowClickListener implements OnInfoWindowClickListener {
+
+		private Context c;
+		
+		public MyInfoWindowClickListener(Context c) {
+			this.c = c;
+		}
+		@Override
+		public void onInfoWindowClick(Marker marker) {
+			// If the user clicks the InfoWindow for the second time, go to the photo detail page
+			if (lastInfoWindowClicked != null && lastInfoWindowClicked.equals(marker)) {
+				lastInfoWindowClicked = null;
+
+		    	Intent intent = new Intent(c,SinglePhotoDetail.class);
+		    	intent.putExtra(SinglePhotoDetail.KEY_ID, Long.parseLong(marker.getSnippet()));
+		    	startActivity(intent);
+			} 
+			
+			// First time, so refresh the InfoWindow
+			else {
+				lastInfoWindowClicked = marker;
+				marker.showInfoWindow();
+			}
+			
+		}
+	}
+	
+	private class MyMarkerClickListener implements OnMarkerClickListener {
+
+		@Override
+		public boolean onMarkerClick(Marker marker) {
+			// Close the InfoWindow if the user clicked it before
+			if (lastClicked != null && lastClicked.equals(marker)) {
+				lastClicked = null;
+				marker.hideInfoWindow();
+				return true;
+			} else {
+				lastClicked = marker;
+				return false;
+			}
+		}
+	}
+		
 	private void loadData() {
 		
 		LatLngBounds bounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
@@ -192,7 +290,8 @@ public class MapActivity extends NavBarFragmentActivity implements OnCameraChang
 					
 					MarkerOptions markerOptions = new MarkerOptions()
 	                	.position(new LatLng(lat,lon))
-	                	.title(p.thumb);
+	                	.title(p.thumb)
+	                	.snippet(p.iid);
 
 	                googleMap.addMarker(markerOptions);
 				}
@@ -203,6 +302,59 @@ public class MapActivity extends NavBarFragmentActivity implements OnCameraChang
 		}
 	}
 
- 
+	// Methods to make this activity the source of location updates for the google map
+	@Override
+	public void activate(OnLocationChangedListener listener) {
+		mListener = listener;		
+	}
+
+
+	@Override
+	public void deactivate() {
+		mListener = null;		
+	}
+
+
+	@Override
+	public void onLocationChanged(Location location) 
+	{
+	    if(mListener != null) {
+	        mListener.onLocationChanged( location );
+
+	        //Move the camera to the user's location on location update
+	        // Only zoom if it is the first update after starting the activity
+	        if (firstZoomCamera) {
+	        	
+	        	firstZoomCamera = false;
+	        	googleMap.animateCamera(CameraUpdateFactory
+	        		.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), MAP_ZOOM_THRESHOLD));
+	        } else {
+	        	googleMap.animateCamera(CameraUpdateFactory
+	        		.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
+	        }
+	    }
+	}
+
+
+	@Override
+	public void onProviderDisabled(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onProviderEnabled(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }

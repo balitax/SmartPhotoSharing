@@ -17,7 +17,7 @@ import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-public class ProfileActivity extends NavBarActivity implements OnDownloadListener {
+public class ProfileActivity extends NavBarActivity {
 
     private static final int CODE_PROFILE = 1;
     private static final int TAKE_PICTURE = 5;
@@ -32,11 +32,11 @@ public class ProfileActivity extends NavBarActivity implements OnDownloadListene
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         
-        loadData();
+        //loadData();
         
         // Show selection in nav bar
         ImageView settings = (ImageView) findViewById(R.id.settings);
-        settings.setImageResource(R.drawable.ic_menu_preferences_selected);
+        Util.setSelectedBackground(getApplicationContext(), settings);
         
     }
 	
@@ -44,17 +44,18 @@ public class ProfileActivity extends NavBarActivity implements OnDownloadListene
     public void onResume() {
       super.onResume();
       
-      loadData();
+      //loadData();
     }  
     
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         
         if (requestCode == TAKE_PICTURE && resultCode == Activity.RESULT_OK) { 
-			loadData();
+			//loadData();
 	    } 
 	}
 	
+	/*
 	private void loadData() {
 		
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
@@ -63,7 +64,7 @@ public class ProfileActivity extends NavBarActivity implements OnDownloadListene
         String profileUrl = String.format(Util.getUrl(this,R.string.profile_http),hash);		
         new FetchJSON(this,CODE_PROFILE).execute(profileUrl);
 		
-	}
+	}*/
 	
 	public void onClickPicture(View view) {
 		Intent intent = new Intent(this, ChangePictureActivity.class);
@@ -91,6 +92,7 @@ public class ProfileActivity extends NavBarActivity implements OnDownloadListene
 		startActivity(intent);
 	}
 
+	/*
 	@Override
 	public void parseJson(String json, int code) {
 
@@ -118,7 +120,7 @@ public class ProfileActivity extends NavBarActivity implements OnDownloadListene
 			//dm.fetchDrawableOnThread(userPic, pic);
 			imageLoader.displayImage(user.thumb, pic);
 		}
-	}
+	}*/
 
 
 }

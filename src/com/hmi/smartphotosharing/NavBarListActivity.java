@@ -42,7 +42,7 @@ public class NavBarListActivity extends ListActivity {
        settings = (ImageView) findViewById(R.id.settings);
        settings.setOnClickListener(settingsListener);
 
-       map = (ImageView) findViewById(R.id.map);
+       map = (ImageView) findViewById(R.id.local);
        map.setOnClickListener(mapListener);
 	}
 }

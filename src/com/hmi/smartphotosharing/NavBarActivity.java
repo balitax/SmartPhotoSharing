@@ -41,7 +41,7 @@ public class NavBarActivity extends Activity {
        favourite.setOnClickListener(favouriteListener);
        settings = (ImageView) findViewById(R.id.settings);
        settings.setOnClickListener(settingsListener);
-       map = (ImageView) findViewById(R.id.map);
+       map = (ImageView) findViewById(R.id.local);
        map.setOnClickListener(mapListener);
 	}
 }
