@@ -20,14 +20,14 @@
         android:layout_height="wrap_content"  
         android:layout_width="match_parent"  
         android:gravity="center_horizontal"
-        android:background="#36401C">  
+        android:background="@color/header_border">  
         
 	    <ImageView 
 		    android:id="@+id/home"
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_menu_home"
+		    android:src="@drawable/ic_green_menu_home"
 		    android:layout_marginRight="1dip"
 		    android:layout_marginTop="1dip"
 		    style="@style/NavButton" />
@@ -37,7 +37,7 @@
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_menu_star"
+		    android:src="@drawable/ic_green_menu_star"
 		    android:layout_marginRight="1dip"
 		    android:layout_marginTop="1dip"
 		    style="@style/NavButton" />
@@ -47,7 +47,7 @@
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_menu_camera"
+		    android:src="@drawable/ic_green_menu_camera"
 		    android:layout_marginRight="1dip"
 		    android:layout_marginTop="1dip"
 		    style="@style/NavButton" />
@@ -57,17 +57,17 @@
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_menu_compass"
+		    android:src="@drawable/ic_green_menu_mapmode"
 		    android:layout_marginRight="1dip"
 		    android:layout_marginTop="1dip"
 		    style="@style/NavButton" />
 	    
 	    <ImageView 
-		    android:id="@+id/settings"
+		    android:id="@+id/friends"
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_menu_preferences"
+		    android:src="@drawable/ic_green_menu_allfriends"
 		    android:layout_marginTop="1dip"
 		    style="@style/NavButton" />
 	</TableRow>

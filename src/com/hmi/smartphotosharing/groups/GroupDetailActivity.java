@@ -33,6 +33,7 @@ import com.hmi.smartphotosharing.MyImageAdapter;
 import com.hmi.smartphotosharing.NavBarActivity;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.friends.AddFriendsActivity;
 import com.hmi.smartphotosharing.json.BooleanResponse;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Group;
@@ -216,7 +217,8 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
     }
     
     public void onClickInvite(View view) {
-    	Intent intent = new Intent(this,SelectFriendsActivity.class);
+    	Intent intent = new Intent(this,AddFriendsActivity.class);
+    	intent.putExtra("type", AddFriendsActivity.TYPE_GROUP);
     	intent.putExtra("gid", group.getId());
     	startActivityForResult(intent, CODE_INVITE);
     }

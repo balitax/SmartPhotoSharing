@@ -31,13 +31,7 @@ public class ProfileActivity extends NavBarActivity {
         
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
-        
-        //loadData();
-        
-        // Show selection in nav bar
-        ImageView settings = (ImageView) findViewById(R.id.settings);
-        Util.setSelectedBackground(getApplicationContext(), settings);
-        
+                
     }
 	
     @Override

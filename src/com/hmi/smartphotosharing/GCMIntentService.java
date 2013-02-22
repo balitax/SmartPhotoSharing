@@ -7,10 +7,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.gson.Gson;
+import com.hmi.smartphotosharing.friends.FriendsActivity;
 import com.hmi.smartphotosharing.groups.GroupDetailActivity;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
 import com.hmi.smartphotosharing.json.FetchJSON;
@@ -26,6 +26,8 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 	private static final int ACTION_PHOTO_LIKE			= 12;
 	private static final int ACTION_GROUP_INVITE 		= 20;
 	private static final int ACTION_SUBSCRIPTION_UPDATE = 30;
+	
+	private static final int ACTION_FRIEND_ADD			= 40;
 	
 	private static final int CODE_REGISTER = 1;
 	private static final int CODE_UNREGISTER = 2;
@@ -58,6 +60,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		boolean notPhotoLike = sharedPref.getBoolean(SettingsActivity.KEY_NOT_PHOTO_LIKE, true);
 		boolean notInvite = sharedPref.getBoolean(SettingsActivity.KEY_NOT_INVITE,true);
 		boolean notSub = sharedPref.getBoolean(SettingsActivity.KEY_NOT_SUB,true);
+		boolean notFriends = sharedPref.getBoolean(SettingsActivity.KEY_NOT_FRIENDS,true);
 		
 		boolean notSound = sharedPref.getBoolean(SettingsActivity.KEY_NOT_SOUND,false);
 		boolean notVibrate = sharedPref.getBoolean(SettingsActivity.KEY_NOT_VIBRATE,true);
@@ -104,6 +107,13 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 				notificationIntent = new Intent(this, GroupDetailActivity.class);
 				notificationIntent.putExtra(GroupDetailActivity.KEY_ID, value);		
 				break;
+				
+			case ACTION_FRIEND_ADD:
+				if (!notFriends) break;
+				notificationIntent = new Intent(this, FriendsActivity.class);
+				notificationIntent.putExtra(FriendsActivity.KEY_ID, value);	
+				break;
+				
 			case ACTION_PHOTO_LIKE:
 				if(!notPhotoLike) break;
 			case ACTION_PHOTO_UPLOAD:
@@ -115,6 +125,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 				notificationIntent = new Intent(this, SinglePhotoDetail.class);	
 				notificationIntent.putExtra(SinglePhotoDetail.KEY_ID, value);	
 				break;
+				
 			case ACTION_DEFAULT:
 			default:
 				notificationIntent = new Intent(this, GroupsActivity.class);

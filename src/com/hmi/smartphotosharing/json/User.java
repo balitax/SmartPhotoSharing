@@ -1,5 +1,7 @@
 package com.hmi.smartphotosharing.json;
 
+import java.util.List;
+
 public class User {
 	
 	public String uid;
@@ -17,6 +19,8 @@ public class User {
 	public int photos;
 	public int following;
 	public int followers;
+	
+	public List<Photo> newest_photos;
 	
 	public long getId() {
 		return Long.parseLong(uid);

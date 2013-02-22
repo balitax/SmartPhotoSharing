@@ -90,7 +90,7 @@ public class Login extends Activity implements OnDownloadListener{
 		if (hasConnection(this)) {
 			String url = String.format(
 					Util.getUrl(this, R.string.login_http), 
-					username.getText().toString(), 
+					username.getText().toString().trim(), 
 					password.getText().toString()
 					);
 			Log.d("Json fetch",url);

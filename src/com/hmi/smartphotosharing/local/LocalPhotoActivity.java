@@ -16,6 +16,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -99,7 +101,20 @@ public class LocalPhotoActivity extends NavBarActivity implements OnDownloadList
       setupGps();
     }
 
+	@Override
+	public boolean onCreateOptionsMenu (Menu menu) {
+		super.onCreateOptionsMenu(menu);
+	    return true;
+	}	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {		
+        switch (item.getItemId()) {
 
+	        default:
+	        	return super.onOptionsItemSelected(item);
+        }
+    }	
 	public void onClickListMode(View view) {
 	}
 	
@@ -145,7 +160,7 @@ public class LocalPhotoActivity extends NavBarActivity implements OnDownloadList
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		
     	// Get group info
-		String detailUrl = Util.getUrl(this,R.string.map_http);
+		String detailUrl = Util.getUrl(this,R.string.local_http);
 		//Log.d("Maps url", detailUrl);
 		//new FetchJSON(this).execute(detailUrl);
 		Log.i("loadData", lat1 + "," + lon1 + " / " + lat2 + "," + lon2 );

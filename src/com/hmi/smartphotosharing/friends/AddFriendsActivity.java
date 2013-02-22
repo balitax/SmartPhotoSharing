@@ -1,4 +1,4 @@
-package com.hmi.smartphotosharing.groups;
+package com.hmi.smartphotosharing.friends;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.groups.FriendsInviteAdapter;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
@@ -28,12 +29,15 @@ import com.hmi.smartphotosharing.json.UserListResponse;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 
-@Deprecated
-public class SelectFriendsActivity extends ListActivity implements OnDownloadListener {
+public class AddFriendsActivity extends ListActivity implements OnDownloadListener {
 	private ListView listView;
 		
-	private static final int CODE_USERS = 1;
+	public static final int CODE_USERS = 1;
 	private long gid;
+	private long type;
+	
+	public static final int TYPE_GROUP = 1;
+	public static final int TYPE_FRIENDS = 2;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,8 +46,12 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
         setContentView(R.layout.invite_friends);
                 
         Intent intent = getIntent();
-        gid = intent.getLongExtra("gid", 0);
         
+        type = intent.getIntExtra("type", 0);
+        
+        if (type == TYPE_GROUP)
+        	gid = intent.getLongExtra("gid", 0);
+        	
         listView = (ListView) findViewById(android.R.id.list);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
     }
@@ -53,7 +61,8 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
         super.onStart();
         loadData();
         
-        Util.createSimpleDialog(this, getResources().getString(R.string.dialog_friends));
+        if (type == TYPE_GROUP)
+        	Util.createSimpleDialog(this, getResources().getString(R.string.dialog_friends));
 	}
 	
     @Override
@@ -96,8 +105,31 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
-        String usersUrl = Util.getUrl(this,R.string.groups_http_users);
+		if (type == TYPE_GROUP)
+			loadGroupData(hash);
+		else if (type == TYPE_FRIENDS)
+			loadFriendsData(hash);
+
+	}
+			
+	private void loadFriendsData(String hash) {
+
+        String usersUrl = Util.getUrl(this,R.string.friends_http_invite);
+        HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+        try {
+			map.put("sid", new StringBody(hash));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
         
+        PostData pr = new PostData(usersUrl,map);
+		new PostRequest(this,CODE_USERS).execute(pr);
+		
+	}
+
+	private void loadGroupData(String hash) {
+
+        String usersUrl = Util.getUrl(this,R.string.groups_http_users);
         HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
         try {
 			map.put("sid", new StringBody(hash));
@@ -110,9 +142,7 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
         
         PostData pr = new PostData(usersUrl,map);
 		new PostRequest(this,CODE_USERS).execute(pr);
-
 	}
-				
 	/**
 	 * This method converts the GroupList object to an array of Group objects and sets the list adapter.
 	 * @param result

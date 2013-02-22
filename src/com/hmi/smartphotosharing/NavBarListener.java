@@ -1,10 +1,19 @@
 package com.hmi.smartphotosharing;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
+import com.hmi.smartphotosharing.friends.FriendsActivity;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
 import com.hmi.smartphotosharing.local.MapActivity;
 import com.hmi.smartphotosharing.subscriptions.SubscriptionsActivity;
@@ -35,6 +44,9 @@ public class NavBarListener implements OnClickListener {
 		case Util.ACTION_SETTINGS:
 			action_settings();
 			break;
+		case Util.ACTION_FRIENDS:
+			action_friends();
+			break;
 		case Util.ACTION_MAP:
 			action_map();
 			break;
@@ -56,9 +68,16 @@ public class NavBarListener implements OnClickListener {
 		
 	}
 
+	private void action_friends() {
+        Intent intent = new Intent(c, FriendsActivity.class);
+        c.startActivity(intent);
+		
+	}
+	
 	private void action_camera() {
-		Intent intent = new Intent(c, SharePhotoActivity.class);
-		c.startActivity(intent);			
+	   //Intent intent = new Intent(c, SharePhotoActivity.class);
+	   //c.startActivity(intent);	
+	   Util.createPhotoDialog(c);
 	}
 
 	private void action_archive() {
@@ -70,4 +89,5 @@ public class NavBarListener implements OnClickListener {
         Intent intent = new Intent(c, MapActivity.class);
         c.startActivity(intent);		
 	}
+	
 };

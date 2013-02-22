@@ -35,6 +35,13 @@
             android:summary="@string/pref_summary_not_photo_like"
             android:title="@string/pref_title_not_photo_like"
         	android:defaultValue="true" />
+        
+        <CheckBoxPreference
+            android:key="pref_key_not_friends"
+            android:summary="@string/pref_summary_not_friends"
+            android:title="@string/pref_title_not_friends"
+        	android:defaultValue="true" />
+        
         <CheckBoxPreference
             android:key="pref_key_not_sub"
             android:summary="@string/pref_summary_not_sub"

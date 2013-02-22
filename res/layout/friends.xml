@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent">  
+
+    <!-- HEADER -->
+    
+    <include
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/header" />
+    
+    <!-- NAV BUTTONS -->
+     
+    <ImageView 
+	    android:id="@+id/friend_add"
+	    android:contentDescription="@string/icon_unknown"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/header"
+	    android:src="@drawable/ic_menu_add"
+	    android:onClick="onClickAdd" />	    
+	    		    
+    <!-- GROUPS LIST -->
+    
+     <ListView 
+         android:id="@id/android:list"
+	     android:layout_width="match_parent"
+	     android:layout_height="wrap_content"
+	     android:drawSelectorOnTop="false"
+         android:layout_below="@+id/friend_add"
+         android:layout_marginBottom="@dimen/navbar_margin" />
+
+     <TextView 
+         android:id="@id/android:empty"
+	     android:layout_width="match_parent"
+	     android:layout_height="match_parent"
+	     android:layout_margin="4dp"
+	     android:text="@string/no_data"
+         android:layout_below="@+id/friend_add" /> 
+         
+     <include
+         android:id="@+id/navbar"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         layout="@layout/navbar" />
+          
+</RelativeLayout>

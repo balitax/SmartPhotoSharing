@@ -72,7 +72,7 @@
         <activity android:label="Fullscreen Image" 
             android:name=".FullscreenImageActivity" />	
             
-        <activity android:label="Map View" 
+        <activity android:label="Explore" 
             android:name=".local.MapActivity" />	
         <activity android:label="Local Photos" 
             android:name=".local.LocalPhotoActivity" />
@@ -81,11 +81,11 @@
             android:configChanges="orientation" 
             android:name=".PhotoDetailActivity" />
         
-        <activity android:label="Profile" 
+        <activity android:label="Settings" 
             android:name=".ProfileActivity" />
         <activity android:label="My Photos" 
             android:name=".MyPicturesActivity" />
-        <activity android:label="Change Profile Picture" 
+        <activity android:label="Change My Picture" 
             android:configChanges="orientation" 
             android:name=".ChangePictureActivity" />
         	    
@@ -112,6 +112,11 @@
         <activity android:label="Change Group Picture" 
             android:configChanges="orientation" 
             android:name=".groups.ChangeGroupPictureActivity" />
+        
+        <activity android:label="Friends" 
+            android:name=".friends.FriendsActivity" />
+        <activity android:label="Add Friends" 
+            android:name=".friends.AddFriendsActivity" />
         
         <activity android:label="Camera" 
             android:configChanges="orientation" 

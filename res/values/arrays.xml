@@ -10,4 +10,9 @@
 		<item>Test1</item>
 		<item>Test2</item>
 	</string-array>
+	<string-array name="camera_dialog">
+		<item>Camera</item>
+		<item>Saved photos</item>
+	</string-array>
+	
 </resources>

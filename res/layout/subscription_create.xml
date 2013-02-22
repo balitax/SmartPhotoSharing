@@ -4,27 +4,35 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
 
-    <TextView
-        android:id="@+id/subscription_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:text="@string/sub_create_title"
-        style="@style/DialogHeaderText" />
-    
-    <ImageView 
-        android:id="@+id/button_send"
-        android:src="@drawable/ic_menu_send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:contentDescription="@string/button_send"
-        android:onClick="onCreateClick" />
+    <RelativeLayout 
+        android:id="@+id/header"
+    	android:background="@color/header_bg"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content">
+     
+	    <TextView
+	        android:id="@+id/subscription_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:padding="5dp"
+	        android:text="@string/sub_create_title"
+         	android:layout_centerVertical="true"
+	        style="@style/HeaderText" />
+	    
+	    <ImageView 
+	        android:id="@+id/button_send"
+	        android:src="@drawable/ic_menu_send"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:contentDescription="@string/button_send"
+	        android:onClick="onCreateClick" />
+    </RelativeLayout>
     
     <ScrollView
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
-	    android:layout_below="@+id/button_send" >
+	    android:layout_below="@+id/header" >
     
 	    <RelativeLayout
 	        android:id="@+id/contents"

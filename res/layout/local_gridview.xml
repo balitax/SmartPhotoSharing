@@ -4,17 +4,33 @@
     android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
 	
-	<include
-      android:id="@+id/header"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      layout="@layout/local_header" /> 
-    	
+    <include
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/header" />
+    
+    <ImageView 
+        android:id="@+id/listmode"
+        android:src="@drawable/ic_menu_gallery"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/header"
+        android:onClick="onClickListMode" />
+   <ImageView 
+        android:id="@+id/mapmode"
+        android:src="@drawable/ic_menu_mapmode"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/header"
+        android:layout_toRightOf="@+id/listmode"
+        android:onClick="onClickMapMode" /> 
+        	
     <GridView 
 	  android:id="@+id/gridview"
 	  android:layout_width="fill_parent"
 	  android:layout_height="fill_parent"
-	  android:layout_below="@+id/header"
+	  android:layout_below="@+id/listmode"
       android:layout_marginBottom="@dimen/navbar_margin"
       
 	  android:verticalSpacing="2dp"
@@ -29,7 +45,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/local_empty_text"
-	    android:layout_below="@+id/header"
+	    android:layout_below="@+id/listmode"
         android:gravity="center"
         android:visibility="gone" />
      

@@ -34,7 +34,6 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 	
     public static final int CREATE_GROUP = 4;
 
-    private static final int CODE_PROFILE = 1;
     private static final int CODE_SUBSCRIPTS = 2;
     private static final int CODE_SUB_REMOVE = 3;
 
@@ -47,7 +46,7 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
-        loadData(true, true);
+        loadData();
 
         // Show selection in nav bar
         ImageView fav = (ImageView) findViewById(R.id.favourite);
@@ -70,29 +69,22 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
       super.onResume();
       
       // Refresh groups list
-      loadData(true, true);
+      loadData();
     }  
     	
-	private void loadData(boolean profile, boolean subs) {
+	private void loadData() {
 		
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
-		if (profile) {
-	        String profileUrl = String.format(Util.getUrl(this,R.string.profile_http),hash);		
-	        new FetchJSON(this,CODE_PROFILE).execute(profileUrl);
-		}
-
-		if (subs) {
-			String subsUrl = String.format(Util.getUrl(this,R.string.subscriptions_http),hash);
-			new FetchJSON(this,CODE_SUBSCRIPTS).execute(subsUrl);
-		}
+		String subsUrl = String.format(Util.getUrl(this,R.string.subscriptions_http),hash);
+		new FetchJSON(this,CODE_SUBSCRIPTS).execute(subsUrl);
 
 	}
 		
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CREATE_GROUP && resultCode == Activity.RESULT_OK) {
-            loadData(false,true);
+            loadData();
         }
     }	
 		
@@ -108,10 +100,6 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 				parseSubscripts(result);
 				break;
 				
-			case CODE_PROFILE:
-				parseProfile(result);
-				break;
-
 			case CODE_SUB_REMOVE:
 				parseSubRemove(result);
 				break;
@@ -126,34 +114,12 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 		
 		if (response.getStatus() == Util.STATUS_OK) {
 			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
-			loadData(true, true);
+			loadData();
 			
 		} else {
 			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 		}
 		
-	}
-
-	private void parseProfile(String result) {
-		Gson gson = new Gson();
-		UserResponse response = gson.fromJson(result, UserResponse.class);
-		if (response != null) {
-			User user = response.getObject();
-			
-			if (user != null) {
-				// Set the user name
-				TextView name = (TextView) findViewById(R.id.groups_name);
-				name.setText(user.getName());
-				
-				// Set the user name
-				TextView stats = (TextView) findViewById(R.id.stats);
-				stats.setText(String.format(this.getResources().getString(R.string.profile_follows), user.following, user.followers));
-				
-				// Set the user icon
-				ImageView pic = (ImageView) findViewById(R.id.groups_icon);
-				imageLoader.displayImage(user.thumb, pic);
-			}
-		}
 	}
 
 	private void parseSubscripts(String result) {

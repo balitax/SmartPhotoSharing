@@ -16,7 +16,7 @@ public class Sorter
 
     public static Comparator<Group> GROUP_SORTER_ABC = new Comparator<Group>() {
         public int compare(Group o1, Group o2) {
-            return o1.name.compareTo(o2.name);
+            return o1.name.compareToIgnoreCase(o2.name);
         }
     };
     
@@ -34,7 +34,7 @@ public class Sorter
     
     public static Comparator<User> USER_SORTER = new Comparator<User>() {
         public int compare(User o1, User o2) {
-            return o1.rname.compareTo(o2.rname);
+            return o1.rname.compareToIgnoreCase(o2.rname);
         }
     };  
 }

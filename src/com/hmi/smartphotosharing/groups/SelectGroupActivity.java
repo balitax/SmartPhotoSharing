@@ -248,7 +248,7 @@ public class SelectGroupActivity extends ListActivity implements OnDownloadListe
         	// Check if we should update or not
         	if (isBetter) {
         		gpsLocation = location;
-            	//loadData();
+            	loadData();
         	}
 
         }

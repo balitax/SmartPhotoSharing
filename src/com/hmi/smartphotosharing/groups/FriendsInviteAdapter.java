@@ -23,7 +23,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
  * @author Edwin
  *
  */
-public class FriendsAdapter extends ArrayAdapter<User>  {
+public class FriendsInviteAdapter extends ArrayAdapter<User>  {
     
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
@@ -31,7 +31,7 @@ public class FriendsAdapter extends ArrayAdapter<User>  {
 	ImageLoader imageLoader;
 	ListView list;
 	
-	public FriendsAdapter(Context context, int resource, List<User> objects, ListView list) {
+	public FriendsInviteAdapter(Context context, int resource, List<User> objects, ListView list) {
 		super(context, resource, objects);
 		
         this.layoutResourceId = resource;

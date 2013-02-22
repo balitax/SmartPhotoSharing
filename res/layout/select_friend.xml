@@ -5,10 +5,13 @@
      
     <TextView
         android:id="@+id/group_join_title"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/select_friend"
-        style="@style/DialogHeaderText" />
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+    	android:background="@color/header_bg"
+        style="@style/HeaderText" />
      
      <ListView android:id="@id/android:list"
 	     android:layout_width="match_parent"

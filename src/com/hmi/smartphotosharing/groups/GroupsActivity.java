@@ -103,8 +103,10 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
     
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.group_menu, menu);
+		super.onCreateOptionsMenu(menu);
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.group_menu, menu);
 	    return true;
 	}	
 	
@@ -182,18 +184,17 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 		User user = response.getObject();
 		if (user != null) {
 			// Set the user name
-			TextView name = (TextView) findViewById(R.id.groups_name);
+			TextView name = (TextView) findViewById(R.id.header_title);
 			name.setText(user.getName());
 			
 			// Set the user name
-			TextView stats = (TextView) findViewById(R.id.stats);
+			//TextView stats = (TextView) findViewById(R.id.stats);
 			
-			stats.setText(String.format(this.getResources().getString(R.string.profile_stats), user.groups, user.photos));
+			//stats.setText(String.format(this.getResources().getString(R.string.profile_stats), user.groups, user.photos));
 			
 			// Set the user icon
-			ImageView pic = (ImageView) findViewById(R.id.groups_icon);
-			//dm.fetchDrawableOnThread(userPic, pic);
-			imageLoader.displayImage(user.thumb, pic);
+			//ImageView pic = (ImageView) findViewById(R.id.groups_icon);
+			//imageLoader.displayImage(user.thumb, pic);
 		}
 	}
 

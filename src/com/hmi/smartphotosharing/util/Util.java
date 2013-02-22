@@ -3,9 +3,9 @@ package com.hmi.smartphotosharing.util;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-
-import com.hmi.smartphotosharing.R;
+import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.location.Location;
 import android.media.ExifInterface;
@@ -23,6 +24,10 @@ import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
+
+import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.SharePhotoActivity;
 
 public class Util {
 
@@ -41,6 +46,7 @@ public class Util {
     public static final int ACTION_SETTINGS 	= 3;
     public static final int ACTION_FAVOURITE 	= 4;
     public static final int ACTION_MAP 			= 5;
+    public static final int ACTION_FRIENDS		= 6;
     
     public static final String API_KEY = "AIzaSyCKN-AGNHA7ZYTPQ_-IXZUHFGT8UlXlZig";
     public static final String API_KEY_MAPS ="0LgN0zWElNFx2cMBe0vH1UtWShWq1VlUPUeUb9w";
@@ -62,6 +68,16 @@ public class Util {
 	
     public static String getUrl(Context c, int resource) {
     	return API + c.getResources().getString(resource);
+    }
+    
+    
+    public static int getColor(int i) {
+    	int[] colors = new int[]{Color.BLACK, Color.BLUE, Color.CYAN, 
+								Color.DKGRAY, Color.GRAY, Color.GREEN, 
+								Color.LTGRAY, Color.MAGENTA, Color.RED,
+								Color.YELLOW};
+    	
+    	return colors[i%colors.length];
     }
     
 	/** Determines whether one Location reading is better than the current Location fix
@@ -158,7 +174,33 @@ public class Util {
 		alert.show();
 		
 	}
-    
+	
+	public static void createPhotoDialog(Context c) {
+    	AlertDialog.Builder builder = new AlertDialog.Builder(c);
+		builder.setTitle(c.getResources().getString(R.string.camera_share_dialog))
+			 .setItems(R.array.camera_dialog, new ShareListener(c));
+		AlertDialog alert = builder.create();
+		alert.show();
+		
+	}    
+	
+	public static class ShareListener implements DialogInterface.OnClickListener {
+		private Context c;
+		
+		public ShareListener(Context c){
+			this.c = c;
+		}
+        public void onClick(DialogInterface dialog, int which) {
+     	   if(which == 0) {
+     		   Intent intent = new Intent(c, SharePhotoActivity.class);
+     		   c.startActivity(intent);
+     	   } else {
+     		   Toast t = Toast.makeText(c, "Select from saved photos", Toast.LENGTH_SHORT);
+     		   t.show();
+     	   }
+        }
+	 }
+	
 	/**
 	 * Method to redirect the user to the GPS settings screen.
 	 * @param c The application context
