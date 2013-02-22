@@ -88,7 +88,16 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 			loadData(true,true);
         }
     }
-    
+
+	@Override
+	public boolean onCreateOptionsMenu (Menu menu) {
+		super.onCreateOptionsMenu(menu);
+
+		MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.photo_menu, menu);
+	    return true;
+	}	
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -148,12 +157,6 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 		}
     	
     }
-	@Override
-	public boolean onCreateOptionsMenu (Menu menu) {
-    	MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.photo_menu, menu);
-	    return true;
-	}
 
 	public void loadData(boolean photo, boolean comments) {
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
@@ -277,13 +280,15 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 		if (pr.getStatus() == Util.STATUS_OK) {
 			Photo p = pr.getObject();
 			
+			
 			String uri = p.getUrl();
 
+			
 	        ImageView photo = (ImageView) findViewById(R.id.picture);
 			photo.setOnClickListener(new PictureClickListener(getApplicationContext(), uri));
 	        
 	        imageLoader.displayImage(uri, photo);
-
+	        /*
 	        // Update user icon
 	        ImageView pic = (ImageView) findViewById(R.id.photo_detail_icon);
 			String userPic = Util.USER_DB + p.picture;
@@ -302,7 +307,8 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 	        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	        String datum = sdf.format(time);
 	        date.setText(datum);
-
+			 */
+			
 	        // 'Likes'
 			ImageView myLike = (ImageView) findViewById(R.id.like);
 			TextView likes = (TextView) findViewById(R.id.like_txt);
@@ -321,12 +327,12 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 		        	likes.setText(getResources().getString(R.string.like_txt_you));
 	        } else {
 	        	likes.setText(String.format(getResources().getString(R.string.like_txt), p.likes));
-	        }*/
+	        }
 	        
 	        // Update the group text
 	        TextView group = (TextView)findViewById(R.id.photo_detail_group);
 	        String groupTxt = getResources().getString(R.string.photo_detail_group);
-	        group.setText(String.format(groupTxt, p.groupname));
+	        group.setText(String.format(groupTxt, p.groupname));*/
 	        
 		} else if (pr.getStatus() == Util.STATUS_LOGIN){
 			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();

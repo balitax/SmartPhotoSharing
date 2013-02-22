@@ -12,7 +12,6 @@ import org.apache.http.entity.mime.content.StringBody;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -36,6 +35,7 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -48,6 +48,7 @@ import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarFragmentActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SinglePhotoDetail;
+import com.hmi.smartphotosharing.groups.GroupDetailActivity;
 import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.GroupListResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
@@ -62,15 +63,18 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 public class MapActivity extends NavBarFragmentActivity implements LocationListener, LocationSource, OnCameraChangeListener, OnDownloadListener {
 
     private GoogleMap googleMap;
-    private Marker lastClicked, lastInfoWindowClicked;
+    private Marker lastClicked;
     
     private long lastChange;
     private LatLng lastPos;
     
     private List<Polygon> polyList;
     
+    public static final String TYPE_GROUP = "GROUP";
+    public static final String TYPE_PHOTO = "PHOTO";
+    
     private static long MAP_TIME_THRESHOLD = 5000;
-    private static int MAP_ZOOM_THRESHOLD = 15;
+    private static int MAP_ZOOM_THRESHOLD = 14;
     private static int MAP_DISTANCE_THRESHOLD = 500;
 
     private static final int CODE_PHOTOS = 0;
@@ -202,15 +206,18 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
         	
         	// If it is at least X milliseconds since the last change and
         	// the zoom level is greater than Y, request new photo locations
-        	
-        	if (now - lastChange >= MAP_TIME_THRESHOLD && pos.zoom >= MAP_ZOOM_THRESHOLD){
-        		
-        		// Check if the difference in distance from last camera pos is greater than X meters
-        		lastChange = now;
-        		lastPos = pos.target;
-        		Log.d("SmarthPhotoSharing", "z: " + pos.zoom + " / d: " );
-        		
-        		loadData();
+        	if (pos.zoom >= MAP_ZOOM_THRESHOLD) {
+	        	if (now - lastChange >= MAP_TIME_THRESHOLD){
+	        		
+	        		// Check if the difference in distance from last camera pos is greater than X meters
+	        		lastChange = now;
+	        		lastPos = pos.target;
+	        		//Log.d("SmarthPhotoSharing", "z: " + pos.zoom + " / d: " );
+	        		
+	        		loadData();
+	        	}
+        	} else {
+        		googleMap.clear();
         	}
         }		
 	}
@@ -244,67 +251,24 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 		}
 		@Override
 		public void onInfoWindowClick(Marker marker) {
-			// If the user clicks the InfoWindow for the second time, go to the photo detail page
-			if (lastInfoWindowClicked != null && lastInfoWindowClicked.equals(marker)) {
-				lastInfoWindowClicked = null;
-
-		    	Intent intent = new Intent(c,SinglePhotoDetail.class);
-		    	intent.putExtra(SinglePhotoDetail.KEY_ID, Long.parseLong(marker.getSnippet()));
+			
+			String[] msg = marker.getSnippet().split(",");
+			boolean isGroup = msg[0].equals(TYPE_GROUP);
+			
+			if (isGroup) {
+		    	Intent intent = new Intent(c,GroupDetailActivity.class);
+		    	intent.putExtra(GroupDetailActivity.KEY_ID, Long.parseLong(msg[1]));
 		    	startActivity(intent);
-			} 
-			
-			// First time, so refresh the InfoWindow
-			else {
-				lastInfoWindowClicked = marker;
-				marker.showInfoWindow();
+				
+			} else {
+		    	Intent intent = new Intent(c,SinglePhotoDetail.class);
+		    	intent.putExtra(SinglePhotoDetail.KEY_ID, Long.parseLong(msg[1]));
+		    	startActivity(intent);
 			}
 			
 		}
 	}
-	private class MyOnMapClickListener implements OnMapClickListener {
 
-		@Override
-		public void onMapClick(LatLng point) {
-			for (Polygon p : polyList) {
-				if (isPointInPolygon(point, p.getPoints())) {
-					Toast.makeText(getApplicationContext(), "You clicked on a group", Toast.LENGTH_SHORT).show();
-				}
-			}
-			
-		}
-
-	}
-	
-	private boolean isPointInPolygon(LatLng tap, List<LatLng> vertices) {
-	    int intersectCount = 0;
-	    for(int j=0; j<vertices.size()-1; j++) {
-	        if( rayCastIntersect(tap, vertices.get(j), vertices.get(j+1)) ) {
-	            intersectCount++;
-	        }
-	    }
-
-	    return (intersectCount%2) == 1; // odd = inside, even = outside;
-	}
-
-	private boolean rayCastIntersect(LatLng tap, LatLng vertA, LatLng vertB) {
-
-	    double aY = vertA.latitude;
-	    double bY = vertB.latitude;
-	    double aX = vertA.longitude;
-	    double bX = vertB.longitude;
-	    double pY = tap.latitude;
-	    double pX = tap.longitude;
-
-	    if ( (aY>pY && bY>pY) || (aY<pY && bY<pY) || (aX<pX && bX<pX) ) {
-	        return false; // a and b can't both be above or below pt.y, and a or b must be east of pt.x
-	    }
-
-	    double m = (aY-bY) / (aX-bX);               // Rise over run
-	    double bee = (-aX) * m + aY;                // y = mx + b
-	    double x = (pY - bee) / m;                  // algebra is neat!
-
-	    return x > pX;
-	}
 	private class MyMarkerClickListener implements OnMarkerClickListener {
 
 		@Override
@@ -320,7 +284,22 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 			}
 		}
 	}
-		
+	
+	
+	private class MyOnMapClickListener implements OnMapClickListener {
+
+		@Override
+		public void onMapClick(LatLng point) {
+			/*for (Polygon p : polyList) {
+				if (isPointInPolygon(point, p.getPoints())) {
+					Toast.makeText(getApplicationContext(), "You clicked on a group", Toast.LENGTH_SHORT).show();
+				}
+			}*/
+			
+		}
+
+	}
+			
 	private void loadData() {
 		
 		LatLngBounds bounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
@@ -380,7 +359,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	private void parseGroups(String json) {
 		Gson gson = new Gson();
 		GroupListResponse response = gson.fromJson(json, GroupListResponse.class);
-		Log.d("GroupsMap", json);
+		//Log.d("GroupsMap", json);
 		
 		if (response.getStatus() == Util.STATUS_OK) {
 			// Put markers on the map
@@ -405,6 +384,15 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	                LatLng sw = new LatLng(lat2,lon1);
 	                LatLng se = new LatLng(lat2,lon2);
 
+					MarkerOptions markerOptions = new MarkerOptions()
+	                	.position(new LatLng(lat1,lon1))
+	                	.title(g.thumb)
+	                	.snippet(TYPE_GROUP + "," + g.gid + "," + g.name)
+	                	.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_group));
+	                	//.icon(BitmapDescriptorFactory.defaultMarker(Util.getHue(Integer.parseInt(g.gid))));
+
+	                googleMap.addMarker(markerOptions);
+	                
 	                Polygon p = googleMap.addPolygon(new PolygonOptions()
 		    		    .add(ne, nw, sw, se) // 4 corners, ccw
 		    		    .strokeWidth(3)
@@ -438,7 +426,8 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 					MarkerOptions markerOptions = new MarkerOptions()
 	                	.position(new LatLng(lat,lon))
 	                	.title(p.thumb)
-	                	.snippet(p.iid);
+	                	.snippet(TYPE_PHOTO + "," + p.iid)
+	                	.icon(BitmapDescriptorFactory.defaultMarker(Util.getHue(Integer.parseInt(p.gid))));
 
 	                googleMap.addMarker(markerOptions);
 				}

@@ -20,10 +20,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hmi.smartphotosharing.MyGalleryAdapter;
-import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.SinglePhotoDetail;
 import com.hmi.smartphotosharing.groups.GroupDetailActivity;
-import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.User;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -208,10 +207,8 @@ public class FriendsAdapter extends ArrayAdapter<User> {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-        	Intent intent = new Intent(context, PhotoDetailActivity.class);
-        	//Intent intent = new Intent(context, SinglePhotoDetail.class);
+        	Intent intent = new Intent(context, SinglePhotoDetail.class);
 		    intent.putExtra("id", id);
-		    intent.putExtra("gid", gid);
 		    context.startActivity(intent);
         	
         }

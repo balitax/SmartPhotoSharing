@@ -3,9 +3,7 @@ package com.hmi.smartphotosharing.util;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -26,6 +24,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SharePhotoActivity;
 
@@ -66,20 +66,27 @@ public class Util {
 
 	public static String URL_MESSAGE = "com.hmi.smartphotosharing.URL_MESSAGE";
 	
+	public static int[] colors = new int[]{Color.BLUE, Color.CYAN, 
+											Color.GREEN, Color.MAGENTA, 
+											Color.RED, Color.YELLOW};
+	
+	public static float[] hue = new float[]{
+										BitmapDescriptorFactory.HUE_BLUE, BitmapDescriptorFactory.HUE_CYAN,
+										BitmapDescriptorFactory.HUE_GREEN, BitmapDescriptorFactory.HUE_MAGENTA,
+										BitmapDescriptorFactory.HUE_RED, BitmapDescriptorFactory.HUE_YELLOW};
+	
     public static String getUrl(Context c, int resource) {
     	return API + c.getResources().getString(resource);
     }
     
     
     public static int getColor(int i) {
-    	int[] colors = new int[]{Color.BLACK, Color.BLUE, Color.CYAN, 
-								Color.DKGRAY, Color.GRAY, Color.GREEN, 
-								Color.LTGRAY, Color.MAGENTA, Color.RED,
-								Color.YELLOW};
-    	
     	return colors[i%colors.length];
     }
     
+    public static float getHue(int i) {
+    	return hue[i%hue.length];
+    }
 	/** Determines whether one Location reading is better than the current Location fix
 	  * @param location  The new Location that you want to evaluate
 	  * @param currentBestLocation  The current Location fix, to which you want to compare the new one

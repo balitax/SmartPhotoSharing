@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -49,6 +52,27 @@ public class GroupJoinActivity extends NavBarListActivity implements OnDownloadL
       loadData();
     }  
     
+	@Override
+	public boolean onCreateOptionsMenu (Menu menu) {
+		super.onCreateOptionsMenu(menu);
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.group_menu, menu);
+	    return true;
+	}	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {		
+        switch (item.getItemId()) {
+
+	        case R.id.refresh:
+	        	loadData();
+		    	return true;
+	        default:
+	        	return super.onOptionsItemSelected(item);
+        }
+    }	
+	
     @Override 
     public void onListItemClick(ListView l, View v, int position, long id) {
     	SharedPreferences settings = this.getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);

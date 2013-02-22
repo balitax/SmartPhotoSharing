@@ -65,12 +65,12 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	private GridView gridView;
 	//image view for larger display
 	
-	private TextView groupPhotos;
-	private TextView groupMembers;
+	//private TextView groupPhotos;
+	//private TextView groupMembers;
 	private TextView groupName;
-	private ImageView groupIcon;
+	//private ImageView groupIcon;
 
-	private ImageView privateIcon, locationIcon;
+	//private ImageView privateIcon, locationIcon;
 	
 	private ImageLoader imageLoader;
 			
@@ -87,12 +87,12 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         
-        groupName = (TextView) findViewById(R.id.group_detail_name);
-        groupIcon = (ImageView) findViewById(R.id.group_detail_icon);
-        groupPhotos = (TextView) findViewById(R.id.group_detail_photos);
-        groupMembers = (TextView) findViewById(R.id.group_detail_members);
-        privateIcon = (ImageView) findViewById(R.id.private_icon);
-        locationIcon = (ImageView) findViewById(R.id.location_icon);
+        groupName = (TextView) findViewById(R.id.header_title);
+        //groupIcon = (ImageView) findViewById(R.id.group_detail_icon);
+        //groupPhotos = (TextView) findViewById(R.id.group_detail_photos);
+        //groupMembers = (TextView) findViewById(R.id.group_detail_members);
+        //privateIcon = (ImageView) findViewById(R.id.private_icon);
+        //locationIcon = (ImageView) findViewById(R.id.location_icon);
         
         // Get the gallery view
         gridView = (GridView) findViewById(R.id.grid);
@@ -270,6 +270,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
     
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
+		super.onCreateOptionsMenu(menu);
     	MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.group_detail_menu, menu);
 	    return true;
@@ -438,8 +439,8 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         gridView.setOnItemClickListener(new MyOnItemClickListener(this)); 
         
 		// Set the string telling how many photos the group has
-		String photos = String.format(getResources().getString(R.string.group_detail_photos), photo_list.size());
-		groupPhotos.setText(photos);
+		//String photos = String.format(getResources().getString(R.string.group_detail_photos), photo_list.size());
+		//groupPhotos.setText(photos);
 		
 	}
 
@@ -452,9 +453,10 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 			group = gdr.getObject();
 	
 			groupName.setText(group.name);
-			String logoUrl = Util.GROUP_DB + group.logo;
-			imageLoader.displayImage(logoUrl, groupIcon);
+			//String logoUrl = Util.GROUP_DB + group.logo;
+			//imageLoader.displayImage(logoUrl, groupIcon);
 	
+			/*
 			if (!group.isPrivate()) {
 				privateIcon.setVisibility(ImageView.GONE);
 			}
@@ -462,6 +464,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 			if (!group.isLocationLocked()) {
 				locationIcon.setVisibility(ImageView.GONE);
 			}
+			*/
 			
 			// Set the button text join/leave group
 			if (group.member == 0) {
@@ -471,8 +474,8 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 			}
 			
 			// Set the string telling how many members the group has
-			String photos = String.format(getResources().getString(R.string.group_detail_members), group.members);
-			groupMembers.setText(photos);
+			//String photos = String.format(getResources().getString(R.string.group_detail_members), group.members);
+			//groupMembers.setText(photos);
 		} else {
 			Toast.makeText(this, gdr.getMessage(), Toast.LENGTH_SHORT).show();
 			finish();

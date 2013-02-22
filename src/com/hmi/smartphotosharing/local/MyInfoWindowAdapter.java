@@ -5,25 +5,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.model.Marker;
 import com.hmi.smartphotosharing.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 public class MyInfoWindowAdapter implements InfoWindowAdapter {
 
 	private ImageLoader imageLoader;
 	private LayoutInflater inflater=null;	
+	private ImageView img;
+	private TextView txt;
 
-    private Marker mSelectedMarker;
-    private boolean mRefreshingInfoWindow;
-    
+	View popup;
+	private boolean flag;
+	
 	public MyInfoWindowAdapter(ImageLoader il, LayoutInflater inflater) {
 		imageLoader = il;
 	    this.inflater=inflater;
+	    popup = inflater.inflate(R.layout.popup,null);
+		img = (ImageView) popup.findViewById(R.id.image1);
+		txt = (TextView) popup.findViewById(R.id.text1);
 	}
 
 
@@ -34,22 +39,39 @@ public class MyInfoWindowAdapter implements InfoWindowAdapter {
 	
 
 	@Override
-	public View getInfoContents(Marker marker) {
-		View popup = inflater.inflate(R.layout.popup,null);
-		if (mRefreshingInfoWindow) {
-            // Refresh your info window
-        } else {
-            mSelectedMarker = marker;
-            // The info window had been shown due to a click on a marker
-            // Do whatever you want (for instance start an async request
-            // that will update the info window later)
-    		ImageView img = (ImageView) popup.findViewById(R.id.image1);
-    		imageLoader.displayImage(marker.getTitle(), img, new MyImageLoadingListener());
-        }
+	public View getInfoContents(final Marker marker) {
 		
+		String[] msg = marker.getSnippet().split(",");
+		boolean isGroup = msg[0].equals(MapActivity.TYPE_GROUP);
+		if (isGroup) {
+			txt.setVisibility(TextView.VISIBLE);
+			txt.setText(msg[2]);
+		} else {
+			txt.setVisibility(TextView.GONE);
+		}
+		
+		if (!flag) {
+			flag = true;
+			
+			imageLoader.displayImage(marker.getTitle(), img, new SimpleImageLoadingListener() {
+
+				@Override
+				public void onLoadingComplete(String imageUri, View view,
+						Bitmap loadedImage) {
+						if (flag) {
+							Log.d("ImageLoader", "loading done");
+							marker.hideInfoWindow();
+							marker.showInfoWindow();
+							flag = false;
+						}
+				}
+			
+			});
+		}
 		return popup;
 	}
 	
+	/*
     private void refreshInfoWindow() {
         if (mSelectedMarker == null) {
             return;
@@ -87,5 +109,5 @@ public class MyInfoWindowAdapter implements InfoWindowAdapter {
 			// TODO Auto-generated method stub
 			
 		}
-	}
+	}*/
 }

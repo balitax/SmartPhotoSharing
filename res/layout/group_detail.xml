@@ -7,69 +7,12 @@
    
     <!-- HEADER -->
     
-    <RelativeLayout
+
+    <include
         android:id="@+id/header"
-        android:background="@color/header_bg"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        	        
-	    <ImageView 
-	        android:id="@+id/group_detail_icon"
-	        android:src="@drawable/ic_unknown"
-			android:adjustViewBounds="true"  
-			android:scaleType="fitCenter"  
-	        android:layout_alignParentLeft="true"
-	        android:padding="4dp"
-	        android:onClick="onClickCamera"
-	        style="@style/Icon.Large" />
-	    
-		<ImageView 
-		    android:id="@+id/private_icon"
-		    android:contentDescription="@string/private_group"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-	       	android:layout_alignParentRight="true"
-	    	android:padding="1dp"
-		    android:src="@drawable/ic_lock_lock"
-		    android:onClick="onPrivateHelp" />	
-		
-		<ImageView 
-		    android:id="@+id/location_icon"
-		    android:contentDescription="@string/private_group"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-	       	android:layout_below="@+id/private_icon"
-	       	android:layout_alignParentRight="true"
-	    	android:padding="1dp"
-		    android:src="@drawable/ic_location_lock"
-		    android:onClick="onLocationHelp" />	
-		    
-	    <TextView
-	    	android:id="@+id/group_detail_name"
-	    	android:text="@string/group_detail_name"
-	    	android:singleLine="true"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	        android:layout_toRightOf="@+id/group_detail_icon"
-			style="@style/HeaderText" />
-	    
-	    <TextView 
-	    	android:id="@+id/group_detail_members"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	        android:layout_toRightOf="@+id/group_detail_icon"
-	        android:layout_below="@+id/group_detail_name"
-			style="@style/HeaderText.Small" />
-	    
-	   <TextView
-	    	android:id="@+id/group_detail_photos"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	        android:layout_toRightOf="@+id/group_detail_icon"
-	        android:layout_below="@+id/group_detail_members"
-			style="@style/HeaderText.Small" />
-	   
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        layout="@layout/header" />
     
      <!-- NAV BUTTONS -->
      

@@ -71,23 +71,26 @@ public class MyPagerAdapter extends PagerAdapter {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View view = inflater.inflate(R.layout.photo_detail_item, null);
-
+        list = (LinearLayout) view.findViewById(R.id.comments);
+        
         Button button = (Button)view.findViewById(R.id.add_comment);
         EditText commentInput = (EditText)view.findViewById(R.id.edit_message);
         button.setOnClickListener(new CommentClickListener(position,p.getId(),commentInput));
-		
-        TextView date = (TextView)view.findViewById(R.id.photo_detail_date);
-		TextView group = (TextView)view.findViewById(R.id.photo_detail_group);
-		TextView by = (TextView)view.findViewById(R.id.photo_detail_name);
-		ImageView image = (ImageView) view.findViewById(R.id.picture);
-		image.setOnClickListener(new PictureClickListener(context, url));
-		
+        
 		ImageView userIcon = (ImageView) view.findViewById(R.id.photo_detail_icon);
 		ImageView myLike = (ImageView) view.findViewById(R.id.like);
 		TextView likes = (TextView) view.findViewById(R.id.like_txt);
 		
-        list = (LinearLayout) view.findViewById(R.id.comments);
+		ImageView image = (ImageView) view.findViewById(R.id.picture);
+		image.setOnClickListener(new PictureClickListener(context, url));
+        /*
+        TextView date = (TextView)view.findViewById(R.id.photo_detail_date);
+		TextView group = (TextView)view.findViewById(R.id.photo_detail_group);
+		TextView by = (TextView)view.findViewById(R.id.photo_detail_name);
+		
+		
 
+        
         // GroupText
         String groupTxt = context.getResources().getString(R.string.photo_detail_group);
         group.setText(String.format(groupTxt, p.groupname));
@@ -107,6 +110,7 @@ public class MyPagerAdapter extends PagerAdapter {
         date.setText(datum);
         
         myLike.setOnClickListener(new LikeClickListener(p.getId(), p.me));
+        */
         
         // 'Likes'
         int numLikes = p.getLikes();
