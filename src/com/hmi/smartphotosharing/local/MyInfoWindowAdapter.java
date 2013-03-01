@@ -42,72 +42,38 @@ public class MyInfoWindowAdapter implements InfoWindowAdapter {
 	public View getInfoContents(final Marker marker) {
 		
 		String[] msg = marker.getSnippet().split(",");
-		boolean isGroup = msg[0].equals(MapActivity.TYPE_GROUP);
-		if (isGroup) {
-			txt.setVisibility(TextView.VISIBLE);
-			txt.setText(msg[2]);
-		} else {
-			txt.setVisibility(TextView.GONE);
-		}
 		
-		if (!flag) {
-			flag = true;
+		if (msg[0].equals(MapActivity.TYPE_POINT)) {
+			img.setVisibility(ImageView.GONE);
+			txt.setText(msg[1]);
+		} else {
+			if (msg[0].equals(MapActivity.TYPE_GROUP)) {
+				txt.setVisibility(TextView.VISIBLE);
+				txt.setText(msg[2]);
+			} else if (msg[0].equals(MapActivity.TYPE_PHOTO)) {
+				txt.setVisibility(TextView.GONE);
+			}
 			
-			imageLoader.displayImage(marker.getTitle(), img, new SimpleImageLoadingListener() {
-
-				@Override
-				public void onLoadingComplete(String imageUri, View view,
-						Bitmap loadedImage) {
-						if (flag) {
-							Log.d("ImageLoader", "loading done");
-							marker.hideInfoWindow();
-							marker.showInfoWindow();
-							flag = false;
-						}
-				}
-			
-			});
+			if (!flag) {
+				flag = true;
+				
+				imageLoader.displayImage(marker.getTitle(), img, new SimpleImageLoadingListener() {
+	
+					@Override
+					public void onLoadingComplete(String imageUri, View view,
+							Bitmap loadedImage) {
+							if (flag) {
+								Log.d("ImageLoader", "loading done");
+								marker.hideInfoWindow();
+								marker.showInfoWindow();
+								flag = false;
+							}
+					}
+				
+				});
+			}
 		}
 		return popup;
 	}
 	
-	/*
-    private void refreshInfoWindow() {
-        if (mSelectedMarker == null) {
-            return;
-        }
-        mRefreshingInfoWindow = true;
-        mSelectedMarker.showInfoWindow();
-        mRefreshingInfoWindow = false;
-    }
-               
-	private class MyImageLoadingListener implements ImageLoadingListener {
-
-		
-		@Override
-		public void onLoadingStarted(String imageUri, View view) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onLoadingFailed(String imageUri, View view,
-				FailReason failReason) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onLoadingComplete(String imageUri, View view,
-				Bitmap loadedImage) {
-			Log.d("ImageLoader", "Done loading ");
-			refreshInfoWindow();
-		}
-
-		@Override
-		public void onLoadingCancelled(String imageUri, View view) {
-			// TODO Auto-generated method stub
-			
-		}
-	}*/
 }

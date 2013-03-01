@@ -112,6 +112,7 @@
     <string name="local_title">Explore</string>
     <string name="local_http">cmd=locateradius</string>
     <string name="local_http_groups">cmd=localgroups</string>
+    <string name="local_http_point">cmd=localpoint</string>
     
     <!-- Subscriptions -->
     

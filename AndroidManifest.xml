@@ -76,6 +76,8 @@
             android:name=".local.MapActivity" />	
         <activity android:label="Local Photos" 
             android:name=".local.LocalPhotoActivity" />
+        <activity android:label="Local Groups" 
+            android:name=".local.LocalGroupsActivity" />
         	    
         <activity android:label="Photo Details" 
             android:configChanges="orientation" 

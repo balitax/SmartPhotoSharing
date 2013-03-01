@@ -31,7 +31,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -65,6 +65,8 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
     private GoogleMap googleMap;
     private Marker lastClicked;
     
+    private Marker longClickMarker;
+    
     private long lastChange;
     private LatLng lastPos;
     
@@ -72,6 +74,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
     
     public static final String TYPE_GROUP = "GROUP";
     public static final String TYPE_PHOTO = "PHOTO";
+    public static final String TYPE_POINT = "POINT";
     
     private static long MAP_TIME_THRESHOLD = 5000;
     private static int MAP_ZOOM_THRESHOLD = 14;
@@ -79,6 +82,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 
     private static final int CODE_PHOTOS = 0;
     private static final int CODE_GROUPS = 1;
+    private static final int CODE_POINT = 2;
     
 	private OnLocationChangedListener mListener;
 	private LocationManager mLocationManager;
@@ -126,7 +130,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
                 googleMap.setInfoWindowAdapter(new MyInfoWindowAdapter(imageLoader, getLayoutInflater()));
                 googleMap.setOnInfoWindowClickListener(new MyInfoWindowClickListener(this));
                 googleMap.setOnMarkerClickListener(new MyMarkerClickListener());
-                googleMap.setOnMapClickListener(new MyOnMapClickListener());
+                googleMap.setOnMapLongClickListener(new MyOnMapClickListener(this));
                 
                 // Set the source of location updates to this activity
                 googleMap.setLocationSource(this);
@@ -249,15 +253,21 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 		public MyInfoWindowClickListener(Context c) {
 			this.c = c;
 		}
+		
 		@Override
 		public void onInfoWindowClick(Marker marker) {
 			
 			String[] msg = marker.getSnippet().split(",");
-			boolean isGroup = msg[0].equals(TYPE_GROUP);
 			
-			if (isGroup) {
+			if (msg[0].equals(TYPE_GROUP)) {
 		    	Intent intent = new Intent(c,GroupDetailActivity.class);
 		    	intent.putExtra(GroupDetailActivity.KEY_ID, Long.parseLong(msg[1]));
+		    	startActivity(intent);
+				
+			} else if (msg[0].equals(TYPE_POINT)) {
+		    	Intent intent = new Intent(c,LocalGroupsActivity.class);
+		    	intent.putExtra(LocalGroupsActivity.LAT, longClickMarker.getPosition().latitude);
+		    	intent.putExtra(LocalGroupsActivity.LON, longClickMarker.getPosition().longitude);
 		    	startActivity(intent);
 				
 			} else {
@@ -286,15 +296,48 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	}
 	
 	
-	private class MyOnMapClickListener implements OnMapClickListener {
+	private class MyOnMapClickListener implements OnMapLongClickListener {
 
+		private Context c;
+		
+		public MyOnMapClickListener(Context c) {
+			this.c = c;
+		}
 		@Override
-		public void onMapClick(LatLng point) {
-			/*for (Polygon p : polyList) {
-				if (isPointInPolygon(point, p.getPoints())) {
-					Toast.makeText(getApplicationContext(), "You clicked on a group", Toast.LENGTH_SHORT).show();
-				}
-			}*/
+		public void onMapLongClick(LatLng point) {
+			
+			// Add a marker on the clicked point
+			if (longClickMarker != null) {
+				longClickMarker.remove();
+			}
+			
+			MarkerOptions options = new MarkerOptions()
+        	.position(point)
+        	.title("Loading data")
+        	.snippet(TYPE_POINT+","+"Loading...")
+        	.icon(BitmapDescriptorFactory.fromResource(R.drawable.pushpin));
+			longClickMarker = googleMap.addMarker(options);
+			
+			// Get data about this point
+			SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+			String hash = settings.getString(Login.SESSION_HASH, null);
+			
+	    	// Get group info
+			String url = Util.getUrl(getApplicationContext(),R.string.local_http_point);
+			
+	        HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+	        try {
+	        	
+				map.put("sid",new StringBody(hash));
+				
+				map.put("lat", new StringBody(Double.toString(point.latitude)));
+				map.put("lon", new StringBody(Double.toString(point.longitude)));
+				
+			} catch (UnsupportedEncodingException e) {
+				Log.e("Map activity", e.getMessage());
+			}
+	        PostData pr = new PostData(url,map);
+	        new PostRequest(c, CODE_POINT).execute(pr);
 			
 		}
 
@@ -350,11 +393,39 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 			case CODE_PHOTOS:
 				parsePhotos(json);
 				break;
-				
+
+			case CODE_POINT:
+				parsePoint(json);
+				break;	
 			default:
 		}
 		
 	}
+
+	private void parsePoint(String json) {
+		Gson gson = new Gson();
+		GroupListResponse response = gson.fromJson(json, GroupListResponse.class);
+		//Log.d("GroupsMap", json);
+		
+		if (response.getStatus() == Util.STATUS_OK) {
+			// Put markers on the map
+			List<Group> list = response.getObject();
+			
+			String txt = "";
+			if (list != null && list.size() > 0) {
+				txt = list.size() + " groups on this location. Click for info.";
+			} else {
+				txt = "No groups on this location.";
+			}
+
+			longClickMarker.setSnippet(TYPE_POINT + "," + txt);
+			longClickMarker.showInfoWindow();
+		} else {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+		
+	}
+
 
 	private void parseGroups(String json) {
 		Gson gson = new Gson();
