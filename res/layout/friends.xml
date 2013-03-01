@@ -9,19 +9,28 @@
         android:id="@+id/header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/header_margin"
         layout="@layout/header" />
     
     <!-- NAV BUTTONS -->
      
-    <ImageView 
-	    android:id="@+id/friend_add"
-	    android:contentDescription="@string/icon_unknown"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/header"
-	    android:src="@drawable/ic_menu_add"
-	    android:onClick="onClickAdd" />	    
-	    		    
+     <ImageButton
+	     android:id="@+id/friend_add"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/header"
+	     android:padding="0dp"
+         android:onClick="onClickAdd"
+         android:src="@drawable/button_add" /> 
+	 
+     <Button 
+         android:id="@+id/btn_requests"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_toRightOf="@+id/friend_add"
+         android:layout_below="@+id/header"
+         android:visibility="gone"
+         android:onClick="onClickRequests"/>		    
     <!-- GROUPS LIST -->
     
      <ListView 

@@ -41,7 +41,7 @@ public class FriendsAdapter extends ArrayAdapter<User> {
     
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
-	List<User> data;	// A Group array that contains all list items
+	List<User> data;		// A User array that contains all list items
 	ImageLoader imageLoader;
 		
 	public FriendsAdapter(Context context, int resource, List<User> objects, ImageLoader im) {
@@ -89,10 +89,7 @@ public class FriendsAdapter extends ArrayAdapter<User> {
            
             holder = new UserHolder();
             holder.imgIcon = (ImageView)v.findViewById(R.id.icon);
-            holder.privateIcon = (ImageView)v.findViewById(R.id.private_icon);
-            holder.locationIcon = (ImageView)v.findViewById(R.id.location_icon);
             holder.txtTitle = (TextView)v.findViewById(R.id.item_text);
-            holder.totalNew = (TextView)v.findViewById(R.id.total_new);
             holder.picGallery = (Gallery)v.findViewById(R.id.gallery);
             v.setTag(holder);
         } else {
@@ -103,11 +100,7 @@ public class FriendsAdapter extends ArrayAdapter<User> {
                 
         // Set the icon for this list item
         imageLoader.displayImage(user.thumb, holder.imgIcon);
-        
-        // We need to set the onClickListener here to make sure that
-        // the row can also be clicked, in addition to the gallery photos
-        v.setOnClickListener(new MyOnClickListener(position));
-        
+                
         // Set the adapter for the gallery
         holder.picGallery.setAdapter(
 				new MyGalleryAdapter(
@@ -130,7 +123,6 @@ public class FriendsAdapter extends ArrayAdapter<User> {
         
         // Detect clicking an image
         holder.picGallery.setOnItemClickListener(new MyOnItemClickListener(context,user.getId()));
-        
         // Detect swipes
         holder.picGallery.setOnTouchListener(gestureListener);
         
@@ -146,28 +138,10 @@ public class FriendsAdapter extends ArrayAdapter<User> {
 	 */
     static class UserHolder {
         ImageView imgIcon;
-        ImageView privateIcon;
-        ImageView locationIcon;
         TextView txtTitle;
-        TextView totalNew;
         Gallery picGallery;
     }	
     
-    private class MyOnClickListener implements OnClickListener{       
-        private int mPosition;
-        
-        public MyOnClickListener(int position){
-            mPosition = position;
-        }
-        
-        @Override
-        public void onClick(View arg0) {
-        	//groupClickListener.OnGroupClick(getItemId(mPosition));
-        	Intent intent = new Intent(context, GroupDetailActivity.class);
-        	intent.putExtra("id", getItemId(mPosition));
-        	context.startActivity(intent);
-        }       
-    }
 	
 	/**
 	 * Gesture detector needed to detect swipes
@@ -189,13 +163,12 @@ public class FriendsAdapter extends ArrayAdapter<User> {
         }
 
     }
-
     /**
-     * Listener for clicking images on the gallery.
-     * @author Edwin
-     *
-     */
-    private class MyOnItemClickListener implements OnItemClickListener{    
+	* Listener for clicking images on the gallery.
+	* @author Edwin
+	*
+	*/
+	private class MyOnItemClickListener implements OnItemClickListener{
         private Context context;
         long gid;
         
@@ -206,13 +179,12 @@ public class FriendsAdapter extends ArrayAdapter<User> {
         
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-        	Intent intent = new Intent(context, SinglePhotoDetail.class);
-		    intent.putExtra("id", id);
-		    context.startActivity(intent);
-        	
+        		long id) {
+	         Intent intent = new Intent(context, SinglePhotoDetail.class);
+			intent.putExtra("id", id);
+			context.startActivity(intent);
+        
         }
-
+	        
     }
- 
 }

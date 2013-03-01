@@ -8,7 +8,8 @@
         android:id="@+id/header"
     	android:background="@color/header_bg"
     	android:layout_width="fill_parent"
-    	android:layout_height="wrap_content">
+    	android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/header_margin">
     	
 	    <TextView
 	        android:id="@+id/subscription_title"
@@ -20,7 +21,7 @@
 	    
 	    <ImageView 
 	        android:id="@+id/button_send"
-	        android:src="@drawable/ic_menu_send"
+	        android:src="@drawable/ic_green_menu_send"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_alignParentRight="true"
@@ -63,23 +64,23 @@
 		        android:layout_below="@+id/group_create_desc"
 		        android:text="@string/group_private" />
 		    
-		    <ImageView 
-		        android:src="@drawable/ic_menu_help2"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/group_create_desc"
-		        android:layout_marginTop="8dp"
-		        android:layout_alignParentRight="true"
-		        android:contentDescription="@string/button_send"
-		        android:onClick="onPrivateHelp" />  
-		                    
+		     <ImageButton
+			     android:id="@+id/friend_add"
+		         android:layout_width="wrap_content"
+		         android:layout_height="wrap_content"
+		         android:layout_below="@+id/group_create_desc"
+		         android:layout_alignParentRight="true"
+			     android:padding="0dp"
+		         android:onClick="onPrivateHelp"
+		         android:src="@drawable/button_help" /> 
+		         		                    
 		    <Button
 		        android:id="@+id/button_invite_friends"
 		        android:text="@string/group_create_friends"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_below="@+id/checkbox_private"
-		    	android:drawableLeft="@drawable/ic_menu_invite"
+		    	android:drawableLeft="@drawable/button_invite"
 		        android:onClick="onClickFriends" />
 		
 		    <CheckBox android:id="@+id/checkbox_location"
@@ -88,15 +89,15 @@
 		        android:layout_below="@+id/button_invite_friends"
 		        android:text="@string/group_location" />
 		    
-		    <ImageView 
-		        android:src="@drawable/ic_menu_help2"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/button_invite_friends"
-		        android:layout_alignParentRight="true"
-		        android:layout_marginTop="8dp"
-		        android:contentDescription="@string/button_send"
-		        android:onClick="onLocationHelp" />
+		     <ImageButton
+			     android:id="@+id/friend_add"
+		         android:layout_width="wrap_content"
+		         android:layout_height="wrap_content"
+		         android:layout_below="@+id/button_invite_friends"
+		         android:layout_alignParentRight="true"
+			     android:padding="0dp"
+		         android:onClick="onLocationHelp"
+		         android:src="@drawable/button_help" /> 
 		    
 		    <Button
 		        android:id="@+id/button_location"
@@ -104,7 +105,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_below="@+id/checkbox_location"
-		    	android:drawableLeft="@drawable/ic_menu_mylocation"
+		    	android:drawableLeft="@drawable/button_location"
 		        android:onClick="onClickLocation" /> 
 		    	   
 		</RelativeLayout> 

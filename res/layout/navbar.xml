@@ -67,7 +67,7 @@
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_green_menu_allfriends"
+		    android:src="@drawable/ic_green_menu_friendslist"
 		    android:layout_marginTop="1dip"
 		    style="@style/NavButton" />
 	</TableRow>

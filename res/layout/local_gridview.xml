@@ -10,21 +10,26 @@
         android:layout_height="wrap_content"
         layout="@layout/header" />
     
-    <ImageView 
+    <ImageButton
         android:id="@+id/listmode"
-        android:src="@drawable/ic_menu_gallery"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
         android:layout_below="@+id/header"
-        android:onClick="onClickListMode" />
-   <ImageView 
+        android:layout_toLeftOf="@+id/mapmode"
+        android:contentDescription="@string/group_create_location_button"
+	    android:padding="0dp"
+        android:src="@drawable/button_gallery"
+        android:onClick="onClickListMode" />     
+    <ImageButton
         android:id="@+id/mapmode"
-        android:src="@drawable/ic_menu_mapmode"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
         android:layout_below="@+id/header"
-        android:layout_toRightOf="@+id/listmode"
-        android:onClick="onClickMapMode" /> 
+        android:layout_alignParentRight="true"
+        android:contentDescription="@string/group_create_location_button"
+	    android:padding="0dp"
+        android:src="@drawable/button_map"
+        android:onClick="onClickMapMode" />   
         	
     <GridView 
 	  android:id="@+id/gridview"

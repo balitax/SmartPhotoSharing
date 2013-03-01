@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="header_margin">4dp</dimen>
     <dimen name="icon_medium">48dp</dimen>
     <dimen name="icon_large">64dp</dimen>
     <dimen name="icon_xl">96dp</dimen>

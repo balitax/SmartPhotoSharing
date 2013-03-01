@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:padding="2dp" >
 		    
+	    	  
 	<ImageView
 		android:id="@+id/icon"
 		android:contentDescription="@string/icon_unknown"
@@ -28,11 +28,19 @@
 	     android:singleLine="true"
 	     android:ellipsize="marquee" />
 	
-	<Gallery
-	     android:id="@+id/gallery"
-	     android:layout_width="fill_parent"
-	     android:layout_height="60dp"
-	     android:layout_toRightOf="@+id/icon"
-	     android:layout_below="@+id/item_text"
-	     android:spacing="2dp" />
+	<ImageButton
+	    android:id="@+id/btn_accept"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/icon"
+        android:layout_below="@+id/item_text"
+	    android:src="@drawable/button_ok" />
+	
+	<ImageButton
+	    android:id="@+id/btn_decline"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/btn_accept"
+        android:layout_below="@+id/item_text"
+	    android:src="@drawable/button_delete" />
 </RelativeLayout>

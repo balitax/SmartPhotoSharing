@@ -9,6 +9,7 @@
         android:id="@+id/header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/header_margin"
         layout="@layout/header" />
     	
     <!-- Contents -->
@@ -18,7 +19,7 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_below="@+id/header"
-		android:drawableLeft="@drawable/ic_menu_camera"
+		android:drawableLeft="@drawable/button_camera"
 	    android:onClick="onClickPicture"
 	    android:text="@string/profile_camera" />
 	<!--  
@@ -37,7 +38,7 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_below="@+id/btn_camera"
-		android:drawableLeft="@drawable/ic_menu_preferences"
+		android:drawableLeft="@drawable/button_preferences"
 	    android:onClick="onClickPrefs"
 	    android:text="@string/profile_prefs" />   
 	    
@@ -46,7 +47,7 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_below="@+id/btn_prefs"
-		android:drawableLeft="@drawable/ic_menu_stop"
+		android:drawableLeft="@drawable/button_stop"
 	    android:onClick="onClickLogout"
 	    android:text="@string/profile_logout" />   
 	    

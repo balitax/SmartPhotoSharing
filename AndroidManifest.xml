@@ -117,6 +117,8 @@
             android:name=".friends.FriendsActivity" />
         <activity android:label="Add Friends" 
             android:name=".friends.AddFriendsActivity" />
+        <activity android:label="Friend Requests" 
+            android:name=".friends.FriendsRequestsActivity" />
         
         <activity android:label="Camera" 
             android:configChanges="orientation" 

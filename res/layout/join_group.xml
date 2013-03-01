@@ -7,6 +7,7 @@
         android:id="@+id/header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/header_margin"
         layout="@layout/header" />
      
      <ListView android:id="@id/android:list"

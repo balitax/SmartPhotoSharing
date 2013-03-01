@@ -9,18 +9,19 @@
         android:id="@+id/header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/header_margin"
         layout="@layout/header" />
          
      <!-- NAV BUTTONS -->
      
-    <ImageView 
+     <ImageButton
 	    android:id="@+id/subscription_add"
-	    android:contentDescription="@string/icon_unknown"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/header"
-	    android:src="@drawable/ic_menu_add"
-	    android:onClick="onClickCreateSubscription" />	      
+        android:layout_below="@+id/header"
+	    android:padding="0dp"
+        android:src="@drawable/button_add"
+	    android:onClick="onClickCreateSubscription" /> 
 	    
     <!-- GROUPS LIST -->
     

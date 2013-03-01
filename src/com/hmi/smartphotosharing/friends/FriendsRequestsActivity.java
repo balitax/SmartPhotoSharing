@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,7 +16,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarListActivity;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.groups.SelectFriendsActivity;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.PostData;
@@ -37,7 +38,7 @@ import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-public class FriendsActivity extends NavBarListActivity implements OnDownloadListener {
+public class FriendsRequestsActivity extends NavBarListActivity implements OnDownloadListener {
 
 	public static final String KEY_ID = "com.hmi.smartphotosharing.friends.uid";
 	
@@ -48,18 +49,16 @@ public class FriendsActivity extends NavBarListActivity implements OnDownloadLis
 	private static final int CODE_INVITE = 0;
 	
     private ImageLoader imageLoader;
-    private Button requests;
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.friends);
+        setContentView(R.layout.friends_requests);
         super.onCreate(savedInstanceState);
         
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         
         loadData();
-        requests = (Button) findViewById(R.id.btn_requests);
         
         // Show selection in nav bar
         ImageView img = (ImageView) findViewById(R.id.friends);
@@ -93,11 +92,6 @@ public class FriendsActivity extends NavBarListActivity implements OnDownloadLis
     	Intent intent = new Intent(this, AddFriendsActivity.class);
     	intent.putExtra("type", AddFriendsActivity.TYPE_FRIENDS);
     	startActivityForResult(intent, CODE_INVITE);
-    }
-
-    public void onClickRequests(View view) {
-    	Intent intent = new Intent(this, FriendsRequestsActivity.class);
-    	startActivity(intent);
     }
     
 	@Override
@@ -133,11 +127,8 @@ public class FriendsActivity extends NavBarListActivity implements OnDownloadLis
 
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
-
-        String url = String.format(Util.getUrl(this,R.string.friends_http),hash);		
-        new FetchJSON(this,CODE_FRIENDS).execute(url);
         
-        url = String.format(Util.getUrl(this,R.string.friends_http_request),hash);		
+        String url = String.format(Util.getUrl(this,R.string.friends_http_request),hash);		
         new FetchJSON(this,CODE_REQUESTS).execute(url);
 		
 	}
@@ -146,42 +137,28 @@ public class FriendsActivity extends NavBarListActivity implements OnDownloadLis
 	public void parseJson(String json, int code) {
 		Log.d("FriendsActivity", json);
 		switch (code) {
-			case CODE_FRIENDS:
-				parseFriends(json);
-				break;
-
 			case CODE_REQUESTS:
 				parseRequests(json);
 				break;
-				
-			case CODE_INVITE:
-				parseInvite(json);
+
+			case CODE_CONFIRM:
+				parseConfirm(json);
 				break;	
 			default:
 		}
 		
 	}
 	
-	private void parseInvite(String json) {
-
+	private void parseConfirm(String json) {
 		Gson gson = new Gson();
-		StringResponse response = gson.fromJson(json, StringResponse.class);
+		StringResponse response = gson.fromJson(json,  StringResponse.class);
 		
 		if (response != null) {
-			switch(response.getStatus()) {
-			
-			case(Util.STATUS_OK):
-				Toast.makeText(this, "Friend requests sent", Toast.LENGTH_SHORT).show();
-				loadData();
-				break;
-								
-			default:
-				Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
-			
-			}
+			Toast.makeText(getApplicationContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+			loadData();
 		}
-		
 	}
+
 	private void parseRequests(String result) {
 		Gson gson = new Gson();
 		UserListResponse response = gson.fromJson(result, UserListResponse.class);
@@ -189,38 +166,11 @@ public class FriendsActivity extends NavBarListActivity implements OnDownloadLis
 		if (response != null) {
 			List<User> user_list = response.getObject();
 			
-			if (user_list != null && user_list.size() > 0) {
-				int reqs = user_list.size();
-				
-				requests.setVisibility(Button.VISIBLE);
-		        String txt = String.format(getResources().getString(R.string.friends_requests),reqs);	
-				
-		        if (reqs > 1) txt += "s";
-		        
-				requests.setText(txt);
-			}
-		}
-	}
-
-	
-	private void parseFriends(String result) {
-		Gson gson = new Gson();
-		UserListResponse response = gson.fromJson(result, UserListResponse.class);
-		
-		if (response != null) {
-			List<User> user_list = response.getObject();
-			
-			if (user_list == null) {
-				ListView listView = getListView();
-				TextView emptyView = (TextView) listView.getEmptyView();
-				emptyView.setGravity(Gravity.CENTER_HORIZONTAL);
-				emptyView.setText(getResources().getString(R.string.friends_empty));
-			} else {
-
+			if (user_list != null) {
 				// Sort the group on newest
-				FriendsAdapter adapter = new FriendsAdapter(
+				FriendsRequestAdapter adapter = new FriendsRequestAdapter(
 						this, 
-						R.layout.friends_list_item, 
+						R.layout.friends_request_item, 
 						user_list,
 						imageLoader
 					);

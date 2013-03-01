@@ -100,7 +100,11 @@
     <string name="friends_http">cmd=getfriends&amp;sid=%1$s</string>
     <string name="friends_http_invite">cmd=searchfriends</string>
     <string name="friends_http_add">cmd=addfriends</string>
+    <string name="friends_http_request">cmd=request&amp;sid=%1$s</string>
+    <string name="friends_http_confirm">cmd=friends_confirm&amp;sid=%1$s&amp;friend=%2$s&amp;accept=%3$s</string>
     <string name="friends_header_title">Friends</string>
+    <string name="friends_empty">You don\'t have any friends at the moment. Click the button above to add new friends.</string>
+    <string name="friends_requests">%1$s request</string>
     
     <!--  Local pictures -->
     
