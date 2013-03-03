@@ -115,6 +115,9 @@
             android:configChanges="orientation" 
             android:name=".groups.ChangeGroupPictureActivity" />
         
+        <activity android:label="News" 
+            android:name=".news.NewsActivity" />
+        
         <activity android:label="Friends" 
             android:name=".friends.FriendsActivity" />
         <activity android:label="Add Friends" 

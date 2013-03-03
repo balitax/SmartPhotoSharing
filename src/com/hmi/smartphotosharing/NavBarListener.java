@@ -1,21 +1,13 @@
 package com.hmi.smartphotosharing;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Toast;
 
 import com.hmi.smartphotosharing.friends.FriendsActivity;
-import com.hmi.smartphotosharing.groups.GroupsActivity;
 import com.hmi.smartphotosharing.local.MapActivity;
+import com.hmi.smartphotosharing.news.NewsActivity;
 import com.hmi.smartphotosharing.subscriptions.SubscriptionsActivity;
 import com.hmi.smartphotosharing.util.Util;
 
@@ -81,7 +73,7 @@ public class NavBarListener implements OnClickListener {
 	}
 
 	private void action_archive() {
-        Intent intent = new Intent(c, GroupsActivity.class);
+        Intent intent = new Intent(c, NewsActivity.class);
         c.startActivity(intent);		
 	}
 

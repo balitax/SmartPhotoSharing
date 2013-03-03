@@ -47,6 +47,10 @@
         <item name="android:layout_height">@dimen/icon_medium</item>
     </style>
     
+    <style name="Icon.Small">
+        <item name="android:layout_width">@dimen/icon_small</item>
+        <item name="android:layout_height">@dimen/icon_small</item>
+    </style>
     <style name="Icon.Large">
         <item name="android:layout_width">@dimen/icon_large</item>
         <item name="android:layout_height">@dimen/icon_large</item>

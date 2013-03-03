@@ -114,6 +114,13 @@
     <string name="local_http_groups">cmd=localgroups</string>
     <string name="local_http_point">cmd=localpoint</string>
     
+    <!--  News -->
+    
+    <string name="news_http">cmd=news</string>
+    <string name="news_empty">You don't have any friends yet, or your friends did not post any content.</string>
+    <string name="news_txt_group">%1$s joined the group %2$s.</string>
+    <string name="news_txt_photo">%1$s posted a new photo in group %2$s.</string>
+    
     <!-- Subscriptions -->
     
     <string name="sub_create_title">Create Subscription</string>
