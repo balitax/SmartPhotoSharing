@@ -1,11 +1,15 @@
 package com.hmi.smartphotosharing;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import com.hmi.smartphotosharing.friends.FriendsActivity;
+import com.hmi.smartphotosharing.groups.GroupsActivity;
 import com.hmi.smartphotosharing.local.MapActivity;
 import com.hmi.smartphotosharing.news.NewsActivity;
 import com.hmi.smartphotosharing.subscriptions.SubscriptionsActivity;
@@ -48,9 +52,7 @@ public class NavBarListener implements OnClickListener {
 	}
 
 	private void action_favourite() {
-        Intent intent = new Intent(c, SubscriptionsActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        c.startActivity(intent);
+        createGroupDialog();
 	}
 
 	private void action_settings() {
@@ -69,7 +71,7 @@ public class NavBarListener implements OnClickListener {
 	private void action_camera() {
 	   //Intent intent = new Intent(c, SharePhotoActivity.class);
 	   //c.startActivity(intent);	
-	   Util.createPhotoDialog(c);
+	   createPhotoDialog();
 	}
 
 	private void action_archive() {
@@ -82,4 +84,47 @@ public class NavBarListener implements OnClickListener {
         c.startActivity(intent);		
 	}
 	
+	public void createGroupDialog() {
+    	AlertDialog.Builder builder = new AlertDialog.Builder(c);
+		builder.setTitle(c.getResources().getString(R.string.group_menu_dialog))
+			 .setItems(R.array.group_dialog, new GroupListener());
+		AlertDialog alert = builder.create();
+		alert.show();
+		
+	}   
+	
+	public void createPhotoDialog() {
+
+    	AlertDialog.Builder builder = new AlertDialog.Builder(c);
+		builder.setTitle(c.getResources().getString(R.string.camera_share_dialog))
+			 .setItems(R.array.camera_dialog, new ShareListener());
+		AlertDialog alert = builder.create();
+		alert.show();
+	}    
+	
+	public class ShareListener implements DialogInterface.OnClickListener {
+		
+        public void onClick(DialogInterface dialog, int which) {
+     	   if(which == 0) {
+     		   Intent intent = new Intent(c, SharePhotoActivity.class);
+     		   c.startActivity(intent);
+     	   } else {
+     		   Toast t = Toast.makeText(c, "Select from saved photos", Toast.LENGTH_SHORT);
+     		   t.show();
+     	   }
+        }
+	 }
+	
+	public class GroupListener implements DialogInterface.OnClickListener {
+		
+		public void onClick(DialogInterface dialog, int which) {
+     	   if(which == 0) {
+     		   Intent intent = new Intent(c, GroupsActivity.class);
+     		   c.startActivity(intent);
+     	   } else {
+     		   Intent intent = new Intent(c, SubscriptionsActivity.class);
+     		   c.startActivity(intent);
+     	   }
+        }
+	 }
 };

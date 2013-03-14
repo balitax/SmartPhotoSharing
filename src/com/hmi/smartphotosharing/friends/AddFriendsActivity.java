@@ -9,11 +9,15 @@ import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
 
 import android.app.ListActivity;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
@@ -21,6 +25,8 @@ import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.groups.FriendsInviteAdapter;
+import com.hmi.smartphotosharing.groups.GroupCreateActivity;
+import com.hmi.smartphotosharing.groups.GroupJoinActivity;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
@@ -54,8 +60,61 @@ public class AddFriendsActivity extends ListActivity implements OnDownloadListen
         	
         listView = (ListView) findViewById(android.R.id.list);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        
+	    setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
+	    // Get the intent, verify the action and get the query
+	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+	    	String query = intent.getStringExtra(SearchManager.QUERY).trim();
+	    	doMySearch(query);
+	    }
     }
-    	
+    
+	@Override
+	public boolean onCreateOptionsMenu (Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.friend_add_menu, menu);
+		super.onCreateOptionsMenu(menu);
+
+	    return true;
+	}	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {		
+		switch (item.getItemId()) {
+
+        	case R.id.search:
+        		onSearchRequested();
+        		return true;
+	        case R.id.refresh:
+	        	loadData();
+		    	return true;
+	        default:
+	        	return super.onOptionsItemSelected(item);
+        }
+    }	
+	
+	public void onClickSearch(View view) {
+		onSearchRequested();
+	}
+	
+	@Override
+	public boolean onSearchRequested() {
+	     Bundle appData = new Bundle();
+	     
+	     //@TODO PUT GPS DATA IN HERE
+	     //appData.putBoolean(SearchableActivity.JARGON, true);
+	     
+	     startSearch(null, false, appData, false);
+	     return true;
+	 }
+	
+	private void doMySearch(String query) {
+		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+		String hash = settings.getString(Login.SESSION_HASH, null);
+		
+		loadFriendsData(hash, query);
+	}	
+	
 	@Override
 	public void onStart() {
         super.onStart();
@@ -111,13 +170,21 @@ public class AddFriendsActivity extends ListActivity implements OnDownloadListen
 			loadFriendsData(hash);
 
 	}
-			
+	
 	private void loadFriendsData(String hash) {
+		loadFriendsData(hash, null);
+	}
+	
+	private void loadFriendsData(String hash, String query) {
 
         String usersUrl = Util.getUrl(this,R.string.friends_http_invite);
         HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
         try {
 			map.put("sid", new StringBody(hash));
+			
+			if (query != null) {
+				map.put("q", new StringBody(query));
+			}
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}

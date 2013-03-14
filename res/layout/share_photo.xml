@@ -14,7 +14,6 @@
 	        android:layout_height="wrap_content"
          	android:layout_centerVertical="true"
 	        android:text="@string/intent_intro"
-	        android:padding="5dp" 
 	        style="@style/HeaderText" />
 	    
 	    <ImageView 
@@ -44,11 +43,38 @@
 			    android:layout_height="wrap_content"
 			    android:adjustViewBounds="true" />
 			
+			 <ImageView 
+			     android:id="@+id/img_location_ok"
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:layout_below="@+id/image1"
+			     android:src="@drawable/button_delete"/>
+			 
+			 
+		    <TextView
+		        android:id="@+id/txt_location"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+	         	android:layout_centerVertical="true"
+		        android:layout_below="@+id/image1"
+		        android:layout_toRightOf="@+id/img_location_ok"
+		        android:text="@string/share_location_default"
+		        android:padding="5dp"  />
+		     <ImageButton
+			     android:id="@+id/btn_mapmode"
+		         android:layout_width="wrap_content"
+		         android:layout_height="wrap_content"
+		         android:layout_below="@+id/image1"
+		         android:layout_alignParentRight="true"
+			     android:padding="0dp"
+		         android:onClick="onClickMap"
+		         android:src="@drawable/button_map" /> 
+		         
 			<EditText 
 		        android:id="@+id/edit_message"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/image1"
+		        android:layout_below="@+id/btn_mapmode"
 		        android:hint="@string/add_comment" />
 						
 	    	<Button

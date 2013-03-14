@@ -24,13 +24,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.camera.CameraActivity;
 import com.hmi.smartphotosharing.groups.GroupCreateActivity;
 import com.hmi.smartphotosharing.groups.SelectGroupActivity;
+import com.hmi.smartphotosharing.groups.SelectLocationActivity;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
@@ -46,12 +47,16 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	private Button btnSelectGroup;
 	private EditText comment;
 	private ImageView imageView;
+	private ImageView locationImg;
+	private TextView locationTxt;
+	
 	//private String imgPath;
 
 	private static final int CODE_SELECT_GROUP = 2;
-	private static final int TAKE_PICTURE = 5;
 	private static final int CODE_UPLOAD = 3;
-	private static final int CREATE_GROUP = 4;
+	private static final int CODE_CREATE_GROUP = 4;
+	private static final int TAKE_PICTURE = 5;
+	private static final int CODE_LOCATION = 6;
 	
 	private static final int TEN_SECONDS = 10 * 1000;
 	private static final float MIN_DISTANCE = 25;
@@ -59,26 +64,28 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	private String newGroupName;
 
     private LocationManager mLocationManager;
+    
+    // The location that will be stored with the picture in the db
 	private Location gpsLocation;
 	
 	private ImageLoader imageLoader;
 	
 	private Uri fileUri;
 	private int rotation;
-	
-	private ProgressDialog pd;
-	
+		
 	private long gid;
 	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.share_photo); 
 				
-		// Populate the Spinner
 		btnSelectGroup = (Button) findViewById(R.id.groups_spinner);
 		comment = (EditText) findViewById(R.id.edit_message);
         imageView = (ImageView) findViewById(R.id.image1);
-
+        
+        locationImg = (ImageView) findViewById(R.id.img_location_ok);
+        locationTxt = (TextView) findViewById(R.id.txt_location);
+        
         // ImageLoader
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
@@ -122,10 +129,6 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         //loadData();
 	}
 	
-	public void onClickSelectGroup(View view) {
-		Intent intent = new Intent(this,SelectGroupActivity.class);
-		startActivityForResult(intent, CODE_SELECT_GROUP);
-	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -157,16 +160,20 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         mLocationManager.removeUpdates(listener);
     }  
 	
-	@Override
-    public void onResume() {
-      super.onResume();
-      
-      setupGps();
-    } 
-		
+	public void onClickSelectGroup(View view) {
+		Intent intent = new Intent(this,SelectGroupActivity.class);
+		startActivityForResult(intent, CODE_SELECT_GROUP);
+	}
+	
 	public void onClickCreateGroup(View v) {
 		Intent intent = new Intent(this, GroupCreateActivity.class);
-		startActivityForResult(intent, CREATE_GROUP);
+		startActivityForResult(intent, CODE_CREATE_GROUP);
+	}
+	
+	public void onClickMap(View v) {
+		Intent intent = new Intent(this,SelectLocationActivity.class);
+		intent.putExtra(SelectLocationActivity.SINGLE_LOCATION, true);
+		startActivityForResult(intent, CODE_LOCATION);
 	}
 	
 	public void onClickShare(View v) {
@@ -174,43 +181,32 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		if (fileUri != null) {
 		    // Stop listening for GPS updates already
 			mLocationManager.removeUpdates(listener);
-			
-			// Find GPS coordinates
-			Criteria criteria = new Criteria();
-			criteria.setAccuracy(Criteria.ACCURACY_FINE);
-			criteria.setAltitudeRequired(false);
-			criteria.setBearingRequired(false);
-			criteria.setCostAllowed(false);
-			criteria.setPowerRequirement(Criteria.POWER_LOW);
-			
-			mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-			String provider = mLocationManager.getBestProvider(criteria, true);
-			Location location = mLocationManager.getLastKnownLocation(provider);
-			
+									
 			// Get user session ID
     		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
     		String hash = settings.getString(Login.SESSION_HASH, null);
 
+    		// Group ID
     		String group = Long.toString(gid);
     		
+    		// Photo rotation
     		String rotate = Integer.toString(rotation);
     		
+    		// Get the location of the photo
     		String lat, lon;
     		
-    		if (location != null) {
-	    		lat = Double.toString(location.getLatitude());
-	    		lon = Double.toString(location.getLongitude());
+    		if (gpsLocation != null) {
+	    		lat = Double.toString(gpsLocation.getLatitude());
+	    		lon = Double.toString(gpsLocation.getLongitude());
     		} else {
-    			lat = "0";
-    			lon = "0";
+    			lat = lon = null;
+    			Util.createSimpleDialog(getApplicationContext(), getResources().getString(R.string.share_no_location));
     		}
+    		
     		String commentTxt = comment.getText().toString();
     		
     		String shareUrl = Util.getUrl(this,R.string.url_upload);
-    		/*
-			new UploadImage(this).execute(shareUrl,hash,group,lat,lon,commentTxt);
-    		*/
-
+    		
             HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
             try {
             	
@@ -232,21 +228,15 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		}
             
             PostData pr = new PostData(shareUrl,map);
-            new PostRequest(this, CODE_UPLOAD).execute(pr);
-            
-            pd = new ProgressDialog(SharePhotoActivity.this);
-            pd.setMessage("Uploading photo...");
-            pd.setCancelable(false);
-            pd.setIndeterminate(true);
-            pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            pd.show();    		
+            new PostRequest(this, CODE_UPLOAD,true).execute(pr);
+            		
 		} 
 	}	
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
             Intent data) {
-        if (requestCode == CREATE_GROUP && resultCode == RESULT_OK) {
+        if (requestCode == CODE_CREATE_GROUP && resultCode == RESULT_OK) {
         	newGroupName = data.getStringExtra("name");
         	Toast.makeText(this, "Group '" + newGroupName + "' Created", Toast.LENGTH_SHORT).show();
         	//loadData();
@@ -263,6 +253,22 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         		gid = 0;
 	        	btnSelectGroup.setText(R.string.select_group);
 	        	btnSelectGroup.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        	}
+        }
+        
+        else if (requestCode == CODE_LOCATION && resultCode == RESULT_OK) {
+
+        	// Location was set manually, stop listening for GPS updates
+    	    mLocationManager.removeUpdates(listener);
+    	    
+    	    // Get the selected location 
+        	gpsLocation.setLatitude(data.getDoubleExtra("lat1", 0d));
+        	gpsLocation.setLongitude(data.getDoubleExtra("lon1", 0d));
+        	
+        	// Set some information for the user
+        	if (gpsLocation.getLatitude() != 0 && gpsLocation.getLongitude() != 0) {
+	        	locationTxt.setText(R.string.share_location_manual);
+	        	locationImg.setImageDrawable(getResources().getDrawable(R.drawable.button_ok));
         	}
         }
         
@@ -293,9 +299,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 
     private void parseUpload(String json) {
 		Log.d("Json parse",json);     
-		
-		if (pd != null) pd.dismiss();
-		
+				
 		Gson gson = new Gson();
 		StringResponse response = gson.fromJson(json, StringResponse.class);
 		
@@ -312,7 +316,6 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	}
 	
     private void setupGps() { 
-        // Request updates from just the fine (gps) provider.
         gpsLocation = requestUpdatesFromProvider();
     	 
     }
@@ -357,7 +360,10 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         	
         	// Check if we should update or not
         	if (isBetter) {
+        		Log.d("GPS","Location: " + location.getLatitude() + "/" + location.getLongitude());
         		gpsLocation = location;
+        		locationTxt.setText(R.string.share_location_gps);
+        		locationImg.setImageDrawable(getResources().getDrawable(R.drawable.button_ok));
             	//loadData();
         	}
 

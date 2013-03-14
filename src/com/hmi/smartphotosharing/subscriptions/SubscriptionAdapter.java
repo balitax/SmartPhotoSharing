@@ -19,18 +19,19 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hmi.smartphotosharing.Login;
-import com.hmi.smartphotosharing.MyGalleryAdapter;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.Subscription;
@@ -92,6 +93,8 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
 	@Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        Subscription subscription = getItem(position);
+        
         View v = convertView;
         SubscriptionHolder holder = null;
        
@@ -105,14 +108,13 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
             holder.imgIcon = (ImageView)v.findViewById(R.id.icon);
             holder.txtTitle = (TextView)v.findViewById(R.id.item_text);
             holder.totalNew = (TextView)v.findViewById(R.id.total_new);
-            holder.picGallery = (Gallery) v.findViewById(R.id.gallery);
+            holder.gallery = (LinearLayout) v.findViewById(R.id.gallery);
             holder.delete = (ImageView) v.findViewById(R.id.sub_delete);
             v.setTag(holder);
         } else {
             holder = (SubscriptionHolder)v.getTag();
         }
                         
-        Subscription subscription = data[position];
             
         // Delete button
         holder.delete.setImageResource(R.drawable.ic_delete);
@@ -154,7 +156,7 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         	
         }
                 
-        
+        // Show the number of updates
         if (subscription.totalnew == 0) {
         	holder.totalNew.setVisibility(TextView.INVISIBLE);
         } else {
@@ -162,36 +164,32 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
             holder.totalNew.setText(Integer.toString(subscription.totalnew));
         }
         
-        // Set the adapter for the gallery
-        
-		holder.picGallery.setAdapter(
-				new MyGalleryAdapter(
-						context, 
-						subscription.photos,
-						imageLoader
-			));
-		
-		// GestureDetector to detect swipes on the gallery
-        gestureDetector = new GestureDetector(new MyGestureDetector());
-        gestureListener = new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
-            }
-        };
-
-        // Make the gallery start from the left
-        if (subscription.photos != null && subscription.photos.size() > 1)
-        	holder.picGallery.setSelection(1);
-        
-        // Detect clicking an image
-        holder.picGallery.setOnItemClickListener(new MyOnItemClickListener(context,subscription.getId()));
+        // Add photos to the gallery
+        holder.gallery.removeAllViews();
+        if (subscription.photos != null && subscription.photos.size() > 0) {
+			for (Photo p : subscription.photos) {
+				View imgView = getImageView(p.thumb);
+				imgView.setOnClickListener(new MyOnItemClickListener(context, getItemId(position), p.getId()));
+				holder.gallery.addView(imgView);
+			}
+        }    
         
         // Detect swipes
-        holder.picGallery.setOnTouchListener(gestureListener);
+        holder.gallery.setOnTouchListener(gestureListener);
         
         return v;
     }
-	
+
+    public View getImageView(String path){
+                
+        ImageView imageView = new ImageView(context);
+        imageView.setLayoutParams(new LayoutParams(60, 60));
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        
+        imageLoader.displayImage(path, imageView);
+        return imageView;
+    }
+    
 	/**
 	 * The Groupholder class is used to cache the Views
 	 * so they can be reused for every row in the ListView.
@@ -203,53 +201,33 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         ImageView imgIcon;
         TextView txtTitle;
         TextView totalNew;
-        Gallery picGallery;
+        LinearLayout gallery;
         ImageView delete;
     }	
     	
-	/**
-	 * Gesture detector needed to detect swipes
-	 * This is needed in combination with onItemClickListener to
-	 * enable both swiping the gallery and clicking imageviews.
-	 * @author Edwin
-	 *
-	 */
-    private class MyGestureDetector extends SimpleOnGestureListener {
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            try {
-                if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
-                    return false;
-            } catch (Exception e) {
-                // nothing
-            }
-            return false;
-        }
-
-    }
-
     /**
      * Listener for clicking images on the gallery.
      * @author Edwin
      *
      */
-    private class MyOnItemClickListener implements OnItemClickListener{    
+    private class MyOnItemClickListener implements OnClickListener{    
         private Context context;
-        private long ssid;
-        public MyOnItemClickListener(Context context, long ssid){
+        private long ssid, iid;
+        
+        public MyOnItemClickListener(Context context, long ssid, long iid){
             this.context = context;
             this.ssid = ssid;
+            this.iid = iid;
         }
         
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
+		@Override
+		public void onClick(View arg0) {
         	Intent intent = new Intent(context, PhotoDetailActivity.class);
         	intent.putExtra("ssid", ssid);
-		    intent.putExtra("id", id);
+		    intent.putExtra("id", iid);
 		    context.startActivity(intent);
-        	
-        }
+			
+		}
 
     }
     

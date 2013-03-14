@@ -38,11 +38,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarFragmentActivity;
@@ -76,6 +76,11 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
     public static final String TYPE_PHOTO = "PHOTO";
     public static final String TYPE_POINT = "POINT";
     
+    public static final String FILTER_PREFS = "MAPFILTER";
+    public static final int FILTER_ALL = 0;
+    public static final int FILTER_GROUPS = 1;
+    public static final int FILTER_FRIENDS = 2;
+    
     private static long MAP_TIME_THRESHOLD = 5000;
     private static int MAP_ZOOM_THRESHOLD = 14;
     private static int MAP_DISTANCE_THRESHOLD = 500;
@@ -83,6 +88,8 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
     private static final int CODE_PHOTOS = 0;
     private static final int CODE_GROUPS = 1;
     private static final int CODE_POINT = 2;
+    
+    private static final int CODE_FILTER = 0;
     
 	private OnLocationChangedListener mListener;
 	private LocationManager mLocationManager;
@@ -93,23 +100,36 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	// Afterwards, it should only center on the position without zooming
 	private boolean firstZoomCamera;
 	
+	// Filter settings
+	private boolean filterShowGroupBorders;
+	private int filterType;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {  
         super.onCreate(savedInstanceState,R.layout.local_map);
         
         polyList = new ArrayList<Polygon>();
         // Show selection in nav bar
-        ImageView settings = (ImageView) findViewById(R.id.local);
-        Util.setSelectedBackground(getApplicationContext(), settings);
+        ImageView local = (ImageView) findViewById(R.id.local);
+        Util.setSelectedBackground(getApplicationContext(), local);
         
         // ImageLoader
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         
         setUpMapIfNeeded();
+
+        loadPreferences();
+
     }
     
-
+	private void loadPreferences() {
+	
+	    SharedPreferences settings = getSharedPreferences(FILTER_PREFS, MODE_PRIVATE);
+	    filterType = settings.getInt("type", 0);
+	    filterShowGroupBorders = settings.getBoolean("borders", true);
+	}
+	
     private void setUpMapIfNeeded() {
         
     	// Do a null check to confirm that we have not already instantiated the map.
@@ -184,6 +204,15 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
       }
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    	if (requestCode == CODE_FILTER && resultCode == RESULT_OK) {
+    		googleMap.clear();
+        	loadPreferences();
+    		loadData();
+    	}
+    	
+    }
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -201,7 +230,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 
 	@Override
 	public void onCameraChange(CameraPosition pos) {
-
+		
         long now = System.currentTimeMillis(); 
         if (lastChange == 0 || lastPos == null) {
         	lastChange = now;
@@ -225,6 +254,8 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
         	}
         }		
 	}
+	
+	/*
 	public void onClickListMode(View view) {
     	Intent intent = new Intent(this,LocalPhotoActivity.class);
     	startActivity(intent);
@@ -232,7 +263,12 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	
 	public void onClickMapMode(View view) {
 		// do nothing
-	}	
+	}*/
+	
+	public void onClickFilter(View view) {
+    	Intent intent = new Intent(this,MapFilterActivity.class);
+    	startActivityForResult(intent, CODE_FILTER);
+	}
 	
     public void onSearchClick(View view) {
 
@@ -246,6 +282,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
             new GeocoderTask().execute(location);
         }
     }
+    
 	private class MyInfoWindowClickListener implements OnInfoWindowClickListener {
 
 		private Context c;
@@ -337,7 +374,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 				Log.e("Map activity", e.getMessage());
 			}
 	        PostData pr = new PostData(url,map);
-	        new PostRequest(c, CODE_POINT).execute(pr);
+	        new PostRequest(c, CODE_POINT, false).execute(pr);
 			
 		}
 
@@ -345,12 +382,8 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 			
 	private void loadData() {
 		
-		LatLngBounds bounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
-		
-		// Find the other two corners
-		LatLng nw = new LatLng(bounds.northeast.latitude,bounds.southwest.longitude);
-		LatLng se = new LatLng(bounds.southwest.latitude,bounds.northeast.longitude);
-		
+		VisibleRegion bounds = googleMap.getProjection().getVisibleRegion();
+				
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		
@@ -364,22 +397,24 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
         	
 			map.put("sid",new StringBody(hash));
 			
-			map.put("lat1", new StringBody(Double.toString(nw.latitude)));
-			map.put("lon1", new StringBody(Double.toString(nw.longitude)));
+			map.put("lat1", new StringBody(Double.toString(bounds.farLeft.latitude)));
+			map.put("lon1", new StringBody(Double.toString(bounds.farLeft.longitude)));
 			
-			map.put("lat2", new StringBody(Double.toString(se.latitude)));
-			map.put("lon2", new StringBody(Double.toString(se.longitude)));
+			map.put("lat2", new StringBody(Double.toString(bounds.nearRight.latitude)));
+			map.put("lon2", new StringBody(Double.toString(bounds.nearRight.longitude)));
 			
 		} catch (UnsupportedEncodingException e) {
 			Log.e("Map activity", e.getMessage());
 		}
-        HashMap<String,ContentBody> map2 = (HashMap<String,ContentBody>)map.clone();
         PostData pr = new PostData(url,map);
-        new PostRequest(this, CODE_PHOTOS).execute(pr);
+        new PostRequest(this, CODE_PHOTOS, false).execute(pr);
 
-		url = Util.getUrl(this,R.string.local_http_groups);
-        pr = new PostData(url,map2);
-        new PostRequest(this, CODE_GROUPS).execute(pr);        
+        if (filterShowGroupBorders) {
+	        HashMap<String,ContentBody> map2 = (HashMap<String,ContentBody>)map.clone();
+			url = Util.getUrl(this,R.string.local_http_groups);
+	        pr = new PostData(url,map2);
+	        new PostRequest(this, CODE_GROUPS, false).execute(pr);   
+        }
 	}
 	
 	@Override
@@ -417,7 +452,6 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 			} else {
 				txt = "No groups on this location.";
 			}
-
 			longClickMarker.setSnippet(TYPE_POINT + "," + txt);
 			longClickMarker.showInfoWindow();
 		} else {

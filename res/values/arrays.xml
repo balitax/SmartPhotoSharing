@@ -14,5 +14,9 @@
 		<item>Camera</item>
 		<item>Saved photos</item>
 	</string-array>
+	<string-array name="group_dialog">
+		<item>Groups</item>
+		<item>Subscriptions</item>
+	</string-array>
 	
 </resources>

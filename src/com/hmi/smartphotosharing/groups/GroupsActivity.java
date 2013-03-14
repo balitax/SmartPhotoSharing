@@ -21,7 +21,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarListActivity;
-import com.hmi.smartphotosharing.ProfileActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Group;
@@ -29,6 +28,8 @@ import com.hmi.smartphotosharing.json.GroupListResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserResponse;
+import com.hmi.smartphotosharing.local.MapActivity;
+import com.hmi.smartphotosharing.subscriptions.SubscriptionsActivity;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -39,8 +40,7 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 	
     public static final int CREATE_GROUP = 4;
 
-    private static final int CODE_PROFILE = 1;
-    private static final int CODE_GROUPS = 2;
+    private static final int CODE_GROUPS = 0;
         
 	private ImageLoader imageLoader;
 	    
@@ -69,79 +69,58 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
         imageLoader.init(config);
         
         // Show selection in nav bar
-        ImageView home = (ImageView) findViewById(R.id.home);
+        ImageView home = (ImageView) findViewById(R.id.favourite);
         Util.setSelectedBackground(getApplicationContext(), home);
         
         // Load data
-        loadData(true, true);
+        loadData();
         
         
     }
 
-    public void onClickAdd(View view) {
-    	Intent intent = new Intent(this, GroupCreateActivity.class);
-    	startActivity(intent);
-    }
-    
-    public void onClickJoin(View view) {
-    	Intent intent = new Intent(this, GroupJoinActivity.class);
-    	startActivity(intent);
-    }
-    
-    public void onClickProfile(View view) {
-    	Intent intent = new Intent(this, ProfileActivity.class);
-    	startActivity(intent);
-    }
-    	
-    @Override
-    public void onResume() {
-    	super.onResume();
-      
-    	// Refresh groups list
-    	loadData(true, true);
-    }  
-    
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
-		super.onCreateOptionsMenu(menu);
-
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.group_menu, menu);
+		super.onCreateOptionsMenu(menu);
+
 	    return true;
 	}	
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {		
-        switch (item.getItemId()) {
+		Intent intent;
+		switch (item.getItemId()) {
 
+        	case R.id.group_new:
+                intent = new Intent(getApplicationContext(), GroupCreateActivity.class);
+                startActivity(intent);	
+        		return true;
+        	case R.id.group_join:
+                intent = new Intent(getApplicationContext(), GroupJoinActivity.class);
+                startActivity(intent);	
+        		return true;
 	        case R.id.refresh:
-	        	loadData(false,true);
+	        	loadData();
 		    	return true;
 	        default:
 	        	return super.onOptionsItemSelected(item);
         }
     }	
 	
-	private void loadData(boolean profile, boolean groups) {
+	private void loadData() {
 		
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
-		if (profile) {
-	        String profileUrl = String.format(Util.getUrl(this,R.string.profile_http),hash);		
-	        new FetchJSON(this,CODE_PROFILE).execute(profileUrl);
-		}
-
-		if (groups) {
-			String groupsUrl = String.format(Util.getUrl(this,R.string.groups_http),hash);
-			new FetchJSON(this,CODE_GROUPS).execute(groupsUrl);
-		}
+		String groupsUrl = String.format(Util.getUrl(this,R.string.groups_http),hash);
+		new FetchJSON(this,CODE_GROUPS).execute(groupsUrl);
 
 	}
 		
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CREATE_GROUP && resultCode == Activity.RESULT_OK) {
-            loadData(false,true);
+            loadData();
         }
     }	
 
@@ -170,33 +149,10 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 			parseGroups(result);
 			break;
 			
-		case CODE_PROFILE:
-			parseProfile(result);
-			break;
-			
 		default:
 		}
 	}
 
-	private void parseProfile(String result) {
-		Gson gson = new Gson();
-		UserResponse response = gson.fromJson(result, UserResponse.class);
-		User user = response.getObject();
-		if (user != null) {
-			// Set the user name
-			TextView name = (TextView) findViewById(R.id.header_title);
-			name.setText(user.getName());
-			
-			// Set the user name
-			//TextView stats = (TextView) findViewById(R.id.stats);
-			
-			//stats.setText(String.format(this.getResources().getString(R.string.profile_stats), user.groups, user.photos));
-			
-			// Set the user icon
-			//ImageView pic = (ImageView) findViewById(R.id.groups_icon);
-			//imageLoader.displayImage(user.thumb, pic);
-		}
-	}
 
 	private void parseGroups(String result) {
 		

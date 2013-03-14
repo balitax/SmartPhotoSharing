@@ -81,14 +81,6 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
         id = intent.getLongExtra(KEY_ID, 0);
     }
     
-    @Override
-    protected void onResume() {
-    	super.onResume();
-    	if (id != 0) {
-			loadData(true,true);
-        }
-    }
-
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
 		super.onCreateOptionsMenu(menu);

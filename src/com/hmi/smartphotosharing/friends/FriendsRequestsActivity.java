@@ -66,13 +66,6 @@ public class FriendsRequestsActivity extends NavBarListActivity implements OnDow
         
     }
 	
-    @Override
-    public void onResume() {
-      super.onResume();
-      
-      loadData();
-    }  
-
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
 		super.onCreateOptionsMenu(menu);

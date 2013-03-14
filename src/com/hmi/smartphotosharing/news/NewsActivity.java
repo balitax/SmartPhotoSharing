@@ -37,7 +37,7 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
 	
     public static final int CREATE_GROUP = 4;
 
-    private static final int CODE_PROFILE = 1;
+    private static final int CODE_NEWS = 1;
     private static final int CODE_GROUPS = 2;
 
 	public static final int TYPE_GROUP = 0;
@@ -82,15 +82,7 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
         
         
     }
-    	
-    @Override
-    public void onResume() {
-    	super.onResume();
-      
-    	// Refresh groups list
-    	loadData();
-    }  
-    
+    	    
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -127,7 +119,7 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
 		}
         
         PostData pr = new PostData(url,map);
-		new PostRequest(this).execute(pr);
+		new PostRequest(this, CODE_NEWS).execute(pr);
 	}
 		
 		
@@ -150,11 +142,11 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
 		if (response != null) {
 			List <News> news_list = response.getObject();
 			
-			if (news_list == null) {
+			if (news_list == null || news_list.size() == 0) {
 				ListView listView = getListView();
 				TextView emptyView = (TextView) listView.getEmptyView();
 				emptyView.setGravity(Gravity.CENTER_HORIZONTAL);
-				emptyView.setText(getResources().getString(R.string.groups_empty));
+				emptyView.setText(getResources().getString(R.string.news_empty));
 			} else {
 
 				// Sort the group on newest

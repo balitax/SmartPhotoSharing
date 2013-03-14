@@ -8,6 +8,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -18,6 +21,9 @@ import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarListActivity;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.groups.GroupCreateActivity;
+import com.hmi.smartphotosharing.groups.GroupJoinActivity;
+import com.hmi.smartphotosharing.groups.GroupsActivity;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.StringResponse;
@@ -52,26 +58,33 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
         ImageView fav = (ImageView) findViewById(R.id.favourite);
         Util.setSelectedBackground(getApplicationContext(), fav);
     }
-    
-	public void onClickCreateSubscription(View v) {	
-		Intent intent = new Intent(this,SubscriptionCreateActivity.class);
-		this.startActivity(intent);
-	}	
-    
+            
 	@Override
-	public void onStart() {
-        super.onStart();
-        
-	}
+	public boolean onCreateOptionsMenu (Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.subscription_menu, menu);
+		super.onCreateOptionsMenu(menu);
+
+	    return true;
+	}	
 	
-    @Override
-    public void onResume() {
-      super.onResume();
-      
-      // Refresh groups list
-      loadData();
-    }  
-    	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {		
+		Intent intent;
+		switch (item.getItemId()) {
+
+        	case R.id.subscription_new:
+                intent = new Intent(getApplicationContext(), SubscriptionCreateActivity.class);
+                startActivity(intent);	
+        		return true;
+	        case R.id.refresh:
+	        	loadData();
+		    	return true;
+	        default:
+	        	return super.onOptionsItemSelected(item);
+        }
+    }	
+	
 	private void loadData() {
 		
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);

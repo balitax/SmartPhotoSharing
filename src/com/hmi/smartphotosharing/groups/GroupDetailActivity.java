@@ -103,7 +103,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         id = intent.getLongExtra(KEY_ID, 0);
 
         // Show selection in nav bar
-        ImageView home = (ImageView) findViewById(R.id.home);
+        ImageView home = (ImageView) findViewById(R.id.favourite);
         Util.setSelectedBackground(getApplicationContext(), home);
         
         isMember = true;

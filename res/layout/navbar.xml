@@ -32,12 +32,13 @@
 		    android:layout_marginTop="1dip"
 		    style="@style/NavButton" />
 	    
+	    
 	    <ImageView 
-		    android:id="@+id/favourite"
+		    android:id="@+id/local"
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_green_menu_star"
+		    android:src="@drawable/ic_green_menu_mapmode"
 		    android:layout_marginRight="1dip"
 		    android:layout_marginTop="1dip"
 		    style="@style/NavButton" />
@@ -51,13 +52,13 @@
 		    android:layout_marginRight="1dip"
 		    android:layout_marginTop="1dip"
 		    style="@style/NavButton" />
-	    
+	    	    
 	    <ImageView 
-		    android:id="@+id/local"
+		    android:id="@+id/favourite"
 		    android:contentDescription="@string/icon_unknown"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_green_menu_mapmode"
+		    android:src="@drawable/ic_green_menu_allfriends"
 		    android:layout_marginRight="1dip"
 		    android:layout_marginTop="1dip"
 		    style="@style/NavButton" />

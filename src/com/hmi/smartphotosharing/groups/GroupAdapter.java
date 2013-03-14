@@ -11,20 +11,19 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hmi.smartphotosharing.MyGalleryAdapter;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.SinglePhotoDetail;
 import com.hmi.smartphotosharing.json.Group;
-import com.hmi.smartphotosharing.util.Util;
+import com.hmi.smartphotosharing.json.Photo;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -94,7 +93,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
             holder.locationIcon = (ImageView)v.findViewById(R.id.location_icon);
             holder.txtTitle = (TextView)v.findViewById(R.id.item_text);
             holder.totalNew = (TextView)v.findViewById(R.id.total_new);
-            holder.picGallery = (Gallery)v.findViewById(R.id.gallery);
+            holder.gallery = (LinearLayout)v.findViewById(R.id.gallery);
             v.setTag(holder);
         } else {
         	holder = (GroupHolder)v.getTag();
@@ -130,36 +129,30 @@ public class GroupAdapter extends ArrayAdapter<Group> {
             holder.totalNew.setVisibility(TextView.VISIBLE); // Needed because of the holder pattern
             holder.totalNew.setText(Integer.toString(group.totalnew));
         }
-        
-        // Set the adapter for the gallery
-        holder.picGallery.setAdapter(
-				new MyGalleryAdapter(
-						context, 
-						group.photos,
-						imageLoader
-			));
-		
-        // Make the gallery start from the left
-        if (group.photos != null && group.photos.size() > 1)
-        	holder.picGallery.setSelection(1);
 
-		// GestureDetector to detect swipes on the gallery
-        gestureDetector = new GestureDetector(new MyGestureDetector());
-        gestureListener = new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
-            }
-        };
-        
-        // Detect clicking an image
-        holder.picGallery.setOnItemClickListener(new MyOnItemClickListener(context,group.getId()));
-        
-        // Detect swipes
-        holder.picGallery.setOnTouchListener(gestureListener);
+        holder.gallery.removeAllViews();
+        if (group.photos != null && group.photos.size() > 0) {
+			for (Photo p : group.photos) {
+				View imgView = getImageView(p.thumb);
+				imgView.setOnClickListener(new MyOnItemClickListener(context, getItemId(position), p.getId()));
+				holder.gallery.addView(imgView);
+				
+			}
+        }    
         
         return v;
     }
-	
+
+    public View getImageView(String path){
+                
+        ImageView imageView = new ImageView(context);
+        imageView.setLayoutParams(new LayoutParams(60, 60));
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        
+        imageLoader.displayImage(path, imageView);
+        return imageView;
+    }
+    
 	/**
 	 * The Groupholder class is used to cache the Views
 	 * so they can be reused for every row in the ListView.
@@ -173,7 +166,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         ImageView locationIcon;
         TextView txtTitle;
         TextView totalNew;
-        Gallery picGallery;
+        LinearLayout gallery;
     }	
     
     private class MyOnClickListener implements OnClickListener{       
@@ -192,51 +185,31 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         }       
     }
 	
-	/**
-	 * Gesture detector needed to detect swipes
-	 * This is needed in combination with onItemClickListener to
-	 * enable both swiping the gallery and clicking imageviews.
-	 * @author Edwin
-	 *
-	 */
-    private class MyGestureDetector extends SimpleOnGestureListener {
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            try {
-                if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
-                    return false;
-            } catch (Exception e) {
-                // nothing
-            }
-            return false;
-        }
-
-    }
-
     /**
      * Listener for clicking images on the gallery.
      * @author Edwin
      *
      */
-    private class MyOnItemClickListener implements OnItemClickListener{    
+    private class MyOnItemClickListener implements OnClickListener{    
         private Context context;
-        long gid;
+        long gid, iid;
         
-        public MyOnItemClickListener(Context context, long gid){
+        public MyOnItemClickListener(Context context, long gid, long iid){
             this.context = context;
             this.gid = gid;
+            this.iid = iid;
         }
-        
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
+
+		@Override
+		public void onClick(View v) {
         	Intent intent = new Intent(context, PhotoDetailActivity.class);
         	//Intent intent = new Intent(context, SinglePhotoDetail.class);
-		    intent.putExtra("id", id);
 		    intent.putExtra("gid", gid);
+		    intent.putExtra("id", iid);
 		    context.startActivity(intent);
-        	
-        }
+			
+		}
+        
 
     }
  

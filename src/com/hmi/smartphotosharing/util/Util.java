@@ -181,32 +181,7 @@ public class Util {
 		alert.show();
 		
 	}
-	
-	public static void createPhotoDialog(Context c) {
-    	AlertDialog.Builder builder = new AlertDialog.Builder(c);
-		builder.setTitle(c.getResources().getString(R.string.camera_share_dialog))
-			 .setItems(R.array.camera_dialog, new ShareListener(c));
-		AlertDialog alert = builder.create();
-		alert.show();
-		
-	}    
-	
-	public static class ShareListener implements DialogInterface.OnClickListener {
-		private Context c;
-		
-		public ShareListener(Context c){
-			this.c = c;
-		}
-        public void onClick(DialogInterface dialog, int which) {
-     	   if(which == 0) {
-     		   Intent intent = new Intent(c, SharePhotoActivity.class);
-     		   c.startActivity(intent);
-     	   } else {
-     		   Toast t = Toast.makeText(c, "Select from saved photos", Toast.LENGTH_SHORT);
-     		   t.show();
-     	   }
-        }
-	 }
+
 	
 	/**
 	 * Method to redirect the user to the GPS settings screen.

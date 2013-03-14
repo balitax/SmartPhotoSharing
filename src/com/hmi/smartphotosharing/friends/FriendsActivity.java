@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +33,7 @@ import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.StringResponse;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserListResponse;
+import com.hmi.smartphotosharing.subscriptions.SubscriptionCreateActivity;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -67,34 +69,34 @@ public class FriendsActivity extends NavBarListActivity implements OnDownloadLis
         
     }
 	
-    @Override
-    public void onResume() {
-      super.onResume();
-      
-      loadData();
-    }  
 
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.friend_menu, menu);
 		super.onCreateOptionsMenu(menu);
+
 	    return true;
 	}	
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {		
-        switch (item.getItemId()) {
+		Intent intent;
+		switch (item.getItemId()) {
 
+        	case R.id.friend_add:
+            	intent = new Intent(this, AddFriendsActivity.class);
+            	intent.putExtra("type", AddFriendsActivity.TYPE_FRIENDS);
+            	startActivityForResult(intent, CODE_INVITE);
+        		return true;
+	        case R.id.refresh:
+	        	loadData();
+		    	return true;
 	        default:
 	        	return super.onOptionsItemSelected(item);
         }
     }	
 	
-    public void onClickAdd(View view) {
-    	Intent intent = new Intent(this, AddFriendsActivity.class);
-    	intent.putExtra("type", AddFriendsActivity.TYPE_FRIENDS);
-    	startActivityForResult(intent, CODE_INVITE);
-    }
-
     public void onClickRequests(View view) {
     	Intent intent = new Intent(this, FriendsRequestsActivity.class);
     	startActivity(intent);

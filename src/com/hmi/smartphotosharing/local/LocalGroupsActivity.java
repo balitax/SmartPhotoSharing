@@ -85,14 +85,6 @@ public class LocalGroupsActivity extends NavBarListActivity implements OnDownloa
         
         
     }
-    	
-    @Override
-    public void onResume() {
-    	super.onResume();
-      
-    	// Refresh groups list
-    	loadData();
-    }  
     
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {

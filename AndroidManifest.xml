@@ -74,6 +74,8 @@
             
         <activity android:label="Explore" 
             android:name=".local.MapActivity" />	
+        <activity android:label="Local Map Filters" 
+            android:name=".local.MapFilterActivity" />
         <activity android:label="Local Photos" 
             android:name=".local.LocalPhotoActivity" />
         <activity android:label="Local Groups" 
@@ -121,9 +123,17 @@
         <activity android:label="Friends" 
             android:name=".friends.FriendsActivity" />
         <activity android:label="Add Friends" 
-            android:name=".friends.AddFriendsActivity" />
+            android:name=".friends.AddFriendsActivity">
+            
+	        <intent-filter>
+	            <action android:name="android.intent.action.SEARCH" />
+	        </intent-filter>
+        	<meta-data android:name="android.app.searchable"
+                   android:resource="@xml/searchable"/>
+        </activity>
         <activity android:label="Friend Requests" 
             android:name=".friends.FriendsRequestsActivity" />
+        
         
         <activity android:label="Camera" 
             android:configChanges="orientation" 

@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -17,14 +18,18 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 public class FetchJSON extends AsyncTask<String,Void,String> {
-    
+
+	private Context c;
 	private int code;
 	private OnDownloadListener dl;
 	private ProgressDialog pd;
+	private Boolean showDialog;
 	
-	public FetchJSON(Object o) {
+	public FetchJSON(Context c) {
+		this.c = c;
 		this.code = 0;
-		this.dl = (OnDownloadListener) o;
+		this.dl = (OnDownloadListener) c;
+		this.showDialog = true;
 	}
 	
 	/**
@@ -34,9 +39,18 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 	 * @param dl The listener object
 	 * @param code The request code
 	 */
-	public FetchJSON(Object o, int code) {
+	public FetchJSON(Context c, int code) {
+		this.c = c;
 		this.code = code;
-		this.dl = (OnDownloadListener) o;
+		this.dl = (OnDownloadListener) c;
+		this.showDialog = true;
+		
+	}
+	
+	public FetchJSON(Context c, int code, boolean showDialog) {
+		this.code = code;
+		this.dl = (OnDownloadListener) c;
+		this.showDialog = showDialog;
 		
 	}
 	
@@ -52,6 +66,11 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
            return new Gson().toJson(err);
        }
 	}
+
+	@Override
+    protected void onPreExecute() {
+        if (this.showDialog && pd == null) pd = ProgressDialog.show(c, "Loading", "Please wait...");
+    }	
 	
 	@Override
 	protected void onPostExecute(String result) {

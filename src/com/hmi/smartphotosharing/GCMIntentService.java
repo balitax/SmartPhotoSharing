@@ -151,7 +151,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		
         String registerUrl = String.format(Util.getUrl(this,R.string.gcm_register),hash,regId);		
-        new FetchJSON(this, CODE_REGISTER).execute(registerUrl);
+        new FetchJSON(this, CODE_REGISTER, false).execute(registerUrl);
 
 	}
 
@@ -164,7 +164,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		
         String unregisterUrl = String.format(Util.getUrl(this,R.string.gcm_unregister),hash,regId);		
-        new FetchJSON(this, CODE_UNREGISTER).execute(unregisterUrl);
+        new FetchJSON(this, CODE_UNREGISTER, false).execute(unregisterUrl);
 
 	}
 

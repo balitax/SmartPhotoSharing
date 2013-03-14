@@ -28,11 +28,13 @@ public class PostRequest extends AsyncTask<PostData,Void,String> {
 	private int code;
 	private OnDownloadListener dl;
 	private ProgressDialog pd;
+	private Boolean showDialog;
 	
 	public PostRequest(Context c) {
 		this.c = c;
 		this.code = 0;
 		this.dl = (OnDownloadListener) c;
+		this.showDialog = true;
 	}
 	
 	/**
@@ -46,10 +48,16 @@ public class PostRequest extends AsyncTask<PostData,Void,String> {
 		this.c = c;
 		this.code = code;
 		this.dl = (OnDownloadListener) c;
-		
+		this.showDialog = true;
 	}
 	
-    
+	public PostRequest(Context c, int code, boolean showDialog) {
+		this.c = c;
+		this.code = code;
+		this.dl = (OnDownloadListener) c;
+		this.showDialog = showDialog;
+		
+	}
 	@Override
 	protected String doInBackground(PostData... data) {
          
@@ -62,7 +70,12 @@ public class PostRequest extends AsyncTask<PostData,Void,String> {
            return new Gson().toJson(err);
        }
 	}
-	
+
+	@Override
+    protected void onPreExecute() {
+        if (this.showDialog && pd == null) pd = ProgressDialog.show(c, "Loading", "Please wait...");
+    }	
+    
 	@Override
 	protected void onPostExecute(String result) {
 		try {
@@ -79,7 +92,7 @@ public class PostRequest extends AsyncTask<PostData,Void,String> {
 		}
 		if (pd != null) pd.dismiss();
 	}
-	
+		
 	public String sendPost(PostData pr) throws IOException, ClientProtocolException  {
 		
 		HttpClient httpclient = new DefaultHttpClient();

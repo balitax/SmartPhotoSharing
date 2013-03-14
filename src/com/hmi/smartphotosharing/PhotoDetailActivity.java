@@ -92,15 +92,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
     protected void onNewIntent(Intent intent) {
         id = intent.getLongExtra(KEY_ID, 0);
     }
-    
-    @Override
-    protected void onResume() {
-    	super.onResume();
-    	if (id != 0) {
-			loadData();
-        }
-    }
-    
+        
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

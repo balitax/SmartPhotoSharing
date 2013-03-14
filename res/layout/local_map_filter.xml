@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+    
+    <RelativeLayout 
+        android:id="@+id/header"
+    	android:background="@color/header_bg"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/header_margin">
+    	
+	    <TextView
+	        android:id="@+id/txt_local_map_filter_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/local_map_filter_title"
+         	android:layout_centerVertical="true"
+	        style="@style/HeaderText" />
+	    
+	    <ImageView 
+	        android:id="@+id/button_send"
+	        android:src="@drawable/ic_green_menu_send"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:contentDescription="@string/button_send"
+	        android:onClick="onSubmitClick" />
+    </RelativeLayout>
+      
+    <ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_below="@+id/header" >
+    
+	    <LinearLayout
+	        android:id="@+id/contents"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical">
+		    
+		    <TextView
+		        android:id="@+id/txt_local_filter_show"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/local_map_filter_description" />
+		    <RadioGroup
+			    android:id="@+id/radio_filter_show"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="vertical">
+			    <RadioButton
+			        android:id="@+id/radio_map_filter_groups"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="@string/local_map_filter_groups"
+			    	android:onClick="onGroupsSelect" />
+			    <RadioButton
+			        android:id="@+id/radio_map_filter_friends"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="@string/local_map_filter_friends"
+			    	android:onClick="onFriendsSelect" />
+			    <RadioButton
+			        android:id="@+id/radio_map_filter_all"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="@string/local_map_filter_all"
+			    	android:onClick="onAllSelect" />
+			    
+			</RadioGroup>
+		    
+		    
+		    <CheckBox android:id="@+id/checkbox_borders"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/local_map_filter_borders" />	   
+		</LinearLayout> 
+	</ScrollView>
+
+    
+</RelativeLayout>

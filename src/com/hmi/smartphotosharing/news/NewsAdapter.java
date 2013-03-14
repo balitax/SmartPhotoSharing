@@ -6,6 +6,8 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -58,6 +60,9 @@ public class NewsAdapter extends ArrayAdapter<News> {
         return 0;
     }
     
+    public String bold(String s) {
+    	return "<b>" + s + "</b>";
+    }
 	/**
 	 * This method overrides the inherited getView() method.
 	 * It is called for every ListView item to create the view with
@@ -103,13 +108,13 @@ public class NewsAdapter extends ArrayAdapter<News> {
         switch (news.type) {
         
 	        case NewsActivity.TYPE_GROUP:
-	        	String groupTxt = String.format(context.getResources().getString(R.string.news_txt_group), news.rname, news.name);
+	        	Spanned groupTxt = Html.fromHtml(String.format(context.getResources().getString(R.string.news_txt_group), bold(news.rname), bold(news.name)));
 	        	holder.text.setText(groupTxt);
 	        	v.setOnClickListener(new MyGroupClickListener(position));
 	        	break;
 	        
 	        case NewsActivity.TYPE_PHOTO:
-	        	String photoTxt = String.format(context.getResources().getString(R.string.news_txt_photo), news.rname, news.name);
+	        	Spanned photoTxt = Html.fromHtml(String.format(context.getResources().getString(R.string.news_txt_photo), bold(news.rname), bold(news.name)));
 	        	holder.text.setText(photoTxt);
 	        	v.setOnClickListener(new MyPhotoClickListener(position));
 	        	break;

@@ -22,6 +22,7 @@ import com.hmi.smartphotosharing.json.LongResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.StringResponse;
 import com.hmi.smartphotosharing.json.UserResponse;
+import com.hmi.smartphotosharing.news.NewsActivity;
 import com.hmi.smartphotosharing.util.Util;
 
 public class Login extends Activity implements OnDownloadListener{
@@ -73,6 +74,13 @@ public class Login extends Activity implements OnDownloadListener{
 		//username.setText("s0166049");
 		//password.setText("changeme22");
 		
+		doValidate();
+		
+		// Load preference defaults on first startup
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+	}
+		
+	private void doValidate() {
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		
@@ -80,11 +88,8 @@ public class Login extends Activity implements OnDownloadListener{
 			String validateUrl = String.format(Util.getUrl(this,R.string.login_validate), hash);
 	        new FetchJSON(this, CODE_VALIDATE).execute(validateUrl);
 		}
-		
-		// Load preference defaults on first startup
-		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 	}
-		
+
 	public void onClickLogin(View v) {
 		
 		if (hasConnection(this)) {
@@ -152,7 +157,7 @@ public class Login extends Activity implements OnDownloadListener{
 			// GCM
 			checkGCM();
 			
-			Intent intent = new Intent(this, GroupsActivity.class);
+			Intent intent = new Intent(this, NewsActivity.class);
 		    startActivity(intent);				
 		}
 		
@@ -176,7 +181,7 @@ public class Login extends Activity implements OnDownloadListener{
 			editor.putLong(SESSION_UID, response.getObject());
 			editor.commit();
 			
-			Intent intent = new Intent(this, GroupsActivity.class);
+			Intent intent = new Intent(this, NewsActivity.class);
 		    startActivity(intent);	
 		} else {
 			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
