@@ -24,6 +24,7 @@ import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.Photo;
+import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -102,7 +103,8 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         holder.txtTitle.setText(group.name);
                 
         // Set the icon for this list item
-        imageLoader.displayImage(group.thumb, holder.imgIcon);
+        String url = Util.getThumbUrl(group);
+        imageLoader.displayImage(url, holder.imgIcon);
         
         // We need to set the onClickListener here to make sure that
         // the row can also be clicked, in addition to the gallery photos
@@ -133,7 +135,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         holder.gallery.removeAllViews();
         if (group.photos != null && group.photos.size() > 0) {
 			for (Photo p : group.photos) {
-				View imgView = getImageView(p.thumb);
+				View imgView = getImageView(Util.getThumbUrl(p));
 				imgView.setOnClickListener(new MyOnItemClickListener(context, getItemId(position), p.getId()));
 				holder.gallery.addView(imgView);
 				

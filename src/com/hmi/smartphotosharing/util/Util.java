@@ -22,12 +22,16 @@ import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
+import android.widget.TextView;
 
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.SharePhotoActivity;
+import com.hmi.smartphotosharing.json.Group;
+import com.hmi.smartphotosharing.json.News;
+import com.hmi.smartphotosharing.json.Photo;
+import com.hmi.smartphotosharing.json.User;
 
 public class Util {
 
@@ -48,21 +52,28 @@ public class Util {
     public static final int ACTION_MAP 			= 5;
     public static final int ACTION_FRIENDS		= 6;
     
+    // Google services API key
     public static final String API_KEY = "AIzaSyCKN-AGNHA7ZYTPQ_-IXZUHFGT8UlXlZig";
+    // Google static maps
     public static final String API_KEY_MAPS ="0LgN0zWElNFx2cMBe0vH1UtWShWq1VlUPUeUb9w";
     
-    public static final String API = "http://sps.juursema.com/api.php?";
-    public static final String IMG_DB = "http://sps.juursema.com/imgdb/";
-    public static final String USER_DB = "http://sps.juursema.com/profilepicdb/";
-    public static final String GROUP_DB = "http://sps.juursema.com/logodb/";
-    public static final String REGISTER_URL = "http://sps.juursema.com/signup.php";
+    public static final String SERVER 			= "http://picalilly.student.utwente.nl/";
+    public static final String API 				= SERVER + "api.php?";
+    public static final String THUMB_URL 		= SERVER + "thumb.php?src=";
+    public static final String THUMB_SIZE 		= "100";
+    public static final String THUMB_CONFIG 	= "&w=" + THUMB_SIZE + "&h=" + THUMB_SIZE;
+    
+    public static final String IMG_DB 			= SERVER + "imgdb/";
+    public static final String USER_DB 			= SERVER + "profilepicdb/";
+    public static final String GROUP_DB 		= SERVER + "logodb/";
+    public static final String REGISTER_URL 	= SERVER + "signup.php";
     
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
     
-    public static final String DUMMY_PHOTO = "http://sps.juursema.com/thumb.php?src=logodb/default.jpg&w=100&h=100";
+    public static final String DUMMY_PHOTO = SERVER + "thumb.php?src=logodb/default.jpg&w=100&h=100";
 
 	public static String URL_MESSAGE = "com.hmi.smartphotosharing.URL_MESSAGE";
 	
@@ -74,6 +85,18 @@ public class Util {
 										BitmapDescriptorFactory.HUE_BLUE, BitmapDescriptorFactory.HUE_CYAN,
 										BitmapDescriptorFactory.HUE_GREEN, BitmapDescriptorFactory.HUE_MAGENTA,
 										BitmapDescriptorFactory.HUE_RED, BitmapDescriptorFactory.HUE_YELLOW};
+		
+	public static String getThumbUrl(Photo p) {
+		return THUMB_URL + IMG_DB + p.name + THUMB_CONFIG;
+	}
+	
+	public static String getThumbUrl(User u) {
+		return THUMB_URL + USER_DB + u.picture + THUMB_CONFIG;
+	}
+	
+	public static String getThumbUrl(Group g) {
+		return THUMB_URL + GROUP_DB + g.logo + THUMB_CONFIG;
+	}
 	
     public static String getUrl(Context c, int resource) {
     	return API + c.getResources().getString(resource);
@@ -314,6 +337,16 @@ public class Util {
 	    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 	    cursor.moveToFirst();
 	    return cursor.getString(column_index);
+	}
+
+
+	public static void showSubHeader(TextView title, TextView subtitle) {
+
+        subtitle.setVisibility(TextView.VISIBLE);
+        LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.RIGHT_OF, R.id.app_icon);
+        title.setLayoutParams(lp);
+		
 	}
 
 }

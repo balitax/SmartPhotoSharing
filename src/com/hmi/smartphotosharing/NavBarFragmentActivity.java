@@ -58,15 +58,7 @@ public class NavBarFragmentActivity extends FragmentActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle item selection
-	    switch (item.getItemId()) {
-	        case R.id.settings:
-	            Intent intent = new Intent(this, ProfileActivity.class);
-	            startActivity(intent);
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		return NavBarActivity.handleOptionItemSelected(item, this)|super.onOptionsItemSelected(item);
 	}
 
 	@Override

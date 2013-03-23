@@ -200,7 +200,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	    		lon = Double.toString(gpsLocation.getLongitude());
     		} else {
     			lat = lon = null;
-    			Util.createSimpleDialog(getApplicationContext(), getResources().getString(R.string.share_no_location));
+    			Util.createSimpleDialog(this, getResources().getString(R.string.share_no_location));
     		}
     		
     		String commentTxt = comment.getText().toString();
@@ -261,6 +261,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         	// Location was set manually, stop listening for GPS updates
     	    mLocationManager.removeUpdates(listener);
     	    
+    	    if (gpsLocation == null) gpsLocation = new Location(LocationManager.GPS_PROVIDER);
     	    // Get the selected location 
         	gpsLocation.setLatitude(data.getDoubleExtra("lat1", 0d));
         	gpsLocation.setLongitude(data.getDoubleExtra("lon1", 0d));

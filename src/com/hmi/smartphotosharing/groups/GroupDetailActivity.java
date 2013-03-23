@@ -20,10 +20,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +37,7 @@ import com.hmi.smartphotosharing.NavBarActivity;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.friends.AddFriendsActivity;
+import com.hmi.smartphotosharing.friends.FriendsActivity;
 import com.hmi.smartphotosharing.json.BooleanResponse;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Group;
@@ -66,7 +70,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	//image view for larger display
 	
 	//private TextView groupPhotos;
-	//private TextView groupMembers;
+	private TextView groupMembers;
 	private TextView groupName;
 	//private ImageView groupIcon;
 
@@ -90,7 +94,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         groupName = (TextView) findViewById(R.id.header_title);
         //groupIcon = (ImageView) findViewById(R.id.group_detail_icon);
         //groupPhotos = (TextView) findViewById(R.id.group_detail_photos);
-        //groupMembers = (TextView) findViewById(R.id.group_detail_members);
+        groupMembers = (TextView) findViewById(R.id.header_subtext);
         //privateIcon = (ImageView) findViewById(R.id.private_icon);
         //locationIcon = (ImageView) findViewById(R.id.location_icon);
         
@@ -108,6 +112,12 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         
         isMember = true;
         group = null;
+        
+        // Show the subtext in the header
+        InfoClickListener icl = new InfoClickListener();
+        groupMembers.setOnClickListener(icl);
+        groupName.setOnClickListener(icl);
+        Util.showSubHeader(groupName, groupMembers);
     }
     
     @Override
@@ -252,6 +262,15 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         }
     }
     
+    private class InfoClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+	    	showDialog(DIALOG_INFO);			
+		}
+    	
+    }
+    
     private class MyOnItemClickListener implements OnItemClickListener {
 		private Context c;
 		
@@ -270,9 +289,9 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
     
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
-		super.onCreateOptionsMenu(menu);
     	MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.group_detail_menu, menu);
+		super.onCreateOptionsMenu(menu);
 	    return true;
 	}	
 	

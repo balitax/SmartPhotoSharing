@@ -12,15 +12,27 @@
         android:contentDescription="@string/app_name"
         style="@style/Icon" />
     
+        
     <TextView
     	android:id="@+id/header_title"
     	android:text="@string/profile_name"
     	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/app_icon"
-        android:layout_centerVertical="true"
+    	android:layout_height="48dp"
+    	android:layout_toRightOf="@+id/app_icon"
+        android:gravity="center_vertical"
         style="@style/HeaderText" />
-             
+   
+    <TextView
+        android:id="@+id/header_subtext"
+        style="@style/HeaderText.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/app_icon"
+    	android:layout_toRightOf="@+id/app_icon"
+        android:text="@string/profile_name"
+        android:visibility="gone" />
+
+              
    <ImageView 
         android:id="@+id/groups_icon"
         android:src="@drawable/ic_green_menu_more"

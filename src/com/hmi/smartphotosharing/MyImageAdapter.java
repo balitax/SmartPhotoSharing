@@ -12,6 +12,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.hmi.smartphotosharing.json.Photo;
+import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -74,7 +75,7 @@ public class MyImageAdapter extends BaseAdapter {
         
         Photo photo = data.get(position);
         
-        String url = photo.thumb;
+        String url = Util.getThumbUrl(photo);
         imageLoader.displayImage(url, holder.img);
         
         return v;

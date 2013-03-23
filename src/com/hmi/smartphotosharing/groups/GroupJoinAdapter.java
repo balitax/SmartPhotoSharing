@@ -112,7 +112,7 @@ public class GroupJoinAdapter extends ArrayAdapter<Group> {
         }
         
         // Set the icon for this list item
-        String url = Util.GROUP_DB + group.logo;
+        String url = Util.getThumbUrl(group);
         imageLoader.displayImage(url, holder.imgIcon);
                 
         return v;

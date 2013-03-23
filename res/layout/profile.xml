@@ -41,16 +41,7 @@
 		android:drawableLeft="@drawable/button_preferences"
 	    android:onClick="onClickPrefs"
 	    android:text="@string/profile_prefs" />   
-	    
-	<Button 
-	    android:id="@+id/btn_logout"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/btn_prefs"
-		android:drawableLeft="@drawable/button_stop"
-	    android:onClick="onClickLogout"
-	    android:text="@string/profile_logout" />   
-	    
+	    	    
      <include
          android:id="@+id/navbar"
          android:layout_width="fill_parent"

@@ -17,14 +17,18 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -116,9 +120,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
         // ImageLoader
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
-        
-        setUpMapIfNeeded();
-
+       
         loadPreferences();
 
     }
@@ -145,7 +147,6 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
             	googleMap.setMyLocationEnabled(true);
                 // One time fix to set the camera when the map is done loading
                 googleMap.setOnCameraChangeListener(this);
-                
                 // Set the infowindow adapter
                 googleMap.setInfoWindowAdapter(new MyInfoWindowAdapter(imageLoader, getLayoutInflater()));
                 googleMap.setOnInfoWindowClickListener(new MyInfoWindowClickListener(this));
@@ -154,6 +155,15 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
                 
                 // Set the source of location updates to this activity
                 googleMap.setLocationSource(this);
+            } else {
+            	// If the user does not have Play Services installed, show this notice and a download link
+            	// The default message by Google is broken, so display our own message
+            	RelativeLayout l = (RelativeLayout)findViewById(R.id.googlemapcontainer);
+            	l.setVisibility(RelativeLayout.GONE);
+            	TextView t = (TextView)findViewById(R.id.error_google_play_missing);
+            	Button b = (Button)findViewById(R.id.button_google_play_missing);
+            	t.setVisibility(TextView.VISIBLE);
+            	b.setVisibility(Button.VISIBLE);
             }
         }
     }
@@ -199,9 +209,6 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
       super.onResume();
       
       setUpMapIfNeeded();
-      if(mLocationManager != null) {
-          googleMap.setMyLocationEnabled(true);
-      }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -264,6 +271,11 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	public void onClickMapMode(View view) {
 		// do nothing
 	}*/
+	
+	public void onClickPlayServices(View view) {
+		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gms"));
+		startActivity(browserIntent);
+	}
 	
 	public void onClickFilter(View view) {
     	Intent intent = new Intent(this,MapFilterActivity.class);
@@ -491,7 +503,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 
 					MarkerOptions markerOptions = new MarkerOptions()
 	                	.position(new LatLng(lat1,lon1))
-	                	.title(g.thumb)
+	                	.title(Util.getThumbUrl(g))
 	                	.snippet(TYPE_GROUP + "," + g.gid + "," + g.name)
 	                	.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_group));
 	                	//.icon(BitmapDescriptorFactory.defaultMarker(Util.getHue(Integer.parseInt(g.gid))));
@@ -530,7 +542,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 					
 					MarkerOptions markerOptions = new MarkerOptions()
 	                	.position(new LatLng(lat,lon))
-	                	.title(p.thumb)
+	                	.title(Util.getThumbUrl(p))
 	                	.snippet(TYPE_PHOTO + "," + p.iid)
 	                	.icon(BitmapDescriptorFactory.defaultMarker(Util.getHue(Integer.parseInt(p.gid))));
 
@@ -569,8 +581,11 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	        if (firstZoomCamera) {
 	        	
 	        	firstZoomCamera = false;
-	        	googleMap.animateCamera(CameraUpdateFactory
-	        		.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), MAP_ZOOM_THRESHOLD));
+	        	CameraPosition camPos = new CameraPosition.Builder()
+	        	   .target(new LatLng(location.getLatitude(), location.getLongitude()))
+	        	   .zoom(MAP_ZOOM_THRESHOLD)
+	        	   .build();
+	        	googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
 	        } else {
 	        	/*
 	        	googleMap.animateCamera(CameraUpdateFactory

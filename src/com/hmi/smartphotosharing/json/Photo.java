@@ -5,7 +5,6 @@ import java.util.List;
 public class Photo {
 
 	public String name;
-	public String location;
 	public String uid;
 	public String iid;
 	public String gid;
@@ -20,9 +19,7 @@ public class Photo {
 
 	public String age;
 	public String thumb;
-	
-	public String picname;
-	
+		
 	public String likes;
 	public boolean me;
 	public boolean isNew;
@@ -42,11 +39,7 @@ public class Photo {
 	public boolean dummy;
 	
 	public List<Comment> comments;
-	
-	public String getUrl() {
-		return location + picname;
-	}
-	
+		
 	public long getId() {
 		return Long.parseLong(iid);		
 	}

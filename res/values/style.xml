@@ -67,6 +67,7 @@
     </style>
     
     <style name="HeaderText.Small">
+        <item name="android:textColor">@color/header_subtext</item>
         <item name="android:textSize">@dimen/header_text_small</item>
     </style>
     

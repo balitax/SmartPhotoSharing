@@ -273,9 +273,8 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 			Photo p = pr.getObject();
 			
 			
-			String uri = p.getUrl();
+			String uri = Util.IMG_DB + p.name;
 
-			
 	        ImageView photo = (ImageView) findViewById(R.id.picture);
 			photo.setOnClickListener(new PictureClickListener(getApplicationContext(), uri));
 	        

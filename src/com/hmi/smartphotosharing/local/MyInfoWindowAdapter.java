@@ -45,6 +45,7 @@ public class MyInfoWindowAdapter implements InfoWindowAdapter {
 		
 		if (msg[0].equals(MapActivity.TYPE_POINT)) {
 			img.setVisibility(ImageView.GONE);
+			txt.setVisibility(TextView.VISIBLE);
 			txt.setText(msg[1]);
 		} else {
 			img.setVisibility(ImageView.VISIBLE);

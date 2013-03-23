@@ -27,6 +27,7 @@ import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SinglePhotoDetail;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.User;
+import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -102,12 +103,12 @@ public class FriendsAdapter extends ArrayAdapter<User> {
         holder.txtTitle.setText(user.rname);
                 
         // Set the icon for this list item
-        imageLoader.displayImage(user.thumb, holder.imgIcon);
+        imageLoader.displayImage(Util.getThumbUrl(user), holder.imgIcon);
                 
         holder.gallery.removeAllViews();
         if (user.newest_photos != null && user.newest_photos.size() > 0) {
 			for (Photo p : user.newest_photos) {
-				View imgView = getImageView(p.thumb);
+				View imgView = getImageView(Util.getThumbUrl(p));
 				imgView.setOnClickListener(new MyOnItemClickListener(context, p.getId()));
 				holder.gallery.addView(imgView);
 				

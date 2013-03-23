@@ -69,9 +69,9 @@ public class NavBarListener implements OnClickListener {
 	}
 	
 	private void action_camera() {
-	   //Intent intent = new Intent(c, SharePhotoActivity.class);
-	   //c.startActivity(intent);	
-	   createPhotoDialog();
+	   Intent intent = new Intent(c, SharePhotoActivity.class);
+	   c.startActivity(intent);	
+	   //createPhotoDialog();
 	}
 
 	private void action_archive() {

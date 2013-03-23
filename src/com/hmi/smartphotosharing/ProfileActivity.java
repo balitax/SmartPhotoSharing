@@ -48,15 +48,4 @@ public class ProfileActivity extends NavBarActivity {
 		startActivity(intent);
 	}
 	
-	public void onClickLogout(View view) {
-
-		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
-		settings.edit().remove(Login.SESSION_HASH).commit();
-		
-		Intent intent = new Intent(this, Login.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); 
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		startActivity(intent);
-	}
-
 }

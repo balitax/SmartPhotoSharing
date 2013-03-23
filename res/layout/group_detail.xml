@@ -15,61 +15,22 @@
         layout="@layout/header" />
     
      <!-- NAV BUTTONS -->
-     
-    <ImageView 
-	    android:id="@+id/group_info"
-	    android:contentDescription="@string/icon_unknown"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/header"
-	    android:onClick="onClickInfo"
-	    android:src="@drawable/ic_menu_info_details" />	
-     
-    <ImageView 
-	    android:id="@+id/group_map"
-	    android:contentDescription="@string/icon_unknown"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/header"
-	    android:layout_toRightOf="@+id/group_info"
-	    android:onClick="onClickShowLocation"
-	    android:src="@drawable/ic_menu_mapmode" />	
-	    	
-    <ImageView 
-	    android:id="@+id/group_invite"
-	    android:contentDescription="@string/icon_unknown"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/header"
-	    android:layout_toRightOf="@+id/group_map"
-	    android:onClick="onClickInvite"
-	    android:src="@drawable/ic_menu_invite" />	
-	    
-	<ImageView 
-	    android:id="@+id/group_leave"
-	    android:contentDescription="@string/icon_unknown"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/header"
-	    android:layout_alignParentRight="true"
-	    android:onClick="onClickJoinGroup"
-	    android:src="@drawable/ic_menu_block" />	  
-	      
+      
     <!-- GRID -->
     
 	<GridView 
 	    android:id="@+id/grid"
 	    android:layout_width="fill_parent" 
 	    android:layout_height="fill_parent"
+        android:layout_below="@+id/header"
+        android:layout_marginBottom="@dimen/navbar_margin"
 	    android:padding="2dp"
 	    android:verticalSpacing="2dp"
 	    android:horizontalSpacing="2dp"
 	    android:numColumns="auto_fit"
 	    android:columnWidth="@dimen/icon_large"
 	    android:stretchMode="columnWidth"
-	    android:gravity="center"
-        android:layout_below="@+id/group_info"
-        android:layout_marginBottom="@dimen/navbar_margin" />
+	    android:gravity="center" />
        
     <include
         android:id="@+id/navbar"

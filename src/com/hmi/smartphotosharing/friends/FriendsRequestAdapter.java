@@ -96,7 +96,7 @@ public class FriendsRequestAdapter extends ArrayAdapter<User> {
         holder.btnDecline.setOnClickListener(new MyOnClickListener(user.getId(), false));      
         
         // Set the icon for this list item
-        imageLoader.displayImage(user.thumb, holder.imgIcon);
+        imageLoader.displayImage(Util.getThumbUrl(user), holder.imgIcon);
         
         return v;
     }

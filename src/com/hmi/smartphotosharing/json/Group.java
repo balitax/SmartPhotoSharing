@@ -22,7 +22,6 @@ public class Group {
 	public int members;
 	public int member;
 	public int totalnew;
-	public String thumb;
 	
 	@SerializedName("private")
 	private String private_group;

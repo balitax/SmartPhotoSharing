@@ -21,6 +21,8 @@
     <string name="select_group">Select group</string>
     <string name="invite_friends">Invite friends</string>
     
+    <string name="error_google_services_missing">You do not have Google Play Services installed, which is required for Picalilly to work. Click the button to install Google Play Services.</string>
+    <string name="button_google_service">Install Google Play-services</string>
     <string name="search_hint">Search friends</string>
     
     <string name="toggle_gps">Update GPS</string>
@@ -78,7 +80,7 @@
     <string name="group_create_name">Group name</string>
     <string name="group_create_description">Enter a description</string>
     <string name="group_create_location">Choose a location</string>
-    <string name="group_create_location_search">Enter location</string>
+    <string name="group_create_location_search">Find location</string>
     <string name="group_create_location_button">Find</string>
     
     <string name="group_create_title">Create a new group</string>

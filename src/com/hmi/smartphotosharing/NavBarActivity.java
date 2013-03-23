@@ -1,7 +1,9 @@
 package com.hmi.smartphotosharing;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,13 +61,28 @@ public class NavBarActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
+		return handleOptionItemSelected(item,this)|super.onOptionsItemSelected(item);
+	}
+
+	public static boolean handleOptionItemSelected(MenuItem item, Context c) {
+		Intent intent;
 	    switch (item.getItemId()) {
 	        case R.id.settings:
-	            Intent intent = new Intent(this, ProfileActivity.class);
-	            startActivity(intent);
+	            intent = new Intent(c, ProfileActivity.class);
+	            c.startActivity(intent);
 	            return true;
+	        case R.id.logout:
+
+	    		SharedPreferences settings = c.getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+	    		settings.edit().remove(Login.SESSION_HASH).commit();
+	    		
+	    		intent = new Intent(c, Login.class);
+	    		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); 
+	    		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	    		c.startActivity(intent);
+	    		return true;
 	        default:
-	            return super.onOptionsItemSelected(item);
+	            return false;
 	    }
 	}
 

@@ -22,6 +22,7 @@ public class FullscreenImageActivity extends Activity {
         w.setBackgroundColor(Color.BLACK);
         WebSettings ws = w.getSettings();
         ws.setBuiltInZoomControls(true);
+        ws.setLoadWithOverviewMode(true);
         ws.setUseWideViewPort(true);
         
         // Maybe replace by cached image
