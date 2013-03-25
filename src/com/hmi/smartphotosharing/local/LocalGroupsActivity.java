@@ -90,8 +90,6 @@ public class LocalGroupsActivity extends NavBarListActivity implements OnDownloa
 	public boolean onCreateOptionsMenu (Menu menu) {
 		super.onCreateOptionsMenu(menu);
 
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.group_menu, menu);
 	    return true;
 	}	
 	

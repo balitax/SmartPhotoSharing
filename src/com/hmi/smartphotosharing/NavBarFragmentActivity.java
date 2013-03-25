@@ -71,4 +71,9 @@ public class NavBarFragmentActivity extends FragmentActivity {
 	public void onClickMenu (View view) {
 		openOptionsMenu();	
 	}
+	
+
+	public void onClickBack (View view) {
+		finish();
+	}
 }

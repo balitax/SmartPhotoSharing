@@ -72,4 +72,9 @@ public class NavBarListActivity extends ListActivity {
 	public void onClickMenu (View view) {
 		openOptionsMenu();	
 	}
+	
+
+	public void onClickBack (View view) {
+		finish();
+	}
 }

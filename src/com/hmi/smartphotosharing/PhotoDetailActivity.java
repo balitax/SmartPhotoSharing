@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +53,9 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         gid = intent.getLongExtra(KEY_GID, 0);    
         ssid = intent.getLongExtra(KEY_SSID, 0); 
         vp = (ViewPager) findViewById(R.id.viewpager);    
+
+        ImageView back = (ImageView) findViewById(R.id.back);
+        back.setVisibility(ImageView.VISIBLE);
         
         if (id != 0) {
 			loadData();

@@ -96,4 +96,8 @@ public class NavBarActivity extends Activity {
 	public void onClickMenu (View view) {
 		openOptionsMenu();	
 	}
+	
+	public void onClickBack (View view) {
+		finish();
+	}
 }

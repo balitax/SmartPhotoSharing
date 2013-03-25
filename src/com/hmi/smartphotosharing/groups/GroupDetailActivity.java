@@ -4,17 +4,19 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,8 +27,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +37,6 @@ import com.hmi.smartphotosharing.NavBarActivity;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.friends.AddFriendsActivity;
-import com.hmi.smartphotosharing.friends.FriendsActivity;
 import com.hmi.smartphotosharing.json.BooleanResponse;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Group;
@@ -48,6 +47,7 @@ import com.hmi.smartphotosharing.json.PhotoListResponse;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.StringResponse;
+import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -65,6 +65,10 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	
 	public static final String KEY_ID = "id";
 	
+	// update group info after 1s
+	public static final int UPDATE_AFTER = 2000; //ms
+	private Handler mHandler = new Handler();
+	
 	//gallery object
 	private GridView gridView;
 	//image view for larger display
@@ -72,8 +76,11 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	//private TextView groupPhotos;
 	private TextView groupMembers;
 	private TextView groupName;
-	//private ImageView groupIcon;
+	private ImageView groupIcon;
 
+	// container for the group members
+	private String members;
+	
 	//private ImageView privateIcon, locationIcon;
 	
 	private ImageLoader imageLoader;
@@ -92,9 +99,14 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         
         groupName = (TextView) findViewById(R.id.header_title);
-        //groupIcon = (ImageView) findViewById(R.id.group_detail_icon);
+        groupIcon = (ImageView) findViewById(R.id.app_icon);
         //groupPhotos = (TextView) findViewById(R.id.group_detail_photos);
         groupMembers = (TextView) findViewById(R.id.header_subtext);
+        groupMembers.setText(getResources().getString(R.string.group_detail_info));
+        
+        ImageView back = (ImageView) findViewById(R.id.back);
+        back.setVisibility(ImageView.VISIBLE);
+        
         //privateIcon = (ImageView) findViewById(R.id.private_icon);
         //locationIcon = (ImageView) findViewById(R.id.location_icon);
         
@@ -132,7 +144,37 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 			loadData();
         }
     }
-    
+
+	@Override
+	public boolean onCreateOptionsMenu (Menu menu) {
+    	MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.group_detail_menu, menu);
+		super.onCreateOptionsMenu(menu);
+	    return true;
+	}	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+		
+        switch (item.getItemId()) {
+	        case R.id.invite:
+	        	intent = new Intent(this, AddFriendsActivity.class);
+	        	intent.putExtra("id", id);
+	        	intent.putExtra("type", AddFriendsActivity.TYPE_GROUP);
+	        	startActivityForResult(intent, CODE_INVITE);
+	        	return true;
+	        case R.id.manage:
+	        	intent = new Intent(this, GroupManageActivity.class);
+	        	intent.putExtra("id", id);
+	        	startActivity(intent);	        	
+	        	return true;
+	        default:
+	        	return super.onOptionsItemSelected(item);
+        }
+    }
+	
+	/*
     @Override
     protected Dialog onCreateDialog(int id) {
         Dialog dialog;
@@ -160,7 +202,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
             dialog = null;
         }
         return dialog;
-    }
+    }*/
     
     public void onClickCamera(View view) {
 
@@ -225,14 +267,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
     public void onClickInfo(View view) {
     	showDialog(DIALOG_INFO);
     }
-    
-    public void onClickInvite(View view) {
-    	Intent intent = new Intent(this,AddFriendsActivity.class);
-    	intent.putExtra("type", AddFriendsActivity.TYPE_GROUP);
-    	intent.putExtra("gid", group.getId());
-    	startActivityForResult(intent, CODE_INVITE);
-    }
-    
+        
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     	
         if (requestCode == CODE_INVITE) {
@@ -286,37 +321,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	    	startActivity(intent);
 	    }
     }
-    
-	@Override
-	public boolean onCreateOptionsMenu (Menu menu) {
-    	MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.group_detail_menu, menu);
-		super.onCreateOptionsMenu(menu);
-	    return true;
-	}	
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		Intent intent;
-		
-        switch (item.getItemId()) {
-	        case R.id.invite:
-	        	intent = new Intent(this, SelectSingleFriendActivity.class);
-	        	intent.putExtra("id", id);
-	        	startActivityForResult(intent, CODE_INVITE);
-	        	return true;
-	        default:
-	        	return super.onOptionsItemSelected(item);
-        }
-    }
-	
-	@Override
-	public void onStart() {
-        super.onStart();
-        
-        loadData();
-	}
-	
+    	
 	private void loadData() {
     	
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
@@ -472,8 +477,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 			group = gdr.getObject();
 	
 			groupName.setText(group.name);
-			//String logoUrl = Util.GROUP_DB + group.logo;
-			//imageLoader.displayImage(logoUrl, groupIcon);
+			imageLoader.displayImage(Util.getThumbUrl(group), groupIcon);
 	
 			/*
 			if (!group.isPrivate()) {
@@ -492,6 +496,20 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 				isMember = true;				
 			}
 			
+			if (group.users != null) {
+				if (group.users.size() > 0) {
+					
+					StringBuilder b = new StringBuilder();
+					for(User u : group.users){
+						if (b.length() > 0) b.append(", ");
+						b.append(u.rname);
+					}
+					members = b.toString();
+
+		            mHandler.removeCallbacks(mUpdateTimeTask);
+		            mHandler.postDelayed(mUpdateTimeTask, UPDATE_AFTER);
+				}
+			}
 			// Set the string telling how many members the group has
 			//String photos = String.format(getResources().getString(R.string.group_detail_members), group.members);
 			//groupMembers.setText(photos);
@@ -501,4 +519,10 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		}
 		
 	}
+	
+	private Runnable mUpdateTimeTask = new Runnable() {
+	   public void run() {
+	       groupMembers.setText(members);		     
+	   }
+	};
 }

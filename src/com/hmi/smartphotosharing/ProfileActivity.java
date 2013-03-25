@@ -1,36 +1,22 @@
 package com.hmi.smartphotosharing;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.google.gson.Gson;
-import com.hmi.smartphotosharing.json.FetchJSON;
-import com.hmi.smartphotosharing.json.OnDownloadListener;
-import com.hmi.smartphotosharing.json.User;
-import com.hmi.smartphotosharing.json.UserResponse;
-import com.hmi.smartphotosharing.util.Util;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class ProfileActivity extends NavBarActivity {
 
     private static final int TAKE_PICTURE = 5;
 	
-    private ImageLoader imageLoader;
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.profile);
         super.onCreate(savedInstanceState);
         
-        imageLoader = ImageLoader.getInstance();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
-                
+        ImageView back = (ImageView) findViewById(R.id.back);
+        back.setVisibility(ImageView.VISIBLE);
     }
 	 
 	public void onClickPicture(View view) {

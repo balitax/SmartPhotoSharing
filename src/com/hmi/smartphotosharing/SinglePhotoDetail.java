@@ -68,6 +68,10 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+        
+        ImageView back = (ImageView) findViewById(R.id.back);
+        back.setVisibility(ImageView.VISIBLE);
+        
         if (id != 0) {
 			loadData(true,true);
         } else {

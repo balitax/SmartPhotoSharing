@@ -27,6 +27,8 @@ import com.hmi.smartphotosharing.json.NewsListResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
+import com.hmi.smartphotosharing.json.User;
+import com.hmi.smartphotosharing.json.UserResponse;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -38,7 +40,7 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
     public static final int CREATE_GROUP = 4;
 
     private static final int CODE_NEWS = 1;
-    private static final int CODE_GROUPS = 2;
+    private static final int CODE_USER = 2;
 
 	public static final int TYPE_GROUP = 0;
 	public static final int TYPE_PHOTO = 1;
@@ -48,14 +50,18 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
 	public static final int TYPE_COMMENT = 5;
 	
 	private ImageLoader imageLoader;
-	    
+	private ImageView icon;
+	private TextView title;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.news);
         super.onCreate(savedInstanceState);
                         
         imageLoader = ImageLoader.getInstance();
-
+        icon = (ImageView)findViewById(R.id.app_icon);
+        title = (TextView)findViewById(R.id.header_title);
+        
         DisplayImageOptions options = new DisplayImageOptions.Builder()
             .showStubImage(R.drawable.ic_launcher)
             .showImageForEmptyUri(R.drawable.ic_launcher)
@@ -85,10 +91,8 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
     	    
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
-		super.onCreateOptionsMenu(menu);
 
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.group_menu, menu);
+		super.onCreateOptionsMenu(menu);
 	    return true;
 	}	
 	
@@ -119,7 +123,17 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
 		}
         
         PostData pr = new PostData(url,map);
-		new PostRequest(this, CODE_NEWS).execute(pr);
+		new PostRequest(this, CODE_NEWS,false).execute(pr);
+		
+		url = Util.getUrl(this,R.string.profile_http);
+		HashMap<String,ContentBody> map2 = new HashMap<String,ContentBody>();
+        try {
+			map2.put("sid", new StringBody(hash));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        PostData pr2 = new PostData(url,map2);
+		new PostRequest(this, CODE_USER,false).execute(pr2);
 	}
 		
 		
@@ -130,8 +144,31 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
 	@Override
 	public void parseJson(String result, int code) {
 		
-		parseNews(result);
+		switch(code) {
+			case CODE_NEWS:
+				parseNews(result);
+				break;
+			case CODE_USER:
+				parseUser(result);
+				break;
+			default:
+		}
 		
+	}
+
+	private void parseUser(String result) {
+
+		Gson gson = new Gson();
+		UserResponse response = gson.fromJson(result, UserResponse.class);
+		
+		if (response != null) {
+			User user = response.getObject();
+			
+			if (user != null) {
+				imageLoader.displayImage(Util.getThumbUrl(user), icon);
+				title.setText(user.rname);
+			}			
+		}		
 	}
 
 	private void parseNews(String result) {

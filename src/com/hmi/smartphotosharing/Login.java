@@ -27,8 +27,6 @@ import com.hmi.smartphotosharing.util.Util;
 
 public class Login extends Activity implements OnDownloadListener{
 	
-	public static int CORRECT = 200;
-	public static int INCORRECT = 403;
 	public static final String SESSION_PREFS = "session";
 	public static final String SESSION_HASH = "sessionhash";
 	public static final String SESSION_UID = "sessionuid";
@@ -71,8 +69,8 @@ public class Login extends Activity implements OnDownloadListener{
 		password = (EditText) findViewById(R.id.login_password);
 		
 		// TODO remove
-		//username.setText("s0166049");
-		//password.setText("changeme22");
+		username.setText("s0166049");
+		password.setText("changeme22");
 		
 		doValidate();
 		
@@ -146,7 +144,7 @@ public class Login extends Activity implements OnDownloadListener{
 		Gson gson = new Gson();
 		UserResponse response = gson.fromJson(json, UserResponse.class);
 		
-		if (response.getStatus() == CORRECT) {
+		if (response.getStatus() == Util.STATUS_OK) {
 
 			// Store the sessionhash in sharedpreferences
 			SharedPreferences settings = getSharedPreferences(SESSION_PREFS,MODE_PRIVATE);
@@ -170,24 +168,22 @@ public class Login extends Activity implements OnDownloadListener{
 		LongResponse response = gson.fromJson(json, LongResponse.class);
 
 		if (response.getStatus() == Util.STATUS_OK) {
-			
-			// GCM
-			checkGCM();
-			
+						
 			// Store the sessionhash in sharedpreferences
 			SharedPreferences settings = getSharedPreferences(SESSION_PREFS,MODE_PRIVATE);
 			SharedPreferences.Editor editor = settings.edit();
 			editor.putString(SESSION_HASH, response.getMessage());
 			editor.putLong(SESSION_UID, response.getObject());
 			editor.commit();
+
+			// GCM
+			checkGCM();
 			
 			Intent intent = new Intent(this, NewsActivity.class);
 		    startActivity(intent);	
 		} else {
 			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 		}
-	
-		
 		
 	}
 

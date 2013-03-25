@@ -41,6 +41,10 @@ public class GroupManageActivity extends NavBarActivity implements OnDownloadLis
         Intent intent = getIntent();
         id = intent.getLongExtra(KEY_ID, 0);
         loadData();
+        
+        // Show selection in nav bar
+        ImageView home = (ImageView) findViewById(R.id.favourite);
+        Util.setSelectedBackground(getApplicationContext(), home);
     }
 	
     @Override
@@ -96,28 +100,29 @@ public class GroupManageActivity extends NavBarActivity implements OnDownloadLis
 		if (response.getStatus() == Util.STATUS_OK) {
 			Group group = response.getObject();
 
-	        TextView groupName = (TextView) findViewById(R.id.group_detail_name);
-	        ImageView groupIcon = (ImageView) findViewById(R.id.group_detail_icon);
-	        TextView groupPhotos = (TextView) findViewById(R.id.group_detail_photos);
-	        TextView groupMembers = (TextView) findViewById(R.id.group_detail_members);
-	        ImageView privateIcon = (ImageView) findViewById(R.id.private_icon);
-	        ImageView locationIcon = (ImageView) findViewById(R.id.location_icon);
+	        TextView groupName = (TextView) findViewById(R.id.header_title);
+	        ImageView groupIcon = (ImageView) findViewById(R.id.app_icon);
+	        //TextView groupPhotos = (TextView) findViewById(R.id.group_detail_photos);
+	        //TextView groupMembers = (TextView) findViewById(R.id.group_detail_members);
+	        //ImageView privateIcon = (ImageView) findViewById(R.id.private_icon);
+	        //ImageView locationIcon = (ImageView) findViewById(R.id.location_icon);
 	        
 			groupName.setText(group.name);
-			String logoUrl = Util.GROUP_DB + group.logo;
+			String logoUrl = Util.getThumbUrl(group);
 			imageLoader.displayImage(logoUrl, groupIcon);
 	
+			/*
 			if (!group.isPrivate()) {
 				privateIcon.setVisibility(ImageView.GONE);
 			}
 
 			if (!group.isLocationLocked()) {
 				locationIcon.setVisibility(ImageView.GONE);
-			}
+			}*/
 			
 			// Set the string telling how many members the group has
-			String photos = String.format(getResources().getString(R.string.group_detail_members), group.members);
-			groupMembers.setText(photos);
+			//String photos = String.format(getResources().getString(R.string.group_detail_members), group.members);
+			//groupMembers.setText(photos);
 		} else {
 			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			finish();

@@ -19,7 +19,6 @@ public class Group {
 	public String latend;
 	
 	public String numphotos;
-	public int members;
 	public int member;
 	public int totalnew;
 	
@@ -34,6 +33,7 @@ public class Group {
 	}
 	
 	public List<Photo> photos;
+	public List<User> users;
 	
 	public boolean isPrivate() {
 		return private_group.equals("1");
