@@ -35,6 +35,7 @@ import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 
 public class GroupsActivity extends NavBarListActivity implements OnDownloadListener {
 	
@@ -67,6 +68,10 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 
         // Init ImageLoader
         imageLoader.init(config);
+
+        // Pauses the loading of image to get smoother scrolling
+        PauseOnScrollListener listener = new PauseOnScrollListener(imageLoader, true, true);
+        getListView().setOnScrollListener(listener);
         
         // Show selection in nav bar
         ImageView home = (ImageView) findViewById(R.id.favourite);

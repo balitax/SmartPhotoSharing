@@ -48,6 +48,7 @@
         android:layout_alignParentRight="true" />
     
 	<HorizontalScrollView
+	    android:id="@+id/container"
 	    android:layout_width="fill_parent"
 	    android:layout_height="60dp"
 	    android:layout_toRightOf="@+id/icon"

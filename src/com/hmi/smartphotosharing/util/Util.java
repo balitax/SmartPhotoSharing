@@ -31,6 +31,7 @@ import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.News;
 import com.hmi.smartphotosharing.json.Photo;
+import com.hmi.smartphotosharing.json.Subscription;
 import com.hmi.smartphotosharing.json.User;
 
 public class Util {
@@ -85,7 +86,11 @@ public class Util {
 										BitmapDescriptorFactory.HUE_BLUE, BitmapDescriptorFactory.HUE_CYAN,
 										BitmapDescriptorFactory.HUE_GREEN, BitmapDescriptorFactory.HUE_MAGENTA,
 										BitmapDescriptorFactory.HUE_RED, BitmapDescriptorFactory.HUE_YELLOW};
-		
+	
+	public static String getThumbUrl(String db, String file) {
+		return THUMB_URL + db + file + THUMB_CONFIG;
+	}
+	
 	public static String getThumbUrl(Photo p) {
 		return THUMB_URL + IMG_DB + p.name + THUMB_CONFIG;
 	}
@@ -96,6 +101,10 @@ public class Util {
 	
 	public static String getThumbUrl(Group g) {
 		return THUMB_URL + GROUP_DB + g.logo + THUMB_CONFIG;
+	}
+
+	public static String getThumbUrl(Subscription subscription) {
+		return THUMB_URL + USER_DB + subscription.picture + THUMB_CONFIG;
 	}
 	
     public static String getUrl(Context c, int resource) {
@@ -348,5 +357,6 @@ public class Util {
         title.setLayoutParams(lp);
 		
 	}
+
 
 }

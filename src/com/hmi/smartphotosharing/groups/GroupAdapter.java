@@ -5,16 +5,12 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,7 +21,9 @@ import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 /**
  * Custom ArrayAdapter class that is used to display a list of items with an icon.
@@ -44,7 +42,8 @@ public class GroupAdapter extends ArrayAdapter<Group> {
 	int layoutResourceId;	// The xml layout file for each ListView item
 	List<Group> data;	// A Group array that contains all list items
 	ImageLoader imageLoader;
-		
+	
+	
 	public GroupAdapter(Context context, int resource, List<Group> objects, ImageLoader im) {
 		super(context, resource, objects);
 		
@@ -52,6 +51,7 @@ public class GroupAdapter extends ArrayAdapter<Group> {
         this.context = context;
         this.data = objects;
         this.imageLoader = im;
+        
 	}
 	
     @Override

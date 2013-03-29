@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,8 +39,10 @@ import com.hmi.smartphotosharing.json.PhotoResponse;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListener {
 
@@ -54,6 +58,7 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 	private EditText commentInput;
 	
 	private LinearLayout list;
+	private int screenWidth, margin;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +83,13 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
         	Log.e("SmartPhotoSharing", "Photo id was 0, url was probably incorrect");
         }
         
+        Display display = getWindowManager().getDefaultDisplay();
+        screenWidth = (int)(display.getWidth()*0.95);
+        margin = (int)((display.getWidth() - screenWidth)/2);
+
+        TextView title = (TextView) findViewById(R.id.header_title);
+        TextView sub = (TextView) findViewById(R.id.header_subtext);
+        Util.showSubHeader(title, sub);
     }
     
     @Override
@@ -87,10 +99,10 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
     
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
-		super.onCreateOptionsMenu(menu);
 
 		MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.photo_menu, menu);
+		super.onCreateOptionsMenu(menu);
 	    return true;
 	}	
 	
@@ -99,7 +111,7 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
         switch (item.getItemId()) {
         	case R.id.share:
 
-        		String uri = getResources().getString(R.string.photo_detail_url);
+        		String uri = getResources().getString(R.string.photo_detail_http);
         		
         		Intent intent = new Intent(this,SharePhotoActivity.class);
 				intent.setType("image/jpeg");
@@ -110,6 +122,32 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 				// Create and start the chooser
 				startActivity(intent);
 				return true;
+        	case R.id.save:
+        		/*OutputStream outStream = null;
+        		File file = new File(extStorageDirectory, "er.PNG");
+        		
+        		try {
+        			DisplayImageOptions.
+        		    outStream = new FileOutputStream(file);
+        		    Bitmap bm = imageLoader.
+        		    		bm.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+        		    outStream.flush();
+        		    outStream.close();
+        		   
+        		    Toast.makeText(this, "Saved", Toast.LENGTH_LONG).show();
+            		MediaStore.Images.Media.insertImage(getContentResolver(), yourBitmap, yourTitle, yourDescription);
+        		   
+        		} catch (FileNotFoundException e) {
+        		    // TODO Auto-generated catch block
+        		    e.printStackTrace();
+        		    Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+        		} catch (IOException e) {
+        		    // TODO Auto-generated catch block
+        		    e.printStackTrace();
+        		    Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+        		}*/
+        		
+        		return true;
 	        default:
 	        	return super.onOptionsItemSelected(item);
         }
@@ -159,7 +197,7 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 		String hash = settings.getString(Login.SESSION_HASH, null);
         
 		if (photo) {
-	        String photoUrl = String.format(Util.getUrl(this,R.string.photo_detail_url),hash,id);
+	        String photoUrl = String.format(Util.getUrl(this,R.string.photo_detail_http),hash,id);
 	        
 			new FetchJSON(this,CODE_PHOTO).execute(photoUrl);
 		}
@@ -280,9 +318,17 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 			String uri = Util.IMG_DB + p.name;
 
 	        ImageView photo = (ImageView) findViewById(R.id.picture);
+	        
+	        LayoutParams params = (LayoutParams) photo.getLayoutParams();
+	        params.width = screenWidth;
+	        params.height = screenWidth;
+	        params.setMargins(0, margin, 0, margin);
+	        photo.setLayoutParams(params);
+	        
 			photo.setOnClickListener(new PictureClickListener(getApplicationContext(), uri));
 	        
-	        imageLoader.displayImage(uri, photo);
+			DisplayImageOptions roundOptions = new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(8)).build();
+	        imageLoader.displayImage(uri, photo, roundOptions);
 	        /*
 	        // Update user icon
 	        ImageView pic = (ImageView) findViewById(R.id.photo_detail_icon);

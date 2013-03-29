@@ -37,6 +37,7 @@ import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 
 public class FriendsRequestsActivity extends NavBarListActivity implements OnDownloadListener {
 
@@ -57,6 +58,10 @@ public class FriendsRequestsActivity extends NavBarListActivity implements OnDow
         
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+
+        // Pauses the loading of image to get smoother scrolling
+        PauseOnScrollListener listener = new PauseOnScrollListener(imageLoader, true, true);
+        getListView().setOnScrollListener(listener);
         
         loadData();
         

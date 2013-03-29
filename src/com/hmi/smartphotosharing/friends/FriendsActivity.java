@@ -38,6 +38,7 @@ import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 
 public class FriendsActivity extends NavBarListActivity implements OnDownloadListener {
 
@@ -59,6 +60,10 @@ public class FriendsActivity extends NavBarListActivity implements OnDownloadLis
         
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+
+        // Pauses the loading of image to get smoother scrolling
+        PauseOnScrollListener listener = new PauseOnScrollListener(imageLoader, true, true);
+        getListView().setOnScrollListener(listener);
         
         loadData();
         requests = (Button) findViewById(R.id.btn_requests);
@@ -210,6 +215,12 @@ public class FriendsActivity extends NavBarListActivity implements OnDownloadLis
 		UserListResponse response = gson.fromJson(result, UserListResponse.class);
 		
 		if (response != null) {
+			if (response.getStatus() == Util.STATUS_DENIED) {
+	            startActivity(new Intent(this, Login.class));
+	            finish();
+	            return;
+			}
+				
 			List<User> user_list = response.getObject();
 			
 			if (user_list == null) {

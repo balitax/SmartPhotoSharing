@@ -157,7 +157,7 @@
     
     <string name="photo_detail_name">By %1$s</string>
     <string name="photo_detail_group">Posted in \"%1$s\"</string>
-    <string name="photo_detail_url">cmd=pic&amp;sid=%1$s&amp;iid=%2$s</string>
+    <string name="photo_detail_http">cmd=pic&amp;sid=%1$s&amp;iid=%2$s</string>
     <string name="photo_detail_addcomment">cmd=addcomment</string>
     <string name="photo_detail_removecomment">cmd=removecomment</string>
     <string name="photo_detail_comments">cmd=comments&amp;sid=%1$s&amp;iid=%2$s</string>
@@ -176,20 +176,21 @@
             
     <!--  Menu -->
     
-    <string name="menu_settings">Settings</string>
-    <string name="menu_logout">Logout</string>
-    <string name="menu_help">Help</string>
     <string name="menu_camera">Camera</string>
-    <string name="menu_search">Search</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_refresh">Refresh</string>
+    <string name="menu_friend_add">Add A Friend</string>
+    <string name="menu_friend_search">Search Users</string>
     <string name="menu_group_manage">Manage Group</string>
     <string name="menu_group_create">Create Group</string>
     <string name="menu_group_join">Join A Group</string>
     <string name="menu_group_invite">Invite</string>
+    <string name="menu_help">Help</string>
+    <string name="menu_logout">Logout</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_save">Save</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_share">Share</string>
     <string name="menu_subscription_create">Create Subscription</string>
-    <string name="menu_friend_add">Add A Friend</string>
-    <string name="menu_friend_search">Search Users</string>
     
     <!-- Preferences -->
     

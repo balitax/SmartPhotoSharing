@@ -7,11 +7,11 @@ import java.util.List;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -21,7 +21,6 @@ import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarListActivity;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.groups.GroupAdapter;
 import com.hmi.smartphotosharing.json.News;
 import com.hmi.smartphotosharing.json.NewsListResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
@@ -34,6 +33,7 @@ import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 
 public class NewsActivity extends NavBarListActivity implements OnDownloadListener {
 	
@@ -57,7 +57,8 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.news);
         super.onCreate(savedInstanceState);
-                        
+
+        
         imageLoader = ImageLoader.getInstance();
         icon = (ImageView)findViewById(R.id.app_icon);
         title = (TextView)findViewById(R.id.header_title);
@@ -86,9 +87,11 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
         // Load data
         loadData();
         
-        
+        // Pauses the loading of image to get smoother scrolling
+        PauseOnScrollListener listener = new PauseOnScrollListener(imageLoader, true, true);
+        getListView().setOnScrollListener(listener);
     }
-    	    
+    	  
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
 

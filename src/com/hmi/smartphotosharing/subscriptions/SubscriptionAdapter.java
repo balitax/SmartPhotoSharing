@@ -12,18 +12,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup.LayoutParams;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -46,15 +42,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
 
-    private static final int SWIPE_MAX_OFF_PATH = 250;
-    private GestureDetector gestureDetector;
     private static final int GLOBE_WIDTH = 256;
     private static final Double LN2 = 0.6931471805599453;
     
     private static final int CODE_SUB_REMOVE = 3;
-    
-    OnTouchListener gestureListener;
-    
+        
 	Context context;		// The parenting Context that the Adapter is embedded in
 	int layoutResourceId;	// The xml layout file for each ListView item
 	Subscription data[] = null;	// A Group array that contains all list items
@@ -91,13 +83,11 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
 	 * the properties that we want.
 	 */
 	@Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View v, ViewGroup parent) {
 
         Subscription subscription = getItem(position);
         
-        View v = convertView;
-        SubscriptionHolder holder = null;
-       
+        SubscriptionHolder holder;
         if(v == null) {
         	
         	// Inflater used to parse the xml file
@@ -108,28 +98,27 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
             holder.imgIcon = (ImageView)v.findViewById(R.id.icon);
             holder.txtTitle = (TextView)v.findViewById(R.id.item_text);
             holder.totalNew = (TextView)v.findViewById(R.id.total_new);
-            holder.gallery = (LinearLayout) v.findViewById(R.id.gallery);
             holder.delete = (ImageView) v.findViewById(R.id.sub_delete);
+            holder.gallery = (LinearLayout) v.findViewById(R.id.gallery);
+            holder.h = (HorizontalScrollView) v.findViewById(R.id.container);
             v.setTag(holder);
         } else {
-            holder = (SubscriptionHolder)v.getTag();
-        }
-                        
+        	holder = (SubscriptionHolder)v.getTag();
+        }                        
             
         // Delete button
         holder.delete.setImageResource(R.drawable.ic_delete);
-        holder.delete.setOnClickListener(new DeleteClickListener(subscription.getId()));
+        //holder.delete.setOnClickListener(new DeleteClickListener(subscription.getId()));
         
         // Show subscription as a person
+    	holder.txtTitle.setText(subscription.name);
         if (subscription.person != null) {
-        	holder.txtTitle.setText(subscription.user.rname);
-	        String url = Util.USER_DB + subscription.user.picture;
+	        String url = Util.getThumbUrl(subscription);
 	        imageLoader.displayImage(url, holder.imgIcon);
         } 
         
         // Show subscription as a location
         else {
-        	holder.txtTitle.setText(subscription.name);
         	
         	String url = context.getResources().getString(R.string.subscription_static_map);
         	
@@ -155,7 +144,9 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         	imageLoader.displayImage(mapUrl, holder.imgIcon);
         	
         }
-                
+           
+        //v.setOnLongClickListener(new MyLongClickListener(position));
+        
         // Show the number of updates
         if (subscription.totalnew == 0) {
         	holder.totalNew.setVisibility(TextView.INVISIBLE);
@@ -165,17 +156,16 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         }
         
         // Add photos to the gallery
-        holder.gallery.removeAllViews();
+        holder.h.removeAllViews();
+        LinearLayout gallery = new LinearLayout(context);
+        holder.h.addView(gallery);
         if (subscription.photos != null && subscription.photos.size() > 0) {
 			for (Photo p : subscription.photos) {
-				View imgView = getImageView(p.thumb);
+				View imgView = getImageView(Util.getThumbUrl(p));
 				imgView.setOnClickListener(new MyOnItemClickListener(context, getItemId(position), p.getId()));
-				holder.gallery.addView(imgView);
+				gallery.addView(imgView);
 			}
         }    
-        
-        // Detect swipes
-        holder.gallery.setOnTouchListener(gestureListener);
         
         return v;
     }
@@ -203,6 +193,7 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         TextView totalNew;
         LinearLayout gallery;
         ImageView delete;
+        HorizontalScrollView h;
     }	
     	
     /**
@@ -241,12 +232,53 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         
         @Override
         public void onClick(View arg0) {
-        	confirmDeleteCommentDialog(context, ssid);
+        	confirmDeleteCommentDialog(ssid);
         	
         }       
     }
     
-    private void confirmDeleteCommentDialog(final Context c, final long ssid) {
+	private class MyLongClickListener implements OnLongClickListener {
+		private int pos;
+		
+		public MyLongClickListener (int pos) {
+			this.pos = pos;
+		}
+		@Override
+		public boolean onLongClick(View v) {
+
+			createItemDialog(pos);
+			return true;
+		}
+
+		
+	}
+	
+	public void createItemDialog(int pos) {
+		Subscription s = getItem(pos);
+		
+    	AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		builder.setTitle(s.name)
+			 .setItems(R.array.subscription_dialog, new ItemDialog(getItemId(pos)));
+		AlertDialog alert = builder.create();
+		alert.show();
+		
+	}  
+	
+	public class ItemDialog implements DialogInterface.OnClickListener {
+		private long ssid;
+		
+		public ItemDialog(long ssid){
+			this.ssid = ssid;
+		}
+		
+		public void onClick(DialogInterface dialog, int which) {
+     	   if(which == 0) {
+     		   confirmDeleteCommentDialog(ssid);
+     	   }
+        }
+	}
+	
+    private void confirmDeleteCommentDialog(final long ssid) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage("Are you sure you want to delete this subscription?")
 		     .setCancelable(false)       

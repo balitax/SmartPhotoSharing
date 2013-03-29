@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SinglePhotoDetail;
 import com.hmi.smartphotosharing.groups.GroupDetailActivity;
@@ -167,8 +168,9 @@ public class NewsAdapter extends ArrayAdapter<News> {
         @Override
         public void onClick(View arg0) {
         	//groupClickListener.OnGroupClick(getItemId(mPosition));
-        	Intent intent = new Intent(context, SinglePhotoDetail.class);
-        	intent.putExtra("id", getItem(mPosition).iid);
+        	Intent intent = new Intent(context, PhotoDetailActivity.class);
+        	News n = getItem(mPosition);
+        	intent.putExtra("id", n.iid);
         	context.startActivity(intent);
         }       
     }

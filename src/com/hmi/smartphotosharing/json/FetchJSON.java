@@ -11,6 +11,7 @@ import java.net.URL;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -30,6 +31,7 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 		this.code = 0;
 		this.dl = (OnDownloadListener) c;
 		this.showDialog = true;
+		pd = new ProgressDialog(c);
 	}
 	
 	/**
@@ -44,6 +46,7 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 		this.code = code;
 		this.dl = (OnDownloadListener) c;
 		this.showDialog = true;
+		pd = new ProgressDialog(c);
 		
 	}
 	
@@ -51,6 +54,7 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 		this.code = code;
 		this.dl = (OnDownloadListener) c;
 		this.showDialog = showDialog;
+		pd = new ProgressDialog(c);
 		
 	}
 	
@@ -66,14 +70,38 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
            return new Gson().toJson(err);
        }
 	}
-
+	
+	@Override
+	protected void onCancelled () {
+		killDialog();
+	}
+	
+	public void killDialog() {
+		if (pd != null && pd.isShowing()) pd.dismiss();	
+	}
+	
 	@Override
     protected void onPreExecute() {
-        if (this.showDialog && pd == null) pd = ProgressDialog.show(c, "Loading", "Please wait...");
+		
+        if (this.showDialog){
+        	pd.setTitle("Loading...");
+        	pd.setMessage("Please wait");
+    		pd.setOnCancelListener(new DialogInterface.OnCancelListener(){
+    	          public void onCancel(DialogInterface dialog) {
+    	              FetchJSON.this.cancel(true);
+    	              //finish();
+    	          }
+    	    });
+    		
+    		pd.show();
+        }
     }	
 	
 	@Override
 	protected void onPostExecute(String result) {
+		
+		if (pd != null && pd.isShowing()) pd.dismiss();
+		
 		try {
 			if (result != "") {
 				dl.parseJson(result, code);
@@ -86,7 +114,6 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 			Log.e("JSON", "Json syntax exception: " + e.getMessage());
 			Log.e("JSON", result);
 		}
-		if (pd != null) pd.dismiss();
 	}
 	
 	// Given a URL, establishes an HttpUrlConnection and retrieves

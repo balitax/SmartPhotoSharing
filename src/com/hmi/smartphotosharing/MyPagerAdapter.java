@@ -18,6 +18,7 @@ import android.content.SharedPreferences;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,14 +28,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.RelativeLayout.LayoutParams;
 
 import com.hmi.smartphotosharing.json.Comment;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 public class MyPagerAdapter extends PagerAdapter {
 
@@ -47,12 +51,18 @@ public class MyPagerAdapter extends PagerAdapter {
 	private List<Photo> data;
 	private ImageLoader imageLoader;
 	private LinearLayout list;
+
+	private int screenWidth, margin;
 	
 	public MyPagerAdapter(Context c, List<Photo> data) {
 		this.context = c;
 		this.data = data;
 		this.imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(context));
+        
+        Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
+        screenWidth = (int)(display.getWidth()*0.95);
+        margin = (int)((display.getWidth() - screenWidth)/2);
 	}
 	
 	@Override
@@ -72,23 +82,40 @@ public class MyPagerAdapter extends PagerAdapter {
 
         View view = inflater.inflate(R.layout.photo_detail_item, null);
         list = (LinearLayout) view.findViewById(R.id.comments);
+
+        ImageView back = (ImageView) view.findViewById(R.id.back);
+        back.setVisibility(ImageView.VISIBLE);
         
+        ImageView icon = (ImageView) view.findViewById(R.id.app_icon);
+        TextView title = (TextView) view.findViewById(R.id.header_title);
+        TextView sub = (TextView) view.findViewById(R.id.header_subtext);
+        Util.showSubHeader(title, sub);
+        
+        // Buttons
         Button button = (Button)view.findViewById(R.id.add_comment);
         EditText commentInput = (EditText)view.findViewById(R.id.edit_message);
         button.setOnClickListener(new CommentClickListener(position,p.getId(),commentInput));
         
-		ImageView userIcon = (ImageView) view.findViewById(R.id.photo_detail_icon);
-		ImageView myLike = (ImageView) view.findViewById(R.id.like);
-		TextView likes = (TextView) view.findViewById(R.id.like_txt);
+        // User icon
+		ImageView userIcon = (ImageView) view.findViewById(R.id.app_icon);
+		imageLoader.displayImage(Util.getThumbUrl(Util.USER_DB, p.picture), userIcon);
+        
+		// User name
+		TextView name = (TextView) view.findViewById(R.id.header_title);
+		name.setText(p.rname);
 		
-		ImageView image = (ImageView) view.findViewById(R.id.picture);
-		image.setOnClickListener(new PictureClickListener(context, url));
-        /*
-        TextView date = (TextView)view.findViewById(R.id.photo_detail_date);
-		TextView group = (TextView)view.findViewById(R.id.photo_detail_group);
+		// Picture date
+        TextView date = (TextView) view.findViewById(R.id.header_subtext);
+        Date time = new Date(Long.parseLong(p.time)*1000);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        String datum = sdf.format(time);
+        date.setText(datum);
+        
+        /*TextView group = (TextView)view.findViewById(R.id.photo_detail_group);
 		TextView by = (TextView)view.findViewById(R.id.photo_detail_name);
 		
 		
+		ImageView myLike = (ImageView) view.findViewById(R.id.like);
 
         
         // GroupText
@@ -103,16 +130,13 @@ public class MyPagerAdapter extends PagerAdapter {
         String byTxt = context.getResources().getString(R.string.photo_detail_name);
         by.setText(String.format(byTxt, p.rname));
 
-        // Convert Unix timestamp to Date
-        Date time = new Date(Long.parseLong(p.time)*1000);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        String datum = sdf.format(time);
-        date.setText(datum);
+        
         
         myLike.setOnClickListener(new LikeClickListener(p.getId(), p.me));
         */
         
         // 'Likes'
+		TextView likes = (TextView) view.findViewById(R.id.like_txt);
         int numLikes = p.getLikes();
     	likes.setText(p.likes);
         /*myLike.setImageResource(R.drawable.like);
@@ -127,7 +151,17 @@ public class MyPagerAdapter extends PagerAdapter {
         }*/
         
         // Load the actual picture in the imageView
-        imageLoader.displayImage(Util.IMG_DB + p.name, image);
+		ImageView image = (ImageView) view.findViewById(R.id.picture);
+		image.setOnClickListener(new PictureClickListener(context, url));
+		
+        LayoutParams params = (LayoutParams) image.getLayoutParams();
+        params.width = screenWidth;
+        params.height = screenWidth;
+        params.setMargins(0, margin, 0, margin);
+        image.setLayoutParams(params);
+        
+		DisplayImageOptions roundOptions = new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(8)).build();
+        imageLoader.displayImage(Util.IMG_DB + p.name, image, roundOptions);
 		      
         // Load all the comments
         setComments(p.comments);

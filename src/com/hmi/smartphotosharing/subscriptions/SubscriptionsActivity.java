@@ -1,8 +1,16 @@
 package com.hmi.smartphotosharing.subscriptions;
 
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
 
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.StringBody;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,6 +20,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,16 +31,13 @@ import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarListActivity;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.groups.GroupCreateActivity;
-import com.hmi.smartphotosharing.groups.GroupJoinActivity;
-import com.hmi.smartphotosharing.groups.GroupsActivity;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
+import com.hmi.smartphotosharing.json.PostData;
+import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.StringResponse;
 import com.hmi.smartphotosharing.json.Subscription;
 import com.hmi.smartphotosharing.json.SubscriptionListResponse;
-import com.hmi.smartphotosharing.json.User;
-import com.hmi.smartphotosharing.json.UserResponse;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -57,8 +64,9 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
         // Show selection in nav bar
         ImageView fav = (ImageView) findViewById(R.id.favourite);
         Util.setSelectedBackground(getApplicationContext(), fav);
+        
     }
-            
+    
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -160,8 +168,78 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 				
 				adapter.sort(Sorter.SUBSCRIPTIONS_SORTER);
 				setListAdapter(adapter);	
+
 			}
 		}
 	}
  
+	private class MyLongClickListener implements OnItemClickListener {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view,
+				int position, long id) {
+			createItemDialog(position);
+		}
+		
+	}
+	
+	public void createItemDialog(int pos) {
+		ListView list = getListView();
+		Subscription s = (Subscription)list.getAdapter().getItem(pos);
+		
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(s.name)
+			 .setItems(R.array.subscription_dialog, new ItemDialog(s.getId()));
+		AlertDialog alert = builder.create();
+		alert.show();
+		
+	}  
+	
+	public class ItemDialog implements DialogInterface.OnClickListener {
+		private long ssid;
+		
+		public ItemDialog(long ssid){
+			this.ssid = ssid;
+		}
+		
+		public void onClick(DialogInterface dialog, int which) {
+     	   if(which == 0) {
+     		   confirmDeleteCommentDialog(ssid);
+     	   }
+        }
+	}
+	
+    private void confirmDeleteCommentDialog(final long ssid) {
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Are you sure you want to delete this subscription?")
+		     .setCancelable(false)       
+		     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int bid) {
+
+			       		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);
+			       		String hash = settings.getString(Login.SESSION_HASH, null);
+			       		
+			       		String deleteUrl = Util.getUrl(SubscriptionsActivity.this,R.string.subscriptions_http_remove);
+			       			
+			               HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+			               try {
+			       			map.put("sid", new StringBody(hash));
+			       	        map.put("ssid", new StringBody(Long.toString(ssid)));
+			       		} catch (UnsupportedEncodingException e) {
+			       			e.printStackTrace();
+			       		}
+		               
+		                PostData pr = new PostData(deleteUrl,map);
+		                new PostRequest(SubscriptionsActivity.this, CODE_SUB_REMOVE).execute(pr);
+		           }
+		       })
+		     .setNegativeButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                dialog.cancel();
+		           }
+		       });
+		AlertDialog alert = builder.create();
+		alert.show();
+		
+	}
 }

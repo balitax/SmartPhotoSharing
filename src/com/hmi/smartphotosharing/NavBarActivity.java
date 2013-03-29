@@ -42,7 +42,9 @@ public class NavBarActivity extends Activity {
        super.onCreate(savedInstanceState);       
        
        TextView title = (TextView) findViewById(R.id.header_title);
-       title.setText(getTitle());
+       
+       if (title != null) 
+    	   title.setText(getTitle());
        
        // Set the nav bar listeners
        camera = (ImageView) findViewById(R.id.camera);
@@ -64,22 +66,25 @@ public class NavBarActivity extends Activity {
 		return handleOptionItemSelected(item,this)|super.onOptionsItemSelected(item);
 	}
 
-	public static boolean handleOptionItemSelected(MenuItem item, Context c) {
+	public static boolean handleOptionItemSelected(MenuItem item, Activity a) {
 		Intent intent;
 	    switch (item.getItemId()) {
 	        case R.id.settings:
-	            intent = new Intent(c, ProfileActivity.class);
-	            c.startActivity(intent);
+	            intent = new Intent(a, ProfileActivity.class);
+	            a.startActivity(intent);
 	            return true;
 	        case R.id.logout:
 
-	    		SharedPreferences settings = c.getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
+	    		SharedPreferences settings = a.getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 	    		settings.edit().remove(Login.SESSION_HASH).commit();
 	    		
-	    		intent = new Intent(c, Login.class);
-	    		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); 
-	    		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	    		c.startActivity(intent);
+	    		intent = new Intent(a, Login.class);
+	    		intent.putExtra("finish", true);
+	    		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+			                    Intent.FLAG_ACTIVITY_NEW_TASK); 
+	    		
+	    		a.startActivity(intent);
+	    		a.finish();
 	    		return true;
 	        default:
 	            return false;
