@@ -89,6 +89,7 @@
     <string name="group_change_pic">Change group picture</string>
     <string name="groups_empty">You are not a member of any group, create a new group or join a public group with the buttons above.</string>
     
+    
     <string name="groups_no_location">You are not in a location based group</string> 
     <string name="groups_no_other">You are not in any other group</string> 
     
@@ -153,6 +154,9 @@
     <string name="like_http">cmd=like</string>
     <string name="unlike_http">cmd=unlike</string>
     
+    <!--  SPOTS -->
+    <string name="spot_http">cmd=spot</string>
+    
     <!--  Photo Detail -->
     
     <string name="photo_detail_name">By %1$s</string>
@@ -161,6 +165,8 @@
     <string name="photo_detail_addcomment">cmd=addcomment</string>
     <string name="photo_detail_removecomment">cmd=removecomment</string>
     <string name="photo_detail_comments">cmd=comments&amp;sid=%1$s&amp;iid=%2$s</string>
+    <string name="photo_detail_spot_help">By pressing the Spot button, you can show your friends that you have been to the place where this photo was taken.
+        You need to be near the location of the photo to successfully spot it.</string>
     
     <!--  Profile -->
     
@@ -244,6 +250,7 @@
 	<string name="share_location_gps">Photo location set by GPS.</string>
 	<string name="share_location_manual">Photo location was set manually.</string>
 	<string name="share_no_location">The location of the photo is not set. Wait for the GPS receiver to update or set the location manually by pressing the map icon.</string>
+    <string name="share_no_group">No group was selected.</string> 
 	
 	<!--  NetworkActivity -->
     <string name="lost_connection">Lost connection.</string>

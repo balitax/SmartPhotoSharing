@@ -39,8 +39,10 @@
 			<ImageView 
 			    android:id="@+id/image1" 
 			    android:contentDescription="@string/intent_img_description"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
+		    	android:layout_width="fill_parent"
+		    	android:layout_height="wrap_content"
+		    	android:layout_centerHorizontal="true"
+		    	android:scaleType="centerCrop"
 			    android:adjustViewBounds="true" />
 			
 			 <ImageView 

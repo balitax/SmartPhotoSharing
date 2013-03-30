@@ -351,12 +351,12 @@ public class SinglePhotoDetail extends NavBarActivity implements OnDownloadListe
 			 */
 			
 	        // 'Likes'
-			ImageView myLike = (ImageView) findViewById(R.id.like);
+			ImageView myLike = (ImageView) findViewById(R.id.btn_like);
 			TextView likes = (TextView) findViewById(R.id.like_txt);
 
-	        myLike.setOnClickListener(new LikeClickListener(this,p.getId(), p.me));
+	        myLike.setOnClickListener(new LikeClickListener(this,p.getId(), p.likes_user));
 	        
-	        likes.setText(p.likes);
+	        //likes.setText(p.likes);
 	        /*
 	        int numLikes = p.getLikes();
 	    	myLike.setImageResource(R.drawable.like);

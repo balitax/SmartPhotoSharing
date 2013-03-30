@@ -50,6 +50,7 @@ import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarFragmentActivity;
+import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SinglePhotoDetail;
 import com.hmi.smartphotosharing.groups.GroupDetailActivity;
@@ -108,6 +109,15 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	private boolean filterShowGroupBorders;
 	private int filterType;
 	
+	public static final String KEY_LAT = "lat";
+	public static final String KEY_LON = "lon";
+	public static final String KEY_THUMB = "thumb";
+	public static final String KEY_IID = "iid";
+	
+	private double startLat, startLon;
+	private String startThumb;
+	private long startIid;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {  
         super.onCreate(savedInstanceState,R.layout.local_map);
@@ -116,6 +126,13 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
         // Show selection in nav bar
         ImageView local = (ImageView) findViewById(R.id.local);
         Util.setSelectedBackground(getApplicationContext(), local);
+
+        // Get intent
+        Intent intent = getIntent();
+        startLat = intent.getDoubleExtra(KEY_LAT, 0);
+        startLon = intent.getDoubleExtra(KEY_LON, 0);
+        startThumb = intent.getStringExtra(KEY_THUMB);
+        startIid = intent.getLongExtra(KEY_IID, 0);        
         
         // ImageLoader
         imageLoader = ImageLoader.getInstance();
@@ -320,7 +337,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 		    	startActivity(intent);
 				
 			} else {
-		    	Intent intent = new Intent(c,SinglePhotoDetail.class);
+		    	Intent intent = new Intent(c,PhotoDetailActivity.class);
 		    	intent.putExtra(SinglePhotoDetail.KEY_ID, Long.parseLong(msg[1]));
 		    	startActivity(intent);
 			}
@@ -422,7 +439,20 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
         new PostRequest(this, CODE_PHOTOS, false).execute(pr);
 
         if (filterShowGroupBorders) {
-	        HashMap<String,ContentBody> map2 = (HashMap<String,ContentBody>)map.clone();
+	        HashMap<String,ContentBody> map2 = new HashMap<String,ContentBody>();
+	        try {
+	        	
+				map2.put("sid",new StringBody(hash));
+				
+				map2.put("lat1", new StringBody(Double.toString(bounds.farLeft.latitude)));
+				map2.put("lon1", new StringBody(Double.toString(bounds.farLeft.longitude)));
+				
+				map2.put("lat2", new StringBody(Double.toString(bounds.nearRight.latitude)));
+				map2.put("lon2", new StringBody(Double.toString(bounds.nearRight.longitude)));
+				
+			} catch (UnsupportedEncodingException e) {
+				Log.e("Map activity", e.getMessage());
+			}
 			url = Util.getUrl(this,R.string.local_http_groups);
 	        pr = new PostData(url,map2);
 	        new PostRequest(this, CODE_GROUPS, false).execute(pr);   
@@ -537,16 +567,18 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 			if (list != null && list.size() > 0) {
 				
 				for(Photo p : list) {
-					Double lat = Double.parseDouble(p.latitude);
-					Double lon = Double.parseDouble(p.longitude);
-					
-					MarkerOptions markerOptions = new MarkerOptions()
-	                	.position(new LatLng(lat,lon))
-	                	.title(Util.getThumbUrl(p))
-	                	.snippet(TYPE_PHOTO + "," + p.iid)
-	                	.icon(BitmapDescriptorFactory.defaultMarker(Util.getHue(Integer.parseInt(p.gid))));
-
-	                googleMap.addMarker(markerOptions);
+					if ((startIid == 0 || startIid != p.getId())) {
+						Double lat = Double.parseDouble(p.latitude);
+						Double lon = Double.parseDouble(p.longitude);
+						
+						MarkerOptions markerOptions = new MarkerOptions()
+		                	.position(new LatLng(lat,lon))
+		                	.title(Util.getThumbUrl(p))
+		                	.snippet(TYPE_PHOTO + "," + p.iid)
+		                	.icon(BitmapDescriptorFactory.defaultMarker(Util.getHue(Integer.parseInt(p.gid))));
+	
+		                googleMap.addMarker(markerOptions);
+					}
 				}
 			}
 			
@@ -581,11 +613,31 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	        if (firstZoomCamera) {
 	        	
 	        	firstZoomCamera = false;
-	        	CameraPosition camPos = new CameraPosition.Builder()
-	        	   .target(new LatLng(location.getLatitude(), location.getLongitude()))
-	        	   .zoom(MAP_ZOOM_THRESHOLD)
-	        	   .build();
-	        	googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+	        	
+	        	if (startIid != 0) {
+
+	        		LatLng startPos = new LatLng(startLat, startLon);
+	        		
+		        	CameraPosition camPos = new CameraPosition.Builder()
+		        	   .target(startPos)
+		        	   .zoom(MAP_ZOOM_THRESHOLD)
+		        	   .build();
+		        	
+					MarkerOptions markerOptions = new MarkerOptions()
+	                	.position(startPos)
+	                	.title(startThumb)
+	                	.snippet(TYPE_PHOTO + "," + startIid)
+	                	.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_photo));
+
+	                googleMap.addMarker(markerOptions);
+		        	googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+		        } else {
+		        	CameraPosition camPos = new CameraPosition.Builder()
+		        	   .target(new LatLng(location.getLatitude(), location.getLongitude()))
+		        	   .zoom(MAP_ZOOM_THRESHOLD)
+		        	   .build();
+		        	googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+		        }
 	        } else {
 	        	/*
 	        	googleMap.animateCamera(CameraUpdateFactory

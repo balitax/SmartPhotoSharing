@@ -12,8 +12,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -29,7 +34,6 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.Group;
-import com.hmi.smartphotosharing.json.News;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.Subscription;
 import com.hmi.smartphotosharing.json.User;
@@ -291,6 +295,51 @@ public class Util {
 	    
         return Bitmap.createBitmap(tmp, 0, 0, tmp.getWidth(), tmp.getHeight(), mat, true);
 	}
+	
+	public static Bitmap decodeSampledBitmapFromFile(Bitmap b, int rotation) {
+	    
+	    Matrix mat = new Matrix();
+	    if (rotation != 0)
+	    	mat.postRotate(rotation);
+	    
+        return Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), mat, true);
+	}
+	
+	public static Bitmap GetCurveImage(Bitmap bitmap, int curve) {
+        // Bitmap myCoolBitmap = ... ; // <-- Your bitmap you
+        // want rounded
+        int w = bitmap.getWidth(), h = bitmap.getHeight();
+
+        // We have to make sure our rounded corners have an
+        // alpha channel in most cases
+        Bitmap rounder = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(rounder);
+
+        // We're going to apply this paint eventually using a
+        // porter-duff xfer mode.
+        // This will allow us to only overwrite certain pixels.
+        // RED is arbitrary. This
+        // could be any color that was fully opaque (alpha =
+        // 255)
+        Paint xferPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        xferPaint.setColor(Color.RED);
+
+        // We're just reusing xferPaint to paint a normal
+        // looking rounded box, the 20.f
+        // is the amount we're rounding by.
+        canvas.drawRoundRect(new RectF(0, 0, w, h), curve, curve, xferPaint);
+
+        // Now we apply the 'magic sauce' to the paint
+        xferPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+
+        Bitmap result = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas resultCanvas = new Canvas(result);
+        resultCanvas.drawBitmap(bitmap, 0, 0, null);
+        resultCanvas.drawBitmap(rounder, 0, 0, xferPaint);
+
+        return result;
+    } 
 	
 	public static int getRotationDegrees(String path) {
 

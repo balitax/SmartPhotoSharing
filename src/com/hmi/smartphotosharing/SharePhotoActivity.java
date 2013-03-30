@@ -13,6 +13,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -20,12 +21,14 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.RelativeLayout.LayoutParams;
 
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.camera.CameraActivity;
@@ -37,8 +40,11 @@ import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.StringResponse;
 import com.hmi.smartphotosharing.util.Util;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	
@@ -75,10 +81,16 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		
 	private long gid;
 	
+	private int screenWidth, margin;
+	
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.share_photo); 
-				
+
+        Display display = getWindowManager().getDefaultDisplay();
+        screenWidth = (int)(display.getWidth()*0.95);
+        margin = (int)((display.getWidth() - screenWidth)/2);
+        
 		btnSelectGroup = (Button) findViewById(R.id.groups_spinner);
 		comment = (EditText) findViewById(R.id.edit_message);
         imageView = (ImageView) findViewById(R.id.image1);
@@ -117,12 +129,10 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
             }
         	
         } else {
-            // Handle intents with text ...
-        
-	        if (fileUri == null) {
-			    Intent cameraIntent = new Intent(this,CameraActivity.class);
-			    startActivityForResult(cameraIntent, TAKE_PICTURE); 
-	        }
+        	if (fileUri == null) {
+        		Intent cameraIntent = new Intent(this,CameraActivity.class);
+        		startActivityForResult(cameraIntent, TAKE_PICTURE);
+        	}
 	    
         }
         setupGps();
@@ -191,44 +201,45 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     		
     		// Photo rotation
     		String rotate = Integer.toString(rotation);
-    		
-    		// Get the location of the photo
-    		String lat, lon;
-    		
+    		    		
     		if (gpsLocation != null) {
-	    		lat = Double.toString(gpsLocation.getLatitude());
-	    		lon = Double.toString(gpsLocation.getLongitude());
+    			
+    			if (gid != 0) {
+		    		String lat = Double.toString(gpsLocation.getLatitude());
+		    		String lon = Double.toString(gpsLocation.getLongitude());
+		    		
+		    		String commentTxt = comment.getText().toString();
+		    		
+		    		String shareUrl = Util.getUrl(this,R.string.url_upload);
+		    		
+		            HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+		            try {
+		            	
+		    			map.put("sid", new StringBody(hash));
+		    			
+		    			map.put("group", new StringBody(group));
+		    			
+		    	        map.put("lat", new StringBody(lat));
+		    	        map.put("lon", new StringBody(lon));
+		    	        map.put("comment", new StringBody(commentTxt));
+		    	        map.put("rotation", new StringBody(rotate));
+		        		File file = new File(fileUri.getPath());
+		        		ContentBody cbFile = new FileBody(file, "image/jpeg");
+		        		map.put("photo", cbFile);
+	
+		    		} catch (UnsupportedEncodingException e) {
+		    			e.printStackTrace();
+		    		}
+		            
+		            PostData pr = new PostData(shareUrl,map);
+		            new PostRequest(this, CODE_UPLOAD,true).execute(pr);
+    			} else {
+        			Util.createSimpleDialog(this, getResources().getString(R.string.share_no_group));
+    				
+    			}
     		} else {
-    			lat = lon = null;
     			Util.createSimpleDialog(this, getResources().getString(R.string.share_no_location));
     		}
-    		
-    		String commentTxt = comment.getText().toString();
-    		
-    		String shareUrl = Util.getUrl(this,R.string.url_upload);
-    		
-            HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
-            try {
-            	
-    			map.put("sid", new StringBody(hash));
-    			
-    			if (gid != 0)
-    				map.put("group", new StringBody(group));
-    			
-    	        map.put("lat", new StringBody(lat));
-    	        map.put("lon", new StringBody(lon));
-    	        map.put("comment", new StringBody(commentTxt));
-    	        map.put("rotation", new StringBody(rotate));
-        		File file = new File(fileUri.getPath());
-        		ContentBody cbFile = new FileBody(file, "image/jpeg");
-        		map.put("photo", cbFile);
-
-    		} catch (UnsupportedEncodingException e) {
-    			e.printStackTrace();
-    		}
-            
-            PostData pr = new PostData(shareUrl,map);
-            new PostRequest(this, CODE_UPLOAD,true).execute(pr);
             		
 		} 
 	}	
@@ -279,7 +290,24 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         	
         	rotation = Util.getRotationDegrees(fileUri.getPath());
         	
-        	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(fileUri.getPath(), 200, 200, rotation));
+        	//imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(fileUri.getPath(), 200, 200, rotation));
+
+    		// Resize the imageview to fit the screen
+            LayoutParams params = (LayoutParams) imageView.getLayoutParams();
+            params.width = screenWidth;
+            params.height = screenWidth;
+            params.setMargins(0, margin, 0, margin);
+            imageView.setLayoutParams(params);
+            
+            // Show image with rounded corners
+    		DisplayImageOptions roundOptions = new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(8)).build();
+            imageLoader.loadImage(fileUri.toString(), roundOptions, new SimpleImageLoadingListener() {
+        	    @Override
+        	    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+        	    	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(loadedImage, rotation));
+        	    }
+        		
+        	});
 	    } else if (resultCode == RESULT_CANCELED) {
 	        finish();
 	    }

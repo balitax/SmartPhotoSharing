@@ -15,9 +15,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,34 +30,37 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.TextView;
 
+import com.hmi.smartphotosharing.groups.GroupDetailActivity;
 import com.hmi.smartphotosharing.json.Comment;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
+import com.hmi.smartphotosharing.json.User;
+import com.hmi.smartphotosharing.local.MapActivity;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
-public class MyPagerAdapter extends PagerAdapter {
+public class MyPagerAdapter extends PagerAdapter implements LocationListener {
 
-	
-	private static final int CODE_COMMENT_ADD = 2;
-	private static final int CODE_LIKE = 3;
-	private static final int CODE_COMMENT_REMOVE = 5;
-	
+	private static final String DEFAULT_LOGO = "default.jpg";
 	private Context context;
 	private List<Photo> data;
 	private ImageLoader imageLoader;
 	private LinearLayout list;
 
 	private int screenWidth, margin;
+	
+	private Location gpsLocation;
 	
 	public MyPagerAdapter(Context c, List<Photo> data) {
 		this.context = c;
@@ -83,19 +91,16 @@ public class MyPagerAdapter extends PagerAdapter {
         View view = inflater.inflate(R.layout.photo_detail_item, null);
         list = (LinearLayout) view.findViewById(R.id.comments);
 
+        // Show the top left back arrow
         ImageView back = (ImageView) view.findViewById(R.id.back);
         back.setVisibility(ImageView.VISIBLE);
         
+        // Fix the header
         ImageView icon = (ImageView) view.findViewById(R.id.app_icon);
         TextView title = (TextView) view.findViewById(R.id.header_title);
         TextView sub = (TextView) view.findViewById(R.id.header_subtext);
         Util.showSubHeader(title, sub);
-        
-        // Buttons
-        Button button = (Button)view.findViewById(R.id.add_comment);
-        EditText commentInput = (EditText)view.findViewById(R.id.edit_message);
-        button.setOnClickListener(new CommentClickListener(position,p.getId(),commentInput));
-        
+                
         // User icon
 		ImageView userIcon = (ImageView) view.findViewById(R.id.app_icon);
 		imageLoader.displayImage(Util.getThumbUrl(Util.USER_DB, p.picture), userIcon);
@@ -112,57 +117,114 @@ public class MyPagerAdapter extends PagerAdapter {
         date.setText(datum);
         
         /*TextView group = (TextView)view.findViewById(R.id.photo_detail_group);
-		TextView by = (TextView)view.findViewById(R.id.photo_detail_name);
 		
-		
-		ImageView myLike = (ImageView) view.findViewById(R.id.like);
-
-        
         // GroupText
         String groupTxt = context.getResources().getString(R.string.photo_detail_group);
         group.setText(String.format(groupTxt, p.groupname));
-        
-        // Update user icon
-		String userPic = Util.USER_DB + p.picture;
-		imageLoader.displayImage(userPic, userIcon);
-        
-		// Update the 'Taken by' text
-        String byTxt = context.getResources().getString(R.string.photo_detail_name);
-        by.setText(String.format(byTxt, p.rname));
-
-        
+                       
         
         myLike.setOnClickListener(new LikeClickListener(p.getId(), p.me));
         */
-        
-        // 'Likes'
-		TextView likes = (TextView) view.findViewById(R.id.like_txt);
-        int numLikes = p.getLikes();
-    	likes.setText(p.likes);
-        /*myLike.setImageResource(R.drawable.like);
-    	
-        if (p.me){ 
-        	if (numLikes > 1) 
-	        	likes.setText(String.format(context.getResources().getString(R.string.like_txt_multiple), Integer.toString(p.getLikes()-1)));
-        	else
-	        	likes.setText(context.getResources().getString(R.string.like_txt_you));
-        } else {
-        	likes.setText(String.format(context.getResources().getString(R.string.like_txt), p.likes));
-        }*/
-        
+                
         // Load the actual picture in the imageView
 		ImageView image = (ImageView) view.findViewById(R.id.picture);
 		image.setOnClickListener(new PictureClickListener(context, url));
 		
+		// Resize the imageview to fit the screen
         LayoutParams params = (LayoutParams) image.getLayoutParams();
         params.width = screenWidth;
         params.height = screenWidth;
         params.setMargins(0, margin, 0, margin);
         image.setLayoutParams(params);
         
+        // Show image with rounded corners
 		DisplayImageOptions roundOptions = new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(8)).build();
         imageLoader.displayImage(Util.IMG_DB + p.name, image, roundOptions);
-		      
+
+        TextView desc = (TextView) view.findViewById(R.id.description);
+        if (p.description != null && !p.description.equals(""))
+        	desc.setText("\"" + p.description + "\"");
+
+    	// Group button
+    	final ImageButton groupButton = (ImageButton) view.findViewById(R.id.btn_group);
+    	if (p.grouplogo != null && !p.grouplogo.equals("") && !p.grouplogo.equals(DEFAULT_LOGO)) {
+        	imageLoader.loadImage(Util.getThumbUrl(Util.GROUP_DB, p.grouplogo), new SimpleImageLoadingListener() {
+        	    @Override
+        	    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+        	        groupButton.setImageBitmap(loadedImage);
+        	    }
+        		
+        	});
+    	}	
+    	groupButton.setOnClickListener(new GroupClickListener(Long.parseLong(p.gid)));
+    	
+    	TextView groupText = (TextView) view.findViewById(R.id.group_txt);
+    	groupText.setText("In group \"" + p.groupname + "\"");
+    	
+    	// Map button
+    	ImageButton mapButton = (ImageButton) view.findViewById(R.id.btn_map);
+    	mapButton.setOnClickListener(new MapClickListener(p));
+    	
+    	// Like button
+    	ImageButton likeButton = (ImageButton) view.findViewById(R.id.btn_like);
+    	likeButton.setOnClickListener(new LikeClickListener(p.getId(), p.likes_user));
+    	
+        // 'Likes'
+        int numLikes = p.likes.size();
+        
+		TextView likeNum = (TextView) view.findViewById(R.id.like_txt);
+		likeNum.setText(Integer.toString(numLikes));
+		
+		TextView likes = (TextView) view.findViewById(R.id.like_txt2);
+        if (numLikes > 0) {
+        	String s = "";
+        	boolean first = true;
+        	for (User u : p.likes) {
+        		if (first) {
+	    			first = false;
+	    		} else {
+	    			s += ", ";
+	    		}
+        		s += u.rname;
+        	}
+        	likes.setText(s);
+        } 
+
+        if (p.likes_user)
+        	likeButton.setImageResource(R.drawable.ic_menu_favourite_on);
+             
+        // Spots button
+        int numSpots = p.spots.size();
+
+		TextView spotNum = (TextView) view.findViewById(R.id.spots_txt);
+		spotNum.setText(Integer.toString(numSpots));
+		
+    	ImageButton spotButton = (ImageButton) view.findViewById(R.id.btn_spots);
+    	spotButton.setOnClickListener(new SpotClickListener(p.getId()));
+
+		TextView spots = (TextView) view.findViewById(R.id.spots_txt2);
+        if (numSpots > 0) {
+        	String s = "";
+        	boolean first = true;
+        	for (User u : p.spots) {
+        		if (first) {
+	    			first = false;
+	    		} else {
+	    			s += ", ";
+	    		}
+        		s += u.rname;
+        	}
+        	spots.setText(s);
+        } 
+        
+    	if (p.spots_user)
+    		spotButton.setImageResource(R.drawable.button_myplaces_on);
+    	
+        // Comment Buttons
+        Button button = (Button)view.findViewById(R.id.add_comment);
+        EditText commentInput = (EditText)view.findViewById(R.id.edit_message);
+        button.setOnClickListener(new CommentClickListener(position,p.getId(),commentInput));
+        
         // Load all the comments
         setComments(p.comments);
         
@@ -268,7 +330,7 @@ public class MyPagerAdapter extends PagerAdapter {
     		}
             
             PostData pr = new PostData(commentUrl,map);
-            new PostRequest(context, CODE_COMMENT_ADD).execute(pr);
+            new PostRequest(context, PhotoDetailActivity.CODE_COMMENT_ADD).execute(pr);
         }       
     }
  
@@ -305,7 +367,76 @@ public class MyPagerAdapter extends PagerAdapter {
     		}
             
             PostData pr = new PostData(like,map);
-            new PostRequest(context, CODE_LIKE).execute(pr);
+            new PostRequest(context, PhotoDetailActivity.CODE_LIKE).execute(pr);
+        }       
+    }
+
+    private class SpotClickListener implements OnClickListener{    
+
+        private long iid;
+        
+        public SpotClickListener(long iid){
+            this.iid = iid;
+        }
+        
+        @Override
+        public void onClick(View arg0) {
+    		SharedPreferences settings = context.getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);
+    		String hash = settings.getString(Login.SESSION_HASH, null);
+    		
+    		String url = Util.getUrl(context,R.string.spot_http);
+    		
+    		if (gpsLocation != null) {
+	            HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+	            try {
+	    			map.put("sid", new StringBody(hash));
+	    	        map.put("iid", new StringBody(Long.toString(iid)));
+	    	        map.put("lat", new StringBody(Double.toString(gpsLocation.getLatitude())));
+	    	        map.put("lon", new StringBody(Double.toString(gpsLocation.getLongitude())));
+	    		} catch (UnsupportedEncodingException e) {
+	    			e.printStackTrace();
+	    		}
+	            
+	            PostData pr = new PostData(url,map);
+	            new PostRequest(context, PhotoDetailActivity.CODE_SPOT).execute(pr);
+    		} else {
+    			Util.createSimpleDialog(context, "GPS location could not be determined, please make sure you have your GPS receiver turned on.");
+    		}
+        }       
+    }    
+    private class MapClickListener implements OnClickListener{    
+
+        private Photo p;
+        
+        public MapClickListener(Photo p){
+            this.p = p;
+        }
+
+    	@Override
+    	public void onClick(View v) {
+    		Intent intent = new Intent(context, MapActivity.class);
+    		intent.putExtra(MapActivity.KEY_LAT, Double.parseDouble(p.latitude));
+    		intent.putExtra(MapActivity.KEY_LON, Double.parseDouble(p.longitude));
+    		intent.putExtra(MapActivity.KEY_IID, p.getId());
+    		intent.putExtra(MapActivity.KEY_THUMB, Util.getThumbUrl(p));
+    		context.startActivity(intent);
+    		
+    	}  
+    }
+    
+    private class GroupClickListener implements OnClickListener{    
+
+        private long gid;
+        
+        public GroupClickListener(long gid){
+            this.gid = gid;
+        }
+        
+        @Override
+        public void onClick(View arg0) {
+            Intent intent = new Intent(context, GroupDetailActivity.class);
+            intent.putExtra(GroupDetailActivity.KEY_ID, gid);
+            context.startActivity(intent);
         }       
     }
     
@@ -364,7 +495,7 @@ public class MyPagerAdapter extends PagerAdapter {
 			       		}
 		               
 		                PostData pr = new PostData(deleteUrl,map);
-		                new PostRequest(context, CODE_COMMENT_REMOVE).execute(pr);
+		                new PostRequest(context, PhotoDetailActivity.CODE_COMMENT_REMOVE).execute(pr);
 		           }
 		       })
 		     .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -376,4 +507,27 @@ public class MyPagerAdapter extends PagerAdapter {
 		alert.show();
 		
 	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+
+    	boolean isBetter = Util.isBetterLocation(location, gpsLocation);
+    	
+    	// Check if we should update or not
+    	if (isBetter) {
+    		Log.d("GPS","Location: " + location.getLatitude() + "/" + location.getLongitude());
+    		gpsLocation = location;
+        	//loadData();
+    	}
+		
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {}
+
+	@Override
+	public void onProviderEnabled(String provider) {}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {}
 }

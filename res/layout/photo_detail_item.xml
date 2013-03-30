@@ -39,74 +39,113 @@
 		        android:id="@+id/description"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/picture"
 		        android:layout_centerHorizontal="true"
 		        android:layout_marginLeft="16dp"
 		        android:layout_marginRight="16dp"
-		        android:textStyle="italic" />
+		        android:layout_marginBottom="8dp"
+		        android:textStyle="italic"
+		        android:gravity="center" />
+		    
+		    <!--  Group INFO -->
+		 	<ImageButton
+		        android:id="@+id/btn_group"
+		        android:layout_width="48dp"
+		        android:layout_height="48dp"
+		        android:layout_below="@+id/description"
+		        android:src="@drawable/button_groups"
+		        android:scaleType="centerCrop" />
+			
+			<TextView
+				android:id="@+id/group_txt"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_below="@+id/description"
+				android:layout_toRightOf="@+id/btn_group"
+				android:layout_toLeftOf="@+id/btn_map"
+				android:gravity="center_vertical"
+		        android:ellipsize="end"
+				android:maxLines="2"
+				android:scrollHorizontally="true" />
+		 	
+		 	<ImageButton
+		        android:id="@+id/btn_map"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/description"
+		        android:layout_alignParentRight="true"
+		        android:src="@drawable/button_map"
+		        android:padding="0dp" />
 		    <!-- LIKES -->
 		    
 		    <ImageButton
-		        android:id="@+id/like"
-		        android:src="@drawable/button_star_on"
+		        android:id="@+id/btn_like"
+		        android:src="@drawable/ic_menu_favourite"
 		        android:layout_width="48dp"
 		        android:layout_height="48dp"
-		        android:layout_below="@+id/picture"
+		        android:layout_below="@+id/btn_group"
 		        android:padding="0dp" />
-		    
-		 	<TextView
-		    	android:id="@+id/like_txt"
-		    	android:layout_width="wrap_content"
-		    	android:layout_height="wrap_content"
-		        android:layout_below="@+id/picture"
-		        android:layout_toRightOf="@+id/like"
-		        android:text="12"
-		        style="@style/StatsText" />
-		 	
-		   	<TextView
-		   	    android:id="@+id/like_txt2"
-		   	    android:layout_width="wrap_content"
-		   	    android:layout_height="wrap_content"
-		   	    android:layout_alignBottom="@+id/like_txt"
-		   	    android:layout_below="@+id/picture"
-		   	    android:layout_toRightOf="@+id/like_txt"
-		   	    android:gravity="center_vertical"
-		   	    android:text="people like this photo" />
+		    		 	
+				<TextView
+					android:id="@+id/like_txt"
+					android:layout_width="48dp"
+					android:layout_height="48dp"
+					android:layout_below="@+id/btn_group"
+					android:layout_toRightOf="@+id/btn_like"
+					android:gravity="center"
+					style="@style/StatsText" />
+				
+				<TextView
+					android:id="@+id/like_txt2"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignBottom="@+id/like_txt"
+					android:layout_below="@+id/btn_group"
+					android:layout_toRightOf="@+id/like_txt"
+					android:gravity="center_vertical"
+			        android:ellipsize="end"
+					android:maxLines="2"
+					android:scrollHorizontally="true" />
 	
 		 	<!-- SPOTS -->
 		 	<ImageButton
 		        android:id="@+id/btn_spots"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/like"
+		        android:layout_below="@+id/btn_like"
 		        android:src="@drawable/button_myplaces"
 		        android:padding="0dp" />
-		    
-		 	<TextView
-		    	android:id="@+id/spots_txt"
-		    	android:layout_width="wrap_content"
-		    	android:layout_height="wrap_content"
-		        android:layout_below="@+id/like"
-		        android:layout_toRightOf="@+id/btn_spots"
-		        android:text="12"
-		        style="@style/StatsText" />	 
-		    
-		   	<TextView
-		   	    android:id="@+id/spots_txt2"
-		   	    android:layout_width="wrap_content"
-		   	    android:layout_height="wrap_content"
-		   	    android:layout_alignBottom="@+id/spots_txt"
-		   	    android:layout_below="@+id/like_txt"
-		   	    android:layout_toRightOf="@+id/spots_txt"
-		   	    android:gravity="center_vertical"
-		   	    android:text="people spotted this photo" />
+		    		    
+			<TextView
+				android:id="@+id/spots_txt"
+				android:layout_width="48dp"
+				android:layout_height="48dp"
+				android:layout_below="@+id/btn_like"
+				android:layout_toRightOf="@+id/btn_spots"
+				android:gravity="center"
+				style="@style/StatsText" />	
+			
+			<TextView
+				android:id="@+id/spots_txt2"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignBottom="@+id/spots_txt"
+				android:layout_below="@+id/like_txt"
+				android:layout_toRightOf="@+id/spots_txt"
+				android:layout_toLeftOf="@+id/btn_help_spots"
+				android:gravity="center_vertical"
+		        android:ellipsize="end"
+				android:maxLines="2"
+				android:scrollHorizontally="true" />
 		   	    	    
 		 	<ImageButton
 		        android:id="@+id/btn_help_spots"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/like"
+		        android:layout_below="@+id/btn_like"
 		        android:layout_alignParentRight="true"
 		        android:src="@drawable/button_help"
+		        android:onClick="onClickHelp"
 		        android:padding="0dp" />    
 		 	<!-- COMMENTS TOTAL -->
 		 	

@@ -312,7 +312,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		public MyOnItemClickListener(Context c) {
 			this.c = c;
 		}
-		// Handle clicks
+		
 		@Override
 	    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 	    	Intent intent = new Intent(c, PhotoDetailActivity.class);

@@ -31,7 +31,7 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 		this.code = 0;
 		this.dl = (OnDownloadListener) c;
 		this.showDialog = true;
-		pd = new ProgressDialog(c);
+		this.pd = new ProgressDialog(c);
 	}
 	
 	/**
@@ -46,7 +46,7 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 		this.code = code;
 		this.dl = (OnDownloadListener) c;
 		this.showDialog = true;
-		pd = new ProgressDialog(c);
+		this.pd = new ProgressDialog(c);
 		
 	}
 	
@@ -54,7 +54,7 @@ public class FetchJSON extends AsyncTask<String,Void,String> {
 		this.code = code;
 		this.dl = (OnDownloadListener) c;
 		this.showDialog = showDialog;
-		pd = new ProgressDialog(c);
+		this.pd = new ProgressDialog(c);
 		
 	}
 	

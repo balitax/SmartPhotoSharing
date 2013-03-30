@@ -3,8 +3,12 @@ package com.hmi.smartphotosharing;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -25,6 +29,7 @@ import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PhotoListResponse;
 import com.hmi.smartphotosharing.json.PhotoResponse;
+import com.hmi.smartphotosharing.json.StringResponse;
 import com.hmi.smartphotosharing.json.Subscription;
 import com.hmi.smartphotosharing.json.SubscriptionListResponse;
 import com.hmi.smartphotosharing.util.Util;
@@ -32,23 +37,28 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class PhotoDetailActivity extends NavBarActivity implements OnDownloadListener {
 
-	private static final int CODE_PHOTO = 1;
-	private static final int CODE_COMMENT_ADD = 2;
-	private static final int CODE_LIKE = 3;
-	private static final int CODE_GROUP = 4;
-	private static final int CODE_COMMENT_REMOVE = 5;
-	private static final int CODE_SUB = 6;
-	private static final int CODE_FRIENDS = 7;
+	public static final int CODE_PHOTO = 1;
+	public static final int CODE_COMMENT_ADD = 2;
+	public static final int CODE_LIKE = 3;
+	public static final int CODE_GROUP = 4;
+	public static final int CODE_COMMENT_REMOVE = 5;
+	public static final int CODE_SUB = 6;
+	public static final int CODE_FRIENDS = 7;
+	public static final int CODE_SPOT = 8;
 	
 	public static final String KEY_ID = "id";
 	public static final String KEY_GID = "gid";
 	public static final String KEY_SSID = "ssid";
 	public static final String KEY_FID = "fid";
+
+	private static final int TEN_SECONDS = 10 * 1000;
 	
 	private long id, gid, ssid, fid;
 	private ViewPager vp;
 	
 	private int currentPage;
+
+    private LocationManager mLocationManager;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,8 +79,25 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         	Log.e("SmartPhotoSharing", "Photo id was 0, url was probably incorrect");
         }
         
+        // GPS
+        mLocationManager =
+                (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        
     }
     
+    @Override
+    public void onPause() {
+      super.onPause();
+      
+      mLocationManager.removeUpdates((MyPagerAdapter)vp.getAdapter());
+    }
+    
+	@Override
+    protected void onStop() {
+        super.onStop();
+        mLocationManager.removeUpdates((MyPagerAdapter)vp.getAdapter());
+    } 
+	
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
@@ -102,7 +129,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
     protected void onNewIntent(Intent intent) {
         id = intent.getLongExtra(KEY_ID, 0);
     }
-        
+            
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -132,6 +159,10 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 	    return true;
 	}
 
+	public void onClickHelp(View view) {
+		Util.createSimpleDialog(this, getResources().getString(R.string.photo_detail_spot_help));
+	}
+	
 	public void loadData() {
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
@@ -182,17 +213,34 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		case(CODE_COMMENT_ADD):
 			parseCommentAdd(json);
 			break;
+		case(CODE_COMMENT_REMOVE):
+			parseCommentRemove(json);
+			break;
 		case(CODE_LIKE):
 			parseLike(json);
 			break;
-		case(CODE_COMMENT_REMOVE):
-			parseCommentRemove(json);
+		case(CODE_SPOT):
+			parseSpot(json);
 			break;
 		default:
 		}
         
 	}
 
+	private void parseSpot(String json) {
+		Gson gson = new Gson();
+		StringResponse pr = gson.fromJson(json, StringResponse.class);
+		
+		if (pr.getStatus() == Util.STATUS_OK) {
+			loadData();
+			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_LONG).show();			
+			
+		}
+		
+	}
+	
 	private void parsePhoto(String json) {
 		Gson gson = new Gson();
 		PhotoResponse response = gson.fromJson(json, PhotoResponse.class);
@@ -207,18 +255,25 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		
 	}
 
+	private void parseCommentAdd(String json) {
+		Gson gson = new Gson();
+		PhotoResponse pr = gson.fromJson(json, PhotoResponse.class);
+		
+		if (pr.getStatus() == Util.STATUS_OK)
+			loadData();
+		
+		Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
+		
+	}
+	
 	private void parseCommentRemove(String json) {
 		Gson gson = new Gson();
 		PhotoResponse response = gson.fromJson(json, PhotoResponse.class);
 		
-		if (response.getStatus() == Util.STATUS_OK) {
-			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+		if (response.getStatus() == Util.STATUS_OK)
 			loadData();
-			vp.setCurrentItem(currentPage);
-			
-		} else {
-			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
-		}
+
+		Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 		
 	}
 
@@ -226,14 +281,9 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		Gson gson = new Gson();
 		PhotoResponse response = gson.fromJson(json, PhotoResponse.class);
 		
-		if (response.getStatus() == Util.STATUS_OK) {
-			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+		if (response.getStatus() == Util.STATUS_OK)
 			loadData();
-			vp.setCurrentItem(currentPage);
-			
-		} else {
-			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
-		}
+		Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 		
 	}
 
@@ -241,11 +291,8 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		Gson gson = new Gson();
 		PhotoListResponse response = gson.fromJson(result, PhotoListResponse.class);
 			
-		if (response.getStatus() == Util.STATUS_OK) {
-			List<Photo> photo_list = response.getObject();
-						
-			setPhotos(photo_list);
-			
+		if (response.getStatus() == Util.STATUS_OK) {						
+			setPhotos(response.getObject());			
 		} else {
 			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 		}
@@ -284,8 +331,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 			}
 
         	Photo p = photo_list.get(currentPage);
-        	//setDetails(p);
-        	
+
 			MyPagerAdapter adapter = new MyPagerAdapter(this,photo_list);
 			PageListener pageListener = new PageListener();
 			vp.setOnPageChangeListener(pageListener);
@@ -293,30 +339,41 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 			vp.setAdapter(adapter);
 			
 			vp.setCurrentItem(currentPage);
+
+	        setupGps();
 		}
 	}
 	
-	private void parseCommentAdd(String json) {
-		Gson gson = new Gson();
-		PhotoResponse pr = gson.fromJson(json, PhotoResponse.class);
-		
-		if (pr.getStatus() == Util.STATUS_OK) {
-			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
-			loadData();
-			vp.setCurrentItem(currentPage);
-		} else if (pr.getStatus() == Util.STATUS_LOGIN){
-			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(this, pr.getMessage(), Toast.LENGTH_SHORT).show();
-		}
-		
-	}
 	
     private class PageListener extends SimpleOnPageChangeListener{
         public void onPageSelected(int position) {
             Log.i("PAGER", "page selected " + position);
             currentPage = position;
         }
+    }
+
+	
+    private void setupGps() { 
+        requestUpdatesFromProvider();
+    	 
+    }
+    
+    private void requestUpdatesFromProvider() {
+        
+        // Network
+        String networkProvider = LocationManager.NETWORK_PROVIDER;
+
+        if (mLocationManager.isProviderEnabled(networkProvider)) {
+        	mLocationManager.requestLocationUpdates(networkProvider, TEN_SECONDS, 0, (MyPagerAdapter)vp.getAdapter());
+        }
+        
+        // GPS
+        String gpsProvider = LocationManager.GPS_PROVIDER;
+        
+        if (mLocationManager.isProviderEnabled(gpsProvider)) {
+            mLocationManager.requestLocationUpdates(gpsProvider, TEN_SECONDS, 0, (MyPagerAdapter)vp.getAdapter());
+        }
+        
     }
     
 }

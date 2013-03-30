@@ -19,13 +19,17 @@ public class Photo {
 
 	public String age;
 	public String thumb;
-		
-	public String likes;
-	public boolean me;
+
+	public List<User> likes;
+	public boolean likes_user;
+	public List<User> spots;
+	public boolean spots_user;
+	
 	public boolean isNew;
 	
 	// Group attributes
 	public String groupname;
+	public String grouplogo;
 	
 	// User attributes
 	public String uname;
@@ -44,7 +48,4 @@ public class Photo {
 		return Long.parseLong(iid);		
 	}
 	
-	public int getLikes() {
-		return Integer.parseInt(likes);
-	}
 }
