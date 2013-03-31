@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.List;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
@@ -16,6 +19,8 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -31,7 +36,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
+import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.util.HelpDialog;
 import com.hmi.smartphotosharing.util.Util;
 
 public class SelectLocationActivity extends FragmentActivity implements OnMapLongClickListener, OnMarkerDragListener {
@@ -103,8 +110,11 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapLon
         	Util.createGpsDisabledAlert(this);
         }
         
+        SharedPreferences settings = getSharedPreferences(HelpDialog.DIALOG_PREFS, MODE_PRIVATE);
+        boolean hide = settings.getBoolean(HelpDialog.DIALOG_MAP, false);
         String s = getResources().getString(R.string.dialog_map);
-        Util.createSimpleDialog(this,s);
+        if (!hide)
+        	Util.createSimpleDialog(this,s,HelpDialog.DIALOG_MAP);
         
     }
     
@@ -176,7 +186,7 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapLon
 		}
 		
 		// Show a toast
-        Toast.makeText(getApplicationContext(), "Location updated", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Location updated", Toast.LENGTH_SHORT).show();
 	}
 	
 	private void drawRect(LatLng c1, LatLng c2, LatLng c3, LatLng c4) {

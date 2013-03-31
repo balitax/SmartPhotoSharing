@@ -93,14 +93,20 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         
 		btnSelectGroup = (Button) findViewById(R.id.groups_spinner);
 		comment = (EditText) findViewById(R.id.edit_message);
+
+		// Resize the imageview to fit the screen
         imageView = (ImageView) findViewById(R.id.image1);
+        LayoutParams params = (LayoutParams) imageView.getLayoutParams();
+        params.width = screenWidth;
+        params.height = screenWidth;
+        params.setMargins(0, margin, 0, margin);
+        imageView.setLayoutParams(params);
         
         locationImg = (ImageView) findViewById(R.id.img_location_ok);
         locationTxt = (TextView) findViewById(R.id.txt_location);
         
         // ImageLoader
         imageLoader = ImageLoader.getInstance();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         
 		// GPS
         mLocationManager =
@@ -125,7 +131,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
             	fileUri = Uri.parse(path);
             	rotation = Util.getRotationDegrees(fileUri.getPath());
             	
-            	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(path, 200, 200, rotation));
+            	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(path, screenWidth, screenWidth, rotation));
             }
         	
         } else {
@@ -267,20 +273,23 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         	}
         }
         
-        else if (requestCode == CODE_LOCATION && resultCode == RESULT_OK) {
+        else if (requestCode == CODE_LOCATION) {
 
-        	// Location was set manually, stop listening for GPS updates
-    	    mLocationManager.removeUpdates(listener);
-    	    
-    	    if (gpsLocation == null) gpsLocation = new Location(LocationManager.GPS_PROVIDER);
-    	    // Get the selected location 
-        	gpsLocation.setLatitude(data.getDoubleExtra("lat1", 0d));
-        	gpsLocation.setLongitude(data.getDoubleExtra("lon1", 0d));
-        	
-        	// Set some information for the user
-        	if (gpsLocation.getLatitude() != 0 && gpsLocation.getLongitude() != 0) {
-	        	locationTxt.setText(R.string.share_location_manual);
-	        	locationImg.setImageDrawable(getResources().getDrawable(R.drawable.button_ok));
+        	if (resultCode == RESULT_OK) {// Location was set manually, stop listening for GPS updates
+	    	    mLocationManager.removeUpdates(listener);
+	    	    
+	    	    if (gpsLocation == null) gpsLocation = new Location(LocationManager.GPS_PROVIDER);
+	    	    // Get the selected location 
+	        	gpsLocation.setLatitude(data.getDoubleExtra("lat1", 0d));
+	        	gpsLocation.setLongitude(data.getDoubleExtra("lon1", 0d));
+	        	
+	        	// Set some information for the user
+	        	if (gpsLocation.getLatitude() != 0 && gpsLocation.getLongitude() != 0) {
+		        	locationTxt.setText(R.string.share_location_manual);
+		        	locationImg.setImageDrawable(getResources().getDrawable(R.drawable.button_ok));
+	        	}
+        	} else {
+        		setupGps();
         	}
         }
         
@@ -290,24 +299,18 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         	
         	rotation = Util.getRotationDegrees(fileUri.getPath());
         	
-        	//imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(fileUri.getPath(), 200, 200, rotation));
 
-    		// Resize the imageview to fit the screen
-            LayoutParams params = (LayoutParams) imageView.getLayoutParams();
-            params.width = screenWidth;
-            params.height = screenWidth;
-            params.setMargins(0, margin, 0, margin);
-            imageView.setLayoutParams(params);
+        	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(fileUri.getPath(), screenWidth, screenWidth, rotation));
             
             // Show image with rounded corners
-    		DisplayImageOptions roundOptions = new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(8)).build();
+    		/*DisplayImageOptions roundOptions = new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(8)).build();
             imageLoader.loadImage(fileUri.toString(), roundOptions, new SimpleImageLoadingListener() {
         	    @Override
         	    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
         	    	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(loadedImage, rotation));
         	    }
         		
-        	});
+        	});*/
 	    } else if (resultCode == RESULT_CANCELED) {
 	        finish();
 	    }

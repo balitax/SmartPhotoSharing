@@ -31,6 +31,7 @@
     <string name="not_support_gps">GPS provider not supported</string>
     
     <string name="dialog_map">Press and hold on the map to select a location.</string>
+    <string name="dialog_local">Press and hold on the map to find the groups on that location.</string>
     <string name="dialog_location">If a group is locked to a location, you can only upload photos from within the selected location.</string>
     <string name="dialog_private">Private groups are not visible to everyone. The only way for people to join a private group is when you invite them.</string>
     <string name="dialog_location_error">You can only lock this group to a location if you have selected a location on the map.</string>
@@ -174,6 +175,7 @@
     <string name="profile_http_picture">cmd=uploadProfilePic</string>
     <string name="profile_camera">Change my picture</string>
     <string name="profile_prefs">Application settings</string>
+    <string name="profile_reset">Reset help messages</string>
     <string name="profile_listpics">Show my photos</string>
     <string name="profile_logout">Log out</string>
     <string name="profile_name">Loading user data.</string>

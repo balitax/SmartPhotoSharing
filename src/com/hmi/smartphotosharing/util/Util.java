@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,7 +27,11 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
@@ -209,10 +214,35 @@ public class Util {
 	 * @param s The message that should be displayed
 	 */
 	public static void createSimpleDialog(Context c, String s) {
+		createSimpleDialog(c, s, null);
+	}
+	
+	public static void createSimpleDialog(final Context c, String s, final String dialog) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(c);
+    	LayoutInflater l = LayoutInflater.from(c);
+    	View v = l.inflate(R.layout.checkbox, null);
+    	CheckBox ch = (CheckBox)v.findViewById(R.id.checkbox);
+    	
+    	if (dialog != null) {
+    		builder.setView(v);
+    		ch.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+					SharedPreferences settings = c.getSharedPreferences(HelpDialog.DIALOG_PREFS, Context.MODE_PRIVATE);
+					SharedPreferences.Editor editor = settings.edit();
+			        editor.putBoolean(dialog, isChecked);
+			        editor.commit();
+					
+				}
+			});
+    	} 
+
 		builder.setMessage(s)
-		     .setCancelable(false)
-		     .setNeutralButton("Ok", null);
+   	     .setCancelable(false)
+   	     .setNeutralButton("Ok", null);
+	
 		AlertDialog alert = builder.create();
 		alert.show();
 		

@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -16,11 +17,13 @@ import com.hmi.smartphotosharing.groups.GroupsActivity;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.StringResponse;
+import com.hmi.smartphotosharing.news.NewsActivity;
 import com.hmi.smartphotosharing.util.Util;
 
 public class GCMIntentService extends GCMBaseIntentService implements OnDownloadListener {
 
 	private static final int ACTION_DEFAULT 			= 0;
+	private static final int ACTION_NEW_VERSION			= 1;
 	private static final int ACTION_PHOTO_UPLOAD 		= 10;
 	private static final int ACTION_PHOTO_COMMENT 		= 11;
 	private static final int ACTION_PHOTO_LIKE			= 12;
@@ -92,6 +95,9 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		if (notVibrate)
 			notification.defaults |= Notification.DEFAULT_VIBRATE;
 		
+		// Cancel when user clicks it
+		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		
 		// Set notification contents
 		Context mcontext = this;
 		CharSequence contentTitle = title;
@@ -102,6 +108,11 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		// Create intent based on the action received
 		switch(action) {
 
+			case ACTION_NEW_VERSION:
+				Uri uri = Uri.parse(Util.SERVER);
+				notificationIntent = new Intent(Intent.ACTION_VIEW, uri);
+				break;
+				
 			case ACTION_GROUP_INVITE:
 				if (!notInvite) break;
 				notificationIntent = new Intent(this, GroupDetailActivity.class);
@@ -128,7 +139,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 				
 			case ACTION_DEFAULT:
 			default:
-				notificationIntent = new Intent(this, GroupsActivity.class);
+				notificationIntent = new Intent(this, NewsActivity.class);
 		}
 
 		if (notificationIntent != null) {

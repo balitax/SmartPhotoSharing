@@ -22,6 +22,7 @@ import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SinglePhotoDetail;
 import com.hmi.smartphotosharing.groups.GroupDetailActivity;
 import com.hmi.smartphotosharing.json.News;
+import com.hmi.smartphotosharing.util.DateUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -78,7 +79,7 @@ public class NewsAdapter extends ArrayAdapter<News> {
         NewsHolder holder;
         
         if(v == null) {
-        	
+
         	// Inflater used to parse the xml file
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(layoutResourceId, null);
@@ -95,13 +96,11 @@ public class NewsAdapter extends ArrayAdapter<News> {
         }
                 
         // Set the icon for this list item
-        holder.name.setText(news.uname);
+        holder.name.setText(news.rname);
         
         Date time = new Date(news.time*1000);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        String datum = sdf.format(time);
         
-        holder.time.setText(datum);
+        holder.time.setText(DateUtil.formatTime(time));
         
         imageLoader.displayImage(news.thumb, holder.icon);
         imageLoader.displayImage(news.photo, holder.photo);

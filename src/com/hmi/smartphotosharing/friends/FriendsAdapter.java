@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.SinglePhotoDetail;
 import com.hmi.smartphotosharing.json.Photo;
@@ -157,7 +158,7 @@ public class FriendsAdapter extends ArrayAdapter<User> {
 
 		@Override
 		public void onClick(View arg0) {
-	        Intent intent = new Intent(context, SinglePhotoDetail.class);
+	        Intent intent = new Intent(context, PhotoDetailActivity.class);
 			intent.putExtra("id", gid);
 			context.startActivity(intent);
 		}

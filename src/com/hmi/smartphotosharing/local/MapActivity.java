@@ -61,6 +61,7 @@ import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PhotoListResponse;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
+import com.hmi.smartphotosharing.util.HelpDialog;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -76,6 +77,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
     private LatLng lastPos;
     
     private List<Polygon> polyList;
+    private List<Long> markerIds;
     
     public static final String TYPE_GROUP = "GROUP";
     public static final String TYPE_PHOTO = "PHOTO";
@@ -123,6 +125,9 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
         super.onCreate(savedInstanceState,R.layout.local_map);
         
         polyList = new ArrayList<Polygon>();
+        markerIds = new ArrayList<Long>();
+    	firstZoomCamera = true;
+        
         // Show selection in nav bar
         ImageView local = (ImageView) findViewById(R.id.local);
         Util.setSelectedBackground(getApplicationContext(), local);
@@ -140,6 +145,11 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
        
         loadPreferences();
 
+        SharedPreferences settings = getSharedPreferences(HelpDialog.DIALOG_PREFS, MODE_PRIVATE);
+        boolean hide = settings.getBoolean(HelpDialog.DIALOG_LOCAL, false);
+        String s = getResources().getString(R.string.dialog_local);
+        if (!hide)
+        	Util.createSimpleDialog(this,s,HelpDialog.DIALOG_LOCAL);
     }
     
 	private void loadPreferences() {
@@ -158,9 +168,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
             
             // Check if we were successful in obtaining the map.
             if (googleMap != null) {
-            	
-            	firstZoomCamera = true;
-            	
+            	            	
             	googleMap.setMyLocationEnabled(true);
                 // One time fix to set the camera when the map is done loading
                 googleMap.setOnCameraChangeListener(this);
@@ -172,6 +180,18 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
                 
                 // Set the source of location updates to this activity
                 googleMap.setLocationSource(this);
+                
+                Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                
+                if (location != null && firstZoomCamera) {
+                	firstZoomCamera = false;
+                	CameraPosition camPos = new CameraPosition.Builder()
+                	   .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                	   .zoom(MAP_ZOOM_THRESHOLD)
+                	   .build();
+                	googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+                	loadData();
+                }
             } else {
             	// If the user does not have Play Services installed, show this notice and a download link
             	// The default message by Google is broken, so display our own message
@@ -198,7 +218,6 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
         
         if(mLocationManager != null) {
         	boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        	boolean networkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
         	if(gpsEnabled) {
                 mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 10F, this);
@@ -207,9 +226,6 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
             	Util.createGpsDisabledAlert(this);
             }
         }
-
-        
-                
     }
     
     @Override
@@ -224,7 +240,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	@Override
     public void onResume() {
       super.onResume();
-      
+
       setUpMapIfNeeded();
     }
 
@@ -232,6 +248,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 
     	if (requestCode == CODE_FILTER && resultCode == RESULT_OK) {
     		googleMap.clear();
+    		markerIds.clear();
         	loadPreferences();
     		loadData();
     	}
@@ -274,7 +291,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	        		loadData();
 	        	}
         	} else {
-        		googleMap.clear();
+        		clearMap();
         	}
         }		
 	}
@@ -289,6 +306,11 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 		// do nothing
 	}*/
 	
+	private void clearMap() {
+		googleMap.clear();
+		markerIds.clear();		
+	}
+
 	public void onClickPlayServices(View view) {
 		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gms"));
 		startActivity(browserIntent);
@@ -567,7 +589,9 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 			if (list != null && list.size() > 0) {
 				
 				for(Photo p : list) {
-					if ((startIid == 0 || startIid != p.getId())) {
+					long iid = p.getId();
+					if ((startIid == 0 || startIid != iid) && !markerIds.contains(iid)) {
+						markerIds.add(iid);
 						Double lat = Double.parseDouble(p.latitude);
 						Double lon = Double.parseDouble(p.longitude);
 						
@@ -603,8 +627,8 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 
 
 	@Override
-	public void onLocationChanged(Location location) 
-	{
+	public void onLocationChanged(Location location) {
+		
 	    if(mListener != null) {
 	        mListener.onLocationChanged( location );
 
@@ -637,6 +661,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 		        	   .zoom(MAP_ZOOM_THRESHOLD)
 		        	   .build();
 		        	googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+                	loadData();
 		        }
 	        } else {
 	        	/*
@@ -648,24 +673,15 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 
 
 	@Override
-	public void onProviderDisabled(String arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onProviderDisabled(String arg0) {}
 
 
 	@Override
-	public void onProviderEnabled(String arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onProviderEnabled(String arg0) {}
 
 
 	@Override
-	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {}
 
 	private class GeocoderTask extends AsyncTask<String, Void, List<Address>>{
 
