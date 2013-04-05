@@ -5,27 +5,19 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Gallery;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.SinglePhotoDetail;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.util.Util;
@@ -38,9 +30,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  *
  */
 public class FriendsAdapter extends ArrayAdapter<User> {
-
-    private static final int SWIPE_MAX_OFF_PATH = 250;
-    private GestureDetector gestureDetector;
     
     OnTouchListener gestureListener;
     
@@ -121,7 +110,8 @@ public class FriendsAdapter extends ArrayAdapter<User> {
     public View getImageView(String path){
                 
         ImageView imageView = new ImageView(context);
-        imageView.setLayoutParams(new LayoutParams(60, 60));
+        int size = Util.getThumbSize(context);
+        imageView.setLayoutParams(new LayoutParams(size,size));
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         
         imageLoader.displayImage(path, imageView);

@@ -90,9 +90,9 @@
     <string name="group_change_pic">Change group picture</string>
     <string name="groups_empty">You are not a member of any group, create a new group or join a public group with the buttons above.</string>
     
-    
-    <string name="groups_no_location">You are not in a location based group</string> 
-    <string name="groups_no_other">You are not in any other group</string> 
+    <string name="groups_no_location">You are not in a location based group.</string> 
+    <string name="groups_no_other">You are not in any other group.</string> 
+    <string name="groups_no_member">You are not a member of this group.</string> 
     
     <string name="group_menu_dialog">What would you like to see?</string> 
     
@@ -101,6 +101,8 @@
     <string name="group_http_detail">cmd=group&amp;sid=%1$s&amp;gid=%2$s</string>
     <string name="group_http_detail_photos">cmd=listpics&amp;sid=%1$s&amp;gid=%2$s&amp;comments=1</string>
     <string name="group_detail_info">Tap for group info</string>
+    <string name="group_detail_private">This group is private, you must be invited to view pictures of this group.</string>
+    <string name="group_detail_no_data">There are no photos for this group.</string>
     
     <!--  Friends -->
     
@@ -141,7 +143,7 @@
     <string name="sub_create_name">Subscription name</string>
     <string name="sub_select_friend">Follow friend</string>
     <string name="sub_select_location">Follow location</string>
-    <string name="subscriptions_empty">You don\'t have any subscriptions yet, click the button above to create one.</string>
+    <string name="subscriptions_no_data">You don\'t have any subscriptions yet, click the menu button above to create one.</string>
     <string name="subscriptions_http">cmd=listsubscriptions&amp;sid=%1$s</string>
     <string name="subscriptions_http_photos">cmd=listsubscriptions&amp;sid=%1$s&amp;ssid=%2$s&amp;comments=1</string>
     <string name="subscriptions_http_create">cmd=addsubscription</string>
@@ -189,8 +191,10 @@
     <string name="menu_friend_search">Search Users</string>
     <string name="menu_group_manage">Manage Group</string>
     <string name="menu_group_create">Create Group</string>
-    <string name="menu_group_join">Join A Group</string>
+    <string name="menu_group_find">Find A Group</string>
     <string name="menu_group_invite">Invite</string>
+    <string name="menu_group_join">Join Group</string>
+    <string name="menu_group_leave">Leave Group</string>
     <string name="menu_help">Help</string>
     <string name="menu_logout">Logout</string>
     <string name="menu_refresh">Refresh</string>

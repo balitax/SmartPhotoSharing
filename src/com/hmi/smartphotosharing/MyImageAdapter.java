@@ -6,10 +6,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout.LayoutParams;
 
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.util.Util;
@@ -17,9 +17,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class MyImageAdapter extends BaseAdapter {
-	
-	private static int DIM = 46;
-	
+		
 	private Context mContext;
 	private ImageLoader imageLoader;
 	private List<Photo> data;
@@ -54,6 +52,7 @@ public class MyImageAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         ViewHolder holder;
+        Photo photo = getItem(position);
         
         if (v == null) {  // if it's not recycled, initialize some attributes
         	LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -68,13 +67,9 @@ public class MyImageAdapter extends BaseAdapter {
         }
 
         holder.img.setLayoutParams(new GridView.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        //holder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        
-        if (getItem(position).isNew)
+        if (photo.isNew)
         	holder.img.setBackgroundColor(0xFFFF0000);
-        
-        Photo photo = data.get(position);
-        
+               
         String url = Util.getThumbUrl(photo);
         imageLoader.displayImage(url, holder.img);
         

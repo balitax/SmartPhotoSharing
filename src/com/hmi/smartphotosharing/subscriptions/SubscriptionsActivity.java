@@ -59,12 +59,19 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
-        loadData();
-
+        
         // Show selection in nav bar
         ImageView fav = (ImageView) findViewById(R.id.favourite);
         Util.setSelectedBackground(getApplicationContext(), fav);
         
+    }
+
+    @Override
+    protected void onResume() {
+    	super.onResume();
+
+        // Load data
+        loadData();
     }
     
 	@Override
@@ -154,8 +161,7 @@ public class SubscriptionsActivity extends NavBarListActivity implements OnDownl
 			if (subscription_list == null) {
 				ListView listView = getListView();
 				TextView emptyView = (TextView) listView.getEmptyView();
-				emptyView.setGravity(Gravity.CENTER_HORIZONTAL);
-				emptyView.setText(getResources().getString(R.string.subscriptions_empty));
+				emptyView.setText(getResources().getString(R.string.subscriptions_no_data));
 				
 			} else {
 				

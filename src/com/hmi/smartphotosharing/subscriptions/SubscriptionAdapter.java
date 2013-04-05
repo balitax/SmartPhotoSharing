@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -173,7 +174,8 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
     public View getImageView(String path){
                 
         ImageView imageView = new ImageView(context);
-        imageView.setLayoutParams(new LayoutParams(60, 60));
+        int size = Util.getThumbSize(context);
+        imageView.setLayoutParams(new LayoutParams(size, size));
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         
         imageLoader.displayImage(path, imageView);

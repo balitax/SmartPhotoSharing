@@ -1,6 +1,5 @@
 package com.hmi.smartphotosharing.news;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -14,12 +13,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.SinglePhotoDetail;
 import com.hmi.smartphotosharing.groups.GroupDetailActivity;
 import com.hmi.smartphotosharing.json.News;
 import com.hmi.smartphotosharing.util.DateUtil;

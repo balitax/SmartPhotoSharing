@@ -1,11 +1,8 @@
 package com.hmi.smartphotosharing.groups;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -43,7 +40,6 @@ import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.GroupResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.Photo;
-import com.hmi.smartphotosharing.json.PhotoListResponse;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.StringResponse;
@@ -55,7 +51,6 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 public class GroupDetailActivity extends NavBarActivity implements OnDownloadListener {
 
 	private static final int CODE_GROUP_DETAILS = 1;
-	private static final int CODE_GROUP_PHOTOS = 2;
 	private static final int CODE_JOIN = 3;
 	private static final int CODE_LEAVE = 4;
 	private static final int CODE_INVITE = 5;
@@ -85,9 +80,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	
 	private ImageLoader imageLoader;
 			
-	private long id;
-	private boolean isMember;
-	
+	private long id;	
 	private Group group;
 	
     @Override
@@ -122,7 +115,6 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
         ImageView home = (ImageView) findViewById(R.id.favourite);
         Util.setSelectedBackground(getApplicationContext(), home);
         
-        isMember = true;
         group = null;
         
         // Show the subtext in the header
@@ -144,7 +136,26 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 			loadData();
         }
     }
-
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+	    if(group != null) {
+	    	if (group.member) {
+	    		MenuItem m = menu.findItem(R.id.menu_join);
+	    		m.setIcon(R.drawable.ic_menu_close_clear_cancel);
+	    		m.setTitle(R.string.menu_group_leave);
+	    		menu.setGroupVisible(R.id.group_member, true);
+	    	} else {
+	    		menu.setGroupVisible(R.id.group_member, false);
+	    		
+	    		if (group.isPrivate()) {
+	    			menu.removeItem(R.id.menu_join);
+	    		}
+	    	}
+	    }
+	    return super.onPrepareOptionsMenu(menu);
+    }
+    
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
     	MenuInflater inflater = getMenuInflater();
@@ -158,16 +169,19 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		Intent intent;
 		
         switch (item.getItemId()) {
-	        case R.id.invite:
+	        case R.id.menu_invite:
 	        	intent = new Intent(this, AddFriendsActivity.class);
 	        	intent.putExtra("id", id);
 	        	intent.putExtra("type", AddFriendsActivity.TYPE_GROUP);
 	        	startActivityForResult(intent, CODE_INVITE);
 	        	return true;
-	        case R.id.manage:
+	        case R.id.menu_manage:
 	        	intent = new Intent(this, GroupManageActivity.class);
 	        	intent.putExtra("id", id);
 	        	startActivity(intent);	        	
+	        	return true;
+	        case R.id.menu_join:
+	        	joinGroup();
 	        	return true;
 	        default:
 	        	return super.onOptionsItemSelected(item);
@@ -215,12 +229,12 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
     	
     }
     
-    public void onClickJoinGroup(View view) {
+    public void joinGroup() {
 
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
-		if (isMember) {
+		if (group.member) {
 			confirmLeaveDialog(this, hash);
 		} else {
 	        String joinUrl = String.format(Util.getUrl(this,R.string.groups_http_join),hash,id);		
@@ -330,11 +344,7 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
     	// Get group info
 		String detailUrl = String.format(Util.getUrl(this,R.string.group_http_detail),hash,id);
 		new FetchJSON(this,CODE_GROUP_DETAILS).execute(detailUrl);
-		
-		// Get list of photos
-		String photosUrl = String.format(Util.getUrl(this,R.string.group_http_detail_photos),hash,id);
-		new FetchJSON(this,CODE_GROUP_PHOTOS).execute(photosUrl);
-		        
+				        
 	}
 	
 	public void parseJson(String result, int code) {
@@ -342,9 +352,6 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		switch (code) {
 			case CODE_GROUP_DETAILS:
 				parseGroup(result);
-				break;
-			case CODE_GROUP_PHOTOS:
-				parsePhoto(result);
 				break;
 			case CODE_JOIN:
 				parseJoin(result);
@@ -383,16 +390,11 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		StringResponse response = gson.fromJson(json, StringResponse.class);
 		
 		if (response != null) {
-			switch(response.getStatus()) {
-			
-			case(Util.STATUS_OK):
+			if (response.getStatus() == Util.STATUS_OK) {
 				Toast.makeText(this, "Users invited to group", Toast.LENGTH_SHORT).show();
 				loadData();
-				break;
-								
-			default:
-				Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
-			
+			} else {
+				Toast.makeText(this, response.getMessage(), Toast.LENGTH_LONG).show();
 			}
 		}
 		
@@ -404,17 +406,9 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		StringResponse response = gson.fromJson(json, StringResponse.class);
 		
 		if (response != null) {
-			switch(response.getStatus()) {
-			
-			case(Util.STATUS_OK):
-				Toast.makeText(this, "Group left", Toast.LENGTH_SHORT).show();
-		    	Intent intent = new Intent(this, GroupsActivity.class);
-		    	startActivity(intent);
-				break;
-				
-			default:
-				Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
-			
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_LONG).show();
+			if (response.getStatus() == Util.STATUS_OK) {
+		    	finish();
 			}
 		}
 		
@@ -426,48 +420,16 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		StringResponse response = gson.fromJson(json, StringResponse.class);
 		
 		if (response != null) {
-			switch(response.getStatus()) {
-			
-			case(Util.STATUS_OK):
-				if (isMember) { // If user PREVIOUSLY was a member...
-					isMember = false;
-				} else {
-					isMember = true;				
-				}
-				break;
-				
-			default:
+			if (response.getStatus() == Util.STATUS_OK) {
 				Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
-			
+				loadData();
+			} else {
+				Toast.makeText(this, response.getMessage(), Toast.LENGTH_LONG).show();
 			}
 		}
 		
 	}
 	
-	private void parsePhoto(String result) {
-		Gson gson = new Gson();
-		PhotoListResponse list = gson.fromJson(result, PhotoListResponse.class);
-		
-		List<Photo> photo_list = list.getObject();
-		
-		// JSON will return null if there are no photos in this group
-		if (photo_list == null)
-			photo_list = new ArrayList<Photo>();
-		
-		gridView.setAdapter(
-			new MyImageAdapter(
-					this, 
-					photo_list
-		));
-
-        gridView.setOnItemClickListener(new MyOnItemClickListener(this)); 
-        
-		// Set the string telling how many photos the group has
-		//String photos = String.format(getResources().getString(R.string.group_detail_photos), photo_list.size());
-		//groupPhotos.setText(photos);
-		
-	}
-
 	private void parseGroup(String result) {
 		Gson gson = new Gson();
 		
@@ -478,41 +440,16 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	
 			groupName.setText(group.name);
 			imageLoader.displayImage(Util.getThumbUrl(group), groupIcon);
-	
-			/*
-			if (!group.isPrivate()) {
-				privateIcon.setVisibility(ImageView.GONE);
-			}
-
-			if (!group.isLocationLocked()) {
-				locationIcon.setVisibility(ImageView.GONE);
-			}
-			*/
 			
-			// Set the button text join/leave group
-			if (group.member == 0) {
-				isMember = false;
+			if (!group.member && group.isPrivate()) {
+				groupMembers.setText(R.string.group_private);
+				TextView empty = (TextView) findViewById(R.id.grid_empty);
+				empty.setVisibility(TextView.VISIBLE);
+				empty.setText(R.string.group_detail_private);
 			} else {
-				isMember = true;				
+				setMembers();
+				setPhotos();
 			}
-			
-			if (group.users != null) {
-				if (group.users.size() > 0) {
-					
-					StringBuilder b = new StringBuilder();
-					for(User u : group.users){
-						if (b.length() > 0) b.append(", ");
-						b.append(u.rname);
-					}
-					members = b.toString();
-
-		            mHandler.removeCallbacks(mUpdateTimeTask);
-		            mHandler.postDelayed(mUpdateTimeTask, UPDATE_AFTER);
-				}
-			}
-			// Set the string telling how many members the group has
-			//String photos = String.format(getResources().getString(R.string.group_detail_members), group.members);
-			//groupMembers.setText(photos);
 		} else {
 			Toast.makeText(this, gdr.getMessage(), Toast.LENGTH_SHORT).show();
 			finish();
@@ -520,6 +457,40 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 		
 	}
 	
+	private void setPhotos() {
+		List<Photo> photo_list = group.photos;
+		
+		if (photo_list == null || photo_list.isEmpty()) {
+			TextView empty = (TextView) findViewById(R.id.grid_empty);
+			empty.setVisibility(TextView.VISIBLE);
+		} else {		
+			gridView.setAdapter(
+				new MyImageAdapter(
+						this, 
+						photo_list
+			));
+	
+	        gridView.setOnItemClickListener(new MyOnItemClickListener(this)); 
+		}		
+	}
+
+	private void setMembers() {
+		if (group.users != null) {
+			if (group.users.size() > 0) {
+				
+				StringBuilder b = new StringBuilder();
+				for(User u : group.users){
+					if (b.length() > 0) b.append(", ");
+					b.append(u.rname);
+				}
+				members = b.toString();
+
+	            mHandler.removeCallbacks(mUpdateTimeTask);
+	            mHandler.postDelayed(mUpdateTimeTask, UPDATE_AFTER);
+			}
+		}		
+	}
+
 	private Runnable mUpdateTimeTask = new Runnable() {
 	   public void run() {
 	       groupMembers.setText(members);		     

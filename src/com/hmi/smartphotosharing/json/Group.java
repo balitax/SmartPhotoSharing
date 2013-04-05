@@ -18,8 +18,10 @@ public class Group {
 	public String latstart;
 	public String latend;
 	
-	public String numphotos;
-	public int member;
+	//public String numphotos;
+	
+	// is the user a member?
+	public boolean member;
 	public int totalnew;
 	
 	@SerializedName("private")
@@ -27,13 +29,14 @@ public class Group {
 	public String logo;
 	public String description;
 	public String owner;
-	
+
+	public List<Photo> photos;
+	public List<User> users;
+		
 	public boolean isLocationLocked() {
 		return locationlink.equals("1");
 	}
 	
-	public List<Photo> photos;
-	public List<User> users;
 	
 	public boolean isPrivate() {
 		return private_group.equals("1");

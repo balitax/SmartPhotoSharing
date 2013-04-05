@@ -148,7 +148,8 @@ public class GroupAdapter extends ArrayAdapter<Group> {
     public View getImageView(String path){
                 
         ImageView imageView = new ImageView(context);
-        imageView.setLayoutParams(new LayoutParams(60, 60));
+        int size = Util.getThumbSize(context);
+        imageView.setLayoutParams(new LayoutParams(size,size));
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         
         imageLoader.displayImage(path, imageView);

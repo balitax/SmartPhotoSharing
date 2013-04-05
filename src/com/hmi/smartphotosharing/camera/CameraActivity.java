@@ -43,8 +43,15 @@ public class CameraActivity extends Activity {
         
 	    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
 	    fileUri = Util.getOutputMediaFileUri(Util.MEDIA_TYPE_IMAGE);
-	    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-	    startActivityForResult(cameraIntent, TAKE_PICTURE); 
+	    
+	    if (fileUri == null) {
+	    	Toast.makeText(this, "Could not find a location to store photos. Try inserting an SD-card.", Toast.LENGTH_LONG).show();
+	    	setResult(RESULT_CANCELED);
+	    	finish();
+	    } else {
+		    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+		    startActivityForResult(cameraIntent, TAKE_PICTURE); 
+	    }
     }
     
 	@Override

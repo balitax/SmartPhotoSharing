@@ -133,8 +133,8 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 				if (!notPhotoComment) break;
 			case ACTION_SUBSCRIPTION_UPDATE:
 				if (!notSub) break;
-				notificationIntent = new Intent(this, SinglePhotoDetail.class);	
-				notificationIntent.putExtra(SinglePhotoDetail.KEY_ID, value);	
+				notificationIntent = new Intent(this, PhotoDetailActivity.class);	
+				notificationIntent.putExtra(PhotoDetailActivity.KEY_ID, value);	
 				break;
 				
 			case ACTION_DEFAULT:

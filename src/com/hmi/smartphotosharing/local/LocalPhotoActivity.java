@@ -23,7 +23,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,8 +30,8 @@ import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.MyImageAdapter;
 import com.hmi.smartphotosharing.NavBarActivity;
+import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.SinglePhotoDetail;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PhotoListResponse;
@@ -132,7 +131,7 @@ public class LocalPhotoActivity extends NavBarActivity implements OnDownloadList
 		// Handle clicks
 		@Override
 	    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-	    	Intent intent = new Intent(c, SinglePhotoDetail.class);
+	    	Intent intent = new Intent(c, PhotoDetailActivity.class);
 	    	intent.putExtra("id", id);
 	    	startActivity(intent);
 	    }

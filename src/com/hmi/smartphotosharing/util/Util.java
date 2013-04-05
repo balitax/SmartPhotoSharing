@@ -27,6 +27,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -47,6 +48,7 @@ public class Util {
 
 	private static String APP_NAME = "Picalilly";
 	
+	public static final float THUMBNAIL_SIZE_DP	= 60;
 	// JSON response statuses
 	public static final int STATUS_OK 			= 200;
 	public static final int STATUS_LOGIN 		= 304;
@@ -95,6 +97,10 @@ public class Util {
 										BitmapDescriptorFactory.HUE_BLUE, BitmapDescriptorFactory.HUE_CYAN,
 										BitmapDescriptorFactory.HUE_GREEN, BitmapDescriptorFactory.HUE_MAGENTA,
 										BitmapDescriptorFactory.HUE_RED, BitmapDescriptorFactory.HUE_YELLOW};
+	
+	public static int getThumbSize(Context c) {
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, THUMBNAIL_SIZE_DP, c.getResources().getDisplayMetrics());
+	}
 	
 	public static String getThumbUrl(String db, String file) {
 		return THUMB_URL + db + file + THUMB_CONFIG;
@@ -269,7 +275,12 @@ public class Util {
 	
 	/** Create a file Uri for saving an image or video */
 	public static Uri getOutputMediaFileUri(int type){
-	      return Uri.fromFile(getOutputMediaFile(type));
+		File f = getOutputMediaFile(type);
+		if (f == null) {
+			return null;
+		} else {
+			return Uri.fromFile(f);
+		}
 	}
 	
 	public static File getOutputMediaFile(int type){

@@ -73,11 +73,7 @@ public class Login extends Activity implements OnDownloadListener{
 
 		username = (EditText) findViewById(R.id.login_username);
 		password = (EditText) findViewById(R.id.login_password);
-		
-		// TODO remove
-		username.setText("s0166049");
-		password.setText("changeme22");
-		
+				
 		doValidate();
 		
 		// Load preference defaults on first startup

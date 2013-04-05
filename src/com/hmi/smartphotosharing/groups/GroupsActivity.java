@@ -76,11 +76,16 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
         // Show selection in nav bar
         ImageView home = (ImageView) findViewById(R.id.favourite);
         Util.setSelectedBackground(getApplicationContext(), home);
+                
         
+    }
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+
         // Load data
         loadData();
-        
-        
     }
 
 	@Override

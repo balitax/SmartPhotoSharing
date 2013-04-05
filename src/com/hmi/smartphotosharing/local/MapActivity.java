@@ -52,7 +52,6 @@ import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarFragmentActivity;
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.SinglePhotoDetail;
 import com.hmi.smartphotosharing.groups.GroupDetailActivity;
 import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.GroupListResponse;
@@ -360,7 +359,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 				
 			} else {
 		    	Intent intent = new Intent(c,PhotoDetailActivity.class);
-		    	intent.putExtra(SinglePhotoDetail.KEY_ID, Long.parseLong(msg[1]));
+		    	intent.putExtra(PhotoDetailActivity.KEY_ID, Long.parseLong(msg[1]));
 		    	startActivity(intent);
 			}
 			

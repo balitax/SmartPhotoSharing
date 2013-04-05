@@ -73,15 +73,17 @@ public class ChangeGroupPictureActivity extends Activity implements OnDownloadLi
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         
-        if (requestCode == TAKE_PICTURE && resultCode == Activity.RESULT_OK) { 
-        	fileUri = data.getData();
-        	
-        	rotation = Util.getRotationDegrees(fileUri.getPath());
-        	
-        	ImageView imageView = (ImageView) findViewById(R.id.image1);
-        	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(fileUri.getPath(), 200, 200, rotation));
-	    } else if (resultCode == RESULT_CANCELED) {
-	        finish();
+        if (requestCode == TAKE_PICTURE) { 
+        	if (resultCode == Activity.RESULT_OK) {
+	        	fileUri = data.getData();
+	        	
+	        	rotation = Util.getRotationDegrees(fileUri.getPath());
+	        	
+	        	ImageView imageView = (ImageView) findViewById(R.id.image1);
+	        	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(fileUri.getPath(), 200, 200, rotation));
+        	} else {
+        		finish();
+        	}
 	    }
 	}
 

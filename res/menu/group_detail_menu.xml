@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/invite"
+    
+    <item android:id="@+id/menu_join"
+          android:icon="@drawable/ic_menu_add"
+          android:title="@string/menu_group_join" />
+    <group android:id="@+id/group_member">
+    	<item android:id="@+id/menu_invite"
           android:icon="@drawable/ic_menu_invite"
           android:title="@string/menu_group_invite" />
-    <item android:id="@+id/manage"
+    	<item android:id="@+id/menu_manage"
           android:icon="@drawable/ic_menu_preferences"
           android:title="@string/menu_group_manage" />
+    </group>
 </menu>

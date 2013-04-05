@@ -98,12 +98,14 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         mLocationManager.removeUpdates((MyPagerAdapter)vp.getAdapter());
     } 
 	
+	/*
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
 
 		savedInstanceState.putInt("current", currentPage);
 		
+		vp = (ViewPager)findViewById(R.id.viewpager);
 		// Store comment text
 		View currentView = vp.getChildAt(currentPage);
 		if (currentView != null) {
@@ -123,7 +125,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		EditText edit = (EditText) currentView.findViewById(R.id.edit_message);
 		edit.setText(commentTxt, TextView.BufferType.EDITABLE);
 
-	}
+	}*/
 	
     @Override
     protected void onNewIntent(Intent intent) {
