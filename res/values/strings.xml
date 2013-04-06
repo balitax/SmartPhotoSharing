@@ -124,12 +124,18 @@
     <string name="local_http_groups">cmd=localgroups</string>
     <string name="local_http_point">cmd=localpoint</string>
     
-    <string name="local_map_filter_title">Map Filters</string>
-    <string name="local_map_filter_description">What photos would you like to see?</string>
+    <string name="local_map_filter_title">Map Settings</string>
+    <string name="local_map_filter_description">Show photos from&#8230;</string>
+    <string name="local_map_filter_date">Show photos posted since&#8230;</string>
     <string name="local_map_filter_groups">My Groups</string>
     <string name="local_map_filter_friends">My Friends</string>
-    <string name="local_map_filter_all">Everything</string>
+    <string name="local_map_filter_all">Everyone</string>
+    <string name="local_map_filter_other">Other settings</string>
     <string name="local_map_filter_borders">Show group borders</string>
+    <string name="local_map_filter_yesterday">Yesterday</string>
+    <string name="local_map_filter_last_week">Last Week</string>
+    <string name="local_map_filter_last_month">Last Month</string>
+    <string name="local_map_filter_all_time">All time</string>
     <!--  News -->
     
     <string name="news_http">cmd=news</string>

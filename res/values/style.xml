@@ -79,7 +79,12 @@
         <item name="android:textSize">@dimen/large_text</item>
     </style>
     
-        
+    <style name="Bar">
+        <item name="android:background">@color/header_bg</item>
+        <item name="android:textColor">@color/header_text</item>
+        <item name="android:padding">2dp</item>
+    </style>    
+    
     <style name="NavButton">
         <item name="android:background">@color/header_bg</item>
     </style>

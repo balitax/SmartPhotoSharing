@@ -81,12 +81,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
     public static final String TYPE_GROUP = "GROUP";
     public static final String TYPE_PHOTO = "PHOTO";
     public static final String TYPE_POINT = "POINT";
-    
-    public static final String FILTER_PREFS = "MAPFILTER";
-    public static final int FILTER_ALL = 0;
-    public static final int FILTER_GROUPS = 1;
-    public static final int FILTER_FRIENDS = 2;
-    
+        
     private static long MAP_TIME_THRESHOLD = 5000;
     private static int MAP_ZOOM_THRESHOLD = 14;
     private static int MAP_DISTANCE_THRESHOLD = 500;
@@ -108,7 +103,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	
 	// Filter settings
 	private boolean filterShowGroupBorders;
-	private int filterType;
+	private int filterType, filterDate;
 	
 	public static final String KEY_LAT = "lat";
 	public static final String KEY_LON = "lon";
@@ -153,9 +148,10 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
     
 	private void loadPreferences() {
 	
-	    SharedPreferences settings = getSharedPreferences(FILTER_PREFS, MODE_PRIVATE);
-	    filterType = settings.getInt("type", 0);
-	    filterShowGroupBorders = settings.getBoolean("borders", true);
+	    SharedPreferences settings = getSharedPreferences(MapFilterActivity.FILTER_PREFS, MODE_PRIVATE);
+	    filterType = settings.getInt(MapFilterActivity.TYPE, 0);
+	    filterDate = settings.getInt(MapFilterActivity.DATE_VALUE, (int) (System.currentTimeMillis() / 1000));
+	    filterShowGroupBorders = settings.getBoolean(MapFilterActivity.BORDERS, true);
 	}
 	
     private void setUpMapIfNeeded() {
@@ -452,6 +448,9 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 			
 			map.put("lat2", new StringBody(Double.toString(bounds.nearRight.latitude)));
 			map.put("lon2", new StringBody(Double.toString(bounds.nearRight.longitude)));
+			
+			map.put("filtertype", new StringBody(Integer.toString(filterType)));
+			map.put("filterdate", new StringBody(Integer.toString(filterDate)));
 			
 		} catch (UnsupportedEncodingException e) {
 			Log.e("Map activity", e.getMessage());

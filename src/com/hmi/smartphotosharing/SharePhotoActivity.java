@@ -116,6 +116,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         if (!gpsEnabled) {
         	Util.createGpsDisabledAlert(this);
         }
+        setupGps();
         
         // Intent from gallery
         Intent intent = getIntent();
@@ -141,7 +142,6 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         	}
 	    
         }
-        setupGps();
         //loadData();
 	}
 	
@@ -348,7 +348,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 	}
 	
     private void setupGps() { 
-        gpsLocation = requestUpdatesFromProvider();
+        requestUpdatesFromProvider();
     	 
     }
     
@@ -363,8 +363,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
      * @return A previously returned {@link android.location.Location} from the requested provider,
      *         if exists.
      */
-    private Location requestUpdatesFromProvider() {
-        Location location = null;
+    private void requestUpdatesFromProvider() {
         
         // Network
         String networkProvider = LocationManager.NETWORK_PROVIDER;
@@ -378,10 +377,8 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         
         if (mLocationManager.isProviderEnabled(gpsProvider)) {
             mLocationManager.requestLocationUpdates(gpsProvider, TEN_SECONDS, 0, listener);
-            location = mLocationManager.getLastKnownLocation(gpsProvider);
         }
         
-        return location;
     }
 
     private final LocationListener listener = new LocationListener() {

@@ -43,6 +43,7 @@ import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.local.MapActivity;
+import com.hmi.smartphotosharing.util.DateUtil;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -112,9 +113,7 @@ public class MyPagerAdapter extends PagerAdapter implements LocationListener {
 		// Picture date
         TextView date = (TextView) view.findViewById(R.id.header_subtext);
         Date time = new Date(Long.parseLong(p.time)*1000);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        String datum = sdf.format(time);
-        date.setText(datum);
+        date.setText(DateUtil.formatTime(time));
         
         /*TextView group = (TextView)view.findViewById(R.id.photo_detail_group);
 		
