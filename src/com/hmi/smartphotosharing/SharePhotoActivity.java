@@ -116,7 +116,6 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         if (!gpsEnabled) {
         	Util.createGpsDisabledAlert(this);
         }
-        setupGps();
         
         // Intent from gallery
         Intent intent = getIntent();
@@ -133,6 +132,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
             	rotation = Util.getRotationDegrees(fileUri.getPath());
             	
             	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(path, screenWidth, screenWidth, rotation));
+                setupGps();
             }
         	
         } else {
@@ -311,6 +311,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         	    }
         		
         	});*/
+            setupGps();
 	    } else if (resultCode == RESULT_CANCELED) {
 	        finish();
 	    }

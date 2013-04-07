@@ -61,6 +61,7 @@
 	         	android:layout_centerVertical="true"
 		        android:layout_below="@+id/image1"
 		        android:layout_toRightOf="@+id/img_location_ok"
+		        android:layout_toLeftOf="@+id/btn_mapmode"
 		        android:text="@string/share_location_default"
 		        android:padding="5dp"  />
 		     <ImageButton

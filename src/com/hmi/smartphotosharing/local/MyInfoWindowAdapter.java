@@ -11,6 +11,7 @@ import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.model.Marker;
 import com.hmi.smartphotosharing.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 public class MyInfoWindowAdapter implements InfoWindowAdapter {
@@ -56,11 +57,14 @@ public class MyInfoWindowAdapter implements InfoWindowAdapter {
 				txt.setVisibility(TextView.GONE);
 			}
 			
+			
+			// The flag is used to ensure only one image is loading
+			// And it is loaded to the right marker
 			if (!flag) {
 				flag = true;
 				
 				imageLoader.displayImage(marker.getTitle(), img, new SimpleImageLoadingListener() {
-	
+
 					@Override
 					public void onLoadingComplete(String imageUri, View view,
 							Bitmap loadedImage) {
@@ -71,6 +75,16 @@ public class MyInfoWindowAdapter implements InfoWindowAdapter {
 								flag = false;
 							}
 					}
+					
+				    @Override
+				    public void onLoadingCancelled(String imageUri, View view) {
+				       flag = false;
+				    }
+				    
+				    @Override
+				    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+				        flag = false;
+				    }
 				
 				});
 			}

@@ -469,7 +469,8 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 				
 				map2.put("lat2", new StringBody(Double.toString(bounds.nearRight.latitude)));
 				map2.put("lon2", new StringBody(Double.toString(bounds.nearRight.longitude)));
-				
+
+				map2.put("filtertype", new StringBody(Integer.toString(filterType)));
 			} catch (UnsupportedEncodingException e) {
 				Log.e("Map activity", e.getMessage());
 			}

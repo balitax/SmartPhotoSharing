@@ -17,9 +17,7 @@ public class Group {
 	public String longend;
 	public String latstart;
 	public String latend;
-	
-	//public String numphotos;
-	
+		
 	// is the user a member?
 	public boolean member;
 	public int totalnew;

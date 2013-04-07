@@ -259,7 +259,7 @@
 	<string name="intent_img_description">This is the image that was shared.</string>
 	<string name="intent_pick_group">Select a group to share with.</string>
 	<string name="share_location_default">Photo location is not set. \n Wait for GPS or set manually.</string>
-	<string name="share_location_gps">Photo location set by GPS.</string>
+	<string name="share_location_gps">Photo location set by GPS. To set manually, click the map button.</string>
 	<string name="share_location_manual">Photo location was set manually.</string>
 	<string name="share_no_location">The location of the photo is not set. Wait for the GPS receiver to update or set the location manually by pressing the map icon.</string>
     <string name="share_no_group">No group was selected.</string> 
