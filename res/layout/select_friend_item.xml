@@ -9,7 +9,7 @@
 	<ImageView 
 	    android:id="@+id/icon"
 	    android:contentDescription="@string/icon_unknown"
-       	android:layout_alignParentLeft="true"
+       	android:layout_alignParentRight="true"
 	  	android:adjustViewBounds="true"  
 	  	android:scaleType="fitCenter"  
     	android:padding="2dp"
@@ -19,12 +19,11 @@
 	<TextView 
 	    android:id="@+id/item_text"
 	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
+	    android:layout_height="@dimen/icon_medium"
         android:gravity="center_vertical"
-        android:layout_toRightOf="@+id/icon"
     	android:padding="2dp"
     	android:singleLine="true"
-    	android:textSize="25sp"
+    	android:textSize="@dimen/medium_text"
     	android:ellipsize="marquee" />
 		
 </RelativeLayout>

@@ -155,8 +155,7 @@
 		 	    android:layout_height="2dip"
 		 	    android:layout_below="@+id/btn_spots"
 		 	    android:layout_margin="2dp"
-		 	    android:background="@color/header_bg"
-		 	    />
+		 	    android:background="@color/header_bg"   />
 			
 		   	<TextView
 		   	    android:id="@+id/comments_header"
@@ -164,7 +163,8 @@
 		   	    android:layout_height="wrap_content"
 		   	    android:layout_below="@+id/line"
 		   	    android:layout_margin="2dp"
-		   	    android:text="Comments on this photo" /> 	
+		   	    android:text="Comments"
+         		style="@style/StatsText.Green" /> 	
 		 	<!-- COMMENTS -->
 		 	
 	        <LinearLayout 

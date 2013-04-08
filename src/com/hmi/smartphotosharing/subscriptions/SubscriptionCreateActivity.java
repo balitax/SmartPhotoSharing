@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.groups.SelectFriendsActivity;
 import com.hmi.smartphotosharing.groups.SelectLocationActivity;
 import com.hmi.smartphotosharing.groups.SelectSingleFriendActivity;
 import com.hmi.smartphotosharing.json.OnDownloadListener;

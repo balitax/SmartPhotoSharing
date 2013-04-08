@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,6 +23,7 @@ import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarListActivity;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.UserDetailActivity;
 import com.hmi.smartphotosharing.json.News;
 import com.hmi.smartphotosharing.json.NewsListResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
@@ -90,6 +93,7 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
         // Pauses the loading of image to get smoother scrolling
         PauseOnScrollListener listener = new PauseOnScrollListener(imageLoader, true, true);
         getListView().setOnScrollListener(listener);
+        
     }
     	  
 	@Override
@@ -170,6 +174,9 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
 			if (user != null) {
 				imageLoader.displayImage(Util.getThumbUrl(user), icon);
 				title.setText(user.rname);
+				
+		        InfoClickListener icl = new InfoClickListener(user.getId());
+		        title.setOnClickListener(icl);
 			}			
 		}		
 	}
@@ -201,5 +208,22 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
 			}
 		}
 	}
- 
+
+    private class InfoClickListener implements OnClickListener {
+
+    	private long uid;
+    	
+    	public InfoClickListener(long uid) {
+    		this.uid = uid;
+    	}
+    	
+		@Override
+		public void onClick(View v) {
+
+			Intent intent = new Intent(NewsActivity.this,UserDetailActivity.class);
+			intent.putExtra("id", uid);
+			startActivity(intent);			
+		}
+    	
+    }
 }

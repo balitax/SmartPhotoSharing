@@ -113,7 +113,7 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
         
         // Show subscription as a person
     	holder.txtTitle.setText(subscription.name);
-        if (subscription.person != null) {
+        if (subscription.person != null && !subscription.person.equals("0")) {
 	        String url = Util.getThumbUrl(subscription);
 	        imageLoader.displayImage(url, holder.imgIcon);
         } 

@@ -1,13 +1,16 @@
 package com.hmi.smartphotosharing;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.StringBody;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,9 +21,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -29,11 +29,13 @@ import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.PhotoListResponse;
 import com.hmi.smartphotosharing.json.PhotoResponse;
+import com.hmi.smartphotosharing.json.PostData;
+import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.StringResponse;
 import com.hmi.smartphotosharing.json.Subscription;
 import com.hmi.smartphotosharing.json.SubscriptionListResponse;
+import com.hmi.smartphotosharing.json.UserResponse;
 import com.hmi.smartphotosharing.util.Util;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class PhotoDetailActivity extends NavBarActivity implements OnDownloadListener {
 
@@ -45,15 +47,19 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 	public static final int CODE_SUB = 6;
 	public static final int CODE_FRIENDS = 7;
 	public static final int CODE_SPOT = 8;
+	public static final int CODE_USER = 9;
 	
 	public static final String KEY_ID = "id";
 	public static final String KEY_GID = "gid";
+	public static final String KEY_UID = "uid";
 	public static final String KEY_SSID = "ssid";
 	public static final String KEY_FID = "fid";
+	public static final String KEY_TYPE = "type";
 
 	private static final int TEN_SECONDS = 10 * 1000;
 	
-	private long id, gid, ssid, fid;
+	private long id, gid, uid, ssid, fid;
+	private int type;
 	private ViewPager vp;
 	
 	private int currentPage;
@@ -68,10 +74,12 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         Intent intent = getIntent();
         id = intent.getLongExtra(KEY_ID, 0);
         gid = intent.getLongExtra(KEY_GID, 0);    
+        uid = intent.getLongExtra(KEY_UID, 0);    
         ssid = intent.getLongExtra(KEY_SSID, 0); 
         fid = intent.getLongExtra(KEY_FID, 0); 
+        type = intent.getIntExtra(KEY_TYPE, 0);
+        
         vp = (ViewPager) findViewById(R.id.viewpager);    
-
         
         if (id != 0) {
 			loadData();
@@ -188,6 +196,23 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 			//TODO friend stuff here
 		}
 		
+		else if(uid != 0) {
+
+	        HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+	        try {
+				map.put("sid", new StringBody(hash));
+				map.put("uid", new StringBody(Long.toString(uid)));
+				map.put("type", new StringBody(Integer.toString(type)));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+	        
+	        String usersUrl = Util.getUrl(this,R.string.profile_http);	        
+
+	        PostData pr = new PostData(usersUrl,map);
+			new PostRequest(this,CODE_USER).execute(pr);			
+		}
+		
 		// Single photo
 		else {
 			String photosUrl = String.format(Util.getUrl(this,R.string.photo_detail_http),hash,id);
@@ -224,9 +249,25 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		case(CODE_SPOT):
 			parseSpot(json);
 			break;
+		case(CODE_USER):
+			parseUser(json);
+			break;
 		default:
 		}
         
+	}
+
+	private void parseUser(String json) {
+		Gson gson = new Gson();
+		UserResponse response = gson.fromJson(json, UserResponse.class);
+		
+		if (response != null && response.getStatus() == Util.STATUS_OK) {
+			List<Photo> photo_list = response.getObject().newest_photos;
+			setPhotos(photo_list);
+		} else {
+			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+		
 	}
 
 	private void parseSpot(String json) {

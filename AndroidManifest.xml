@@ -80,7 +80,10 @@
             android:name=".local.LocalPhotoActivity" />
         <activity android:label="Local Groups" 
             android:name=".local.LocalGroupsActivity" />
-        	    
+        
+        <activity android:label="User Details" 
+            android:name=".UserDetailActivity" />	
+            	    
         <activity android:label="Photo Details" 
             android:configChanges="orientation" 
             android:name=".PhotoDetailActivity" />
@@ -109,6 +112,8 @@
             android:name=".groups.SelectLocationActivity" />
         <activity android:label="Group Details" 
             android:name=".groups.GroupDetailActivity" />
+        <activity android:label="Group Info" 
+            android:name=".groups.GroupInfoActivity" />
         <activity android:label="Location Details" 
             android:name=".groups.ShowLocationActivity" />
         <activity android:label="Manage Group" 

@@ -1,8 +1,14 @@
 package com.hmi.smartphotosharing.groups;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.StringBody;
+
+import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,12 +21,15 @@ import com.hmi.smartphotosharing.NavBarListActivity;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
+import com.hmi.smartphotosharing.json.PostData;
+import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserListResponse;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 
-public class SelectSingleFriendActivity extends NavBarListActivity implements OnDownloadListener {
+@Deprecated
+public class SelectSingleFriendActivity extends ListActivity implements OnDownloadListener {
 
 	private long id;
 	
@@ -49,8 +58,17 @@ public class SelectSingleFriendActivity extends NavBarListActivity implements On
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
-        String usersUrl = String.format(Util.getUrl(this,R.string.groups_http_users_invite),hash,id);		
-        new FetchJSON(this, CODE_USERS).execute(usersUrl);
+        HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+        try {
+			map.put("sid", new StringBody(hash));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        
+        String usersUrl = String.format(Util.getUrl(this,R.string.friends_http));	        
+
+        PostData pr = new PostData(usersUrl,map);
+		new PostRequest(this,CODE_USERS).execute(pr);
 
 	}
 				

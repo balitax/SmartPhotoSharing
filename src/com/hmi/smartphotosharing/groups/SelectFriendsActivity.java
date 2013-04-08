@@ -25,10 +25,10 @@ import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserListResponse;
+import com.hmi.smartphotosharing.util.HelpDialog;
 import com.hmi.smartphotosharing.util.Sorter;
 import com.hmi.smartphotosharing.util.Util;
 
-@Deprecated
 public class SelectFriendsActivity extends ListActivity implements OnDownloadListener {
 	private ListView listView;
 		
@@ -53,7 +53,14 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
         super.onStart();
         loadData();
         
-        Util.createSimpleDialog(this, getResources().getString(R.string.dialog_friends));
+        //Util.createSimpleDialog(this, getResources().getString(R.string.dialog_friends));
+
+        SharedPreferences settings = getSharedPreferences(HelpDialog.DIALOG_PREFS, MODE_PRIVATE);
+        boolean hide = settings.getBoolean(HelpDialog.DIALOG_FRIENDS, false);
+
+        String s = getResources().getString(R.string.dialog_friends);
+        if (!hide)
+        	Util.createSimpleDialog(this,s,HelpDialog.DIALOG_FRIENDS);
 	}
 	
     @Override
@@ -96,7 +103,7 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
-        String usersUrl = Util.getUrl(this,R.string.groups_http_users);
+        String usersUrl = Util.getUrl(this,R.string.friends_http);
         
         HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
         try {

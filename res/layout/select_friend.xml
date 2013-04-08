@@ -3,12 +3,21 @@
          android:layout_width="match_parent"
          android:layout_height="match_parent">
      
-    <include
+    <RelativeLayout 
         android:id="@+id/header"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/header_margin"
-        layout="@layout/header" />
+    	android:background="@color/header_bg"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content">
+     
+     <TextView
+         style="@style/HeaderText"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/header"
+         android:layout_centerVertical="true"
+         android:text="@string/invite_friend" />
+
+     </RelativeLayout>
      
      <ListView android:id="@id/android:list"
 	     android:layout_width="match_parent"
@@ -24,11 +33,5 @@
          android:layout_alignParentLeft="true"
          android:layout_below="@+id/header"
 	     android:text="@string/no_data" /> 
-      
-     <include
-         android:id="@+id/navbar"
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:layout_alignParentBottom="true"
-         layout="@layout/navbar" />     
+        
 </RelativeLayout>

@@ -315,7 +315,10 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 
 		@Override
 		public void onClick(View v) {
-	    	showDialog(DIALOG_INFO);			
+
+			Intent intent = new Intent(GroupDetailActivity.this,GroupInfoActivity.class);
+			intent.putExtra("id", group.getId());
+			startActivity(intent);			
 		}
     	
     }
@@ -340,10 +343,19 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
     	
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
-		
-    	// Get group info
-		String detailUrl = String.format(Util.getUrl(this,R.string.group_http_detail),hash,id);
-		new FetchJSON(this,CODE_GROUP_DETAILS).execute(detailUrl);
+
+        HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+        try {
+			map.put("sid", new StringBody(hash));
+			map.put("gid", new StringBody(Long.toString(id)));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        
+        String usersUrl = Util.getUrl(this,R.string.group_http_detail);	        
+
+        PostData pr = new PostData(usersUrl,map);
+		new PostRequest(this,CODE_GROUP_DETAILS).execute(pr);
 				        
 	}
 	

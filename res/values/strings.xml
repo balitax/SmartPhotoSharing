@@ -20,6 +20,7 @@
     <string name="other_groups">My Other groups</string>
     <string name="select_group">Select group</string>
     <string name="invite_friends">Invite friends</string>
+    <string name="invite_friend">Select a friend</string>
     
     <string name="error_google_services_missing">You do not have Google Play Services installed, which is required for Picalilly to work. Click the button to install Google Play Services.</string>
     <string name="button_google_service">Install Google Play-services</string>
@@ -32,9 +33,9 @@
     
     <string name="dialog_map">Press and hold on the map to select a location.</string>
     <string name="dialog_local">Press and hold on the map to find the groups on that location.</string>
-    <string name="dialog_location">If a group is locked to a location, you can only upload photos from within the selected location.</string>
+    <string name="dialog_location">If you select a location for this group, you can only upload photos from within the selected location.</string>
     <string name="dialog_private">Private groups are not visible to everyone. The only way for people to join a private group is when you invite them.</string>
-    <string name="dialog_location_error">You can only lock this group to a location if you have selected a location on the map.</string>
+    <string name="dialog_location_error">You have not selected a location for this group</string>
     <string name="dialog_location_select">No location was selected. Press and hold to select a location.</string>
     <string name="dialog_friends">Here you can select multiple friends who will be invited to this group. You can also invite friends later, after the group is created.</string>   
     
@@ -59,6 +60,7 @@
     
     <string name="url_upload">cmd=upload</string> 
     <string name="profile_http">cmd=userinfo</string>
+    <string name="user_private">This user\'s profile is not publicly visible.</string>
      
     <!--  Groups -->
     
@@ -98,18 +100,20 @@
     
     <!--  Group Detail -->
     
-    <string name="group_http_detail">cmd=group&amp;sid=%1$s&amp;gid=%2$s</string>
+    <string name="group_http_detail">cmd=group</string>
     <string name="group_http_detail_photos">cmd=listpics&amp;sid=%1$s&amp;gid=%2$s&amp;comments=1</string>
     <string name="group_detail_info">Tap for group info</string>
     <string name="group_detail_private">This group is private, you must be invited to view pictures of this group.</string>
     <string name="group_detail_no_data">There are no photos for this group.</string>
     
+    <string name="group_info_members">Members</string>
+    
     <!--  Friends -->
     
-    <string name="friends_http">cmd=getfriends&amp;sid=%1$s</string>
+    <string name="friends_http">cmd=getfriends</string>
     <string name="friends_http_invite">cmd=searchfriends</string>
     <string name="friends_http_add">cmd=addfriends</string>
-    <string name="friends_http_request">cmd=request&amp;sid=%1$s</string>
+    <string name="friends_http_request">cmd=request</string>
     <string name="friends_http_confirm">cmd=friends_confirm&amp;sid=%1$s&amp;friend=%2$s&amp;accept=%3$s</string>
     <string name="friends_header_title">Friends</string>
     <string name="friends_search_empty">No users found.</string>

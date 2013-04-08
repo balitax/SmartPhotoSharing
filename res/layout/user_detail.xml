@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+   
+    <!-- HEADER -->
+    
+
+    <include
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/header_margin"
+        layout="@layout/header" />
+    
+     <!-- NAV BUTTONS -->
+      
+      <Button 
+      	android:id="@+id/photos"
+      	android:layout_height="wrap_content"
+       	android:layout_width="wrap_content"
+       	android:layout_below="@+id/header"
+       	android:drawableLeft="@drawable/button_gallery"
+       	android:text="Photos" 
+       	android:onClick="onClickPhotos"
+       	android:paddingLeft="0dp" />
+      
+      <Button 
+      	android:id="@+id/likes"
+      	android:layout_height="wrap_content"
+       	android:layout_width="wrap_content"
+       	android:layout_below="@+id/header"
+       	android:layout_toRightOf="@+id/photos"
+       	android:drawableLeft="@drawable/ic_menu_favourite"
+       	android:text="Likes"
+       	android:onClick="onClickLikes"
+       	android:paddingLeft="0dp"  />
+      
+      <Button 
+      	android:id="@+id/spots"
+      	android:layout_height="wrap_content"
+       	android:layout_width="wrap_content"
+       	android:layout_below="@+id/header"
+       	android:layout_toRightOf="@+id/likes"
+       	android:drawableLeft="@drawable/button_myplaces"
+       	android:text="Spots"
+       	android:onClick="onClickSpots"
+       	android:paddingLeft="0dp"  />
+    <!-- GRID -->
+    
+	<GridView 
+	    android:id="@+id/grid"
+	    android:layout_width="fill_parent" 
+	    android:layout_height="fill_parent"
+        android:layout_below="@+id/photos"
+        android:layout_marginBottom="@dimen/navbar_margin"
+	    android:padding="2dp"
+	    android:verticalSpacing="2dp"
+	    android:horizontalSpacing="2dp"
+	    android:numColumns="auto_fit"
+	    android:columnWidth="@dimen/icon_large"
+	    android:stretchMode="columnWidth"
+	    android:gravity="center" />
+    
+     <TextView 
+         android:id="@+id/grid_empty"
+	     android:layout_width="match_parent"
+	     android:layout_height="match_parent"
+         android:layout_below="@+id/header"
+	     android:layout_margin="4dp"
+	     android:gravity="center"
+	     android:text="@string/group_detail_no_data"
+	     android:visibility="gone" />    
+    <include
+        android:id="@+id/navbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/navbar" />
+</RelativeLayout>

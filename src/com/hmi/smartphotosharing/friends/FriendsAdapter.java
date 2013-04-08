@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.hmi.smartphotosharing.PhotoDetailActivity;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.UserDetailActivity;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.util.Util;
@@ -70,7 +71,7 @@ public class FriendsAdapter extends ArrayAdapter<User> {
 	@Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        User user = getItem(position);
+        final User user = getItem(position);
         
         View v = convertView;
         UserHolder holder;
@@ -95,6 +96,17 @@ public class FriendsAdapter extends ArrayAdapter<User> {
         // Set the icon for this list item
         imageLoader.displayImage(Util.getThumbUrl(user), holder.imgIcon);
                 
+        holder.imgIcon.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(context, UserDetailActivity.class);
+				intent.putExtra("id", user.getId());
+				context.startActivity(intent);
+			}
+        	
+        });
+        
         holder.gallery.removeAllViews();
         if (user.newest_photos != null && user.newest_photos.size() > 0) {
 			for (Photo p : user.newest_photos) {

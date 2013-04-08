@@ -20,6 +20,9 @@ public class User {
 	public int following;
 	public int followers;
 	
+	public boolean isprivate;
+	public boolean isfriend;
+	
 	public List<Photo> newest_photos;
 	
 	public long getId() {
@@ -28,5 +31,13 @@ public class User {
 	
 	public String getName() {
 		return rname;
+	}
+	
+	public boolean isPrivate() {
+		return isprivate;
+	}
+	
+	public boolean isFriend() {
+		return isfriend;
 	}
 }

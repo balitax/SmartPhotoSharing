@@ -1,29 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="2dp" >
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+   
+    <!-- HEADER -->
     
-    <TextView android:id="@+id/text"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:textSize="20sp" />
+    <include
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/header_margin"
+        layout="@layout/header" />
     
-    <TextView android:id="@+id/description"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content" />
+     <TextView 
+         android:id="@+id/group_desc"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/header"
+         android:layout_toLeftOf="@+id/btn_map" />
+     
+     <ImageButton 
+         android:id="@+id/btn_map"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/header"
+         android:layout_alignParentRight="true"
+         android:src="@drawable/button_map"
+         android:padding="0dp" 
+         android:onClick="onClickMap"/>
+      
+ 	<View 
+ 	    android:id="@+id/line"
+ 	    android:layout_width="fill_parent"
+ 	    android:layout_height="2dip"
+ 	    android:layout_below="@+id/btn_map"
+ 	    android:layout_margin="2dp"
+ 	    android:background="@color/header_bg" />   "
     
-    <TextView android:id="@+id/members"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content" />
+     <TextView 
+         android:id="@+id/group_members"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/line"
+         android:layout_toLeftOf="@+id/btn_map"
+         android:text="@string/group_info_members"
+         style="@style/StatsText.Green" />
+     
+	 <ListView 
+         android:id="@id/android:list"
+	     android:layout_width="match_parent"
+	     android:layout_height="wrap_content"
+	     android:drawSelectorOnTop="false"
+         android:layout_below="@+id/group_members"
+         android:layout_marginBottom="@dimen/navbar_margin" />
     
-    <TextView android:id="@+id/photos"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content" />
-    
-    <TextView android:id="@+id/owner"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content" />
-    
-</LinearLayout>
+    <include
+        android:id="@+id/navbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/navbar" />
+</RelativeLayout>

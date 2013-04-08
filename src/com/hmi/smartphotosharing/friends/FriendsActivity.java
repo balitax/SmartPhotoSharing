@@ -141,11 +141,27 @@ public class FriendsActivity extends NavBarListActivity implements OnDownloadLis
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 
-        String url = String.format(Util.getUrl(this,R.string.friends_http),hash);		
-        new FetchJSON(this,CODE_FRIENDS).execute(url);
-        
-        url = String.format(Util.getUrl(this,R.string.friends_http_request),hash);		
-        new FetchJSON(this,CODE_REQUESTS).execute(url);
+        HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+        try {
+			map.put("sid", new StringBody(hash));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+        String url = Util.getUrl(this,R.string.friends_http);	
+        PostData pr = new PostData(url,map);
+		new PostRequest(this,CODE_FRIENDS).execute(pr);
+
+        HashMap<String,ContentBody> map2 = new HashMap<String,ContentBody>();
+        try {
+			map2.put("sid", new StringBody(hash));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        String url2 = String.format(Util.getUrl(this,R.string.friends_http_request),hash);		
+
+        PostData pr2 = new PostData(url2,map2);
+		new PostRequest(this,CODE_REQUESTS,false).execute(pr2);
 		
 	}
 

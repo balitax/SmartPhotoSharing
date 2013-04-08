@@ -48,27 +48,17 @@
 		        android:layout_toLeftOf="@+id/button_send" >
 		    </EditText>
 		
-		    
-		    <EditText
-		        android:id="@+id/group_create_desc"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/group_create_name"
-		        android:inputType="textMultiLine"
-		        android:lines="3"
-		        android:hint="@string/group_create_description" />
-		
 		    <CheckBox android:id="@+id/checkbox_private"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/group_create_desc"
+		        android:layout_below="@+id/group_create_name"
 		        android:text="@string/group_private" />
 		    
 		     <ImageButton
 			     android:id="@+id/friend_add"
 		         android:layout_width="wrap_content"
 		         android:layout_height="wrap_content"
-		         android:layout_below="@+id/group_create_desc"
+		         android:layout_below="@+id/group_create_name"
 		         android:layout_alignParentRight="true"
 			     android:padding="0dp"
 		         android:onClick="onPrivateHelp"
@@ -80,17 +70,12 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_below="@+id/checkbox_private"
+		        android:layout_toLeftOf="@+id/location_help"
 		    	android:drawableLeft="@drawable/button_invite"
 		        android:onClick="onClickFriends" />
 		
-		    <CheckBox android:id="@+id/checkbox_location"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/button_invite_friends"
-		        android:text="@string/group_location" />
-		    
 		     <ImageButton
-			     android:id="@+id/friend_add"
+			     android:id="@+id/location_help"
 		         android:layout_width="wrap_content"
 		         android:layout_height="wrap_content"
 		         android:layout_below="@+id/button_invite_friends"
@@ -104,7 +89,8 @@
 		        android:text="@string/group_create_location"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/checkbox_location"
+		        android:layout_below="@+id/button_invite_friends"
+		        android:layout_toLeftOf="@+id/location_help"
 		    	android:drawableLeft="@drawable/button_location"
 		        android:onClick="onClickLocation" /> 
 		    	   

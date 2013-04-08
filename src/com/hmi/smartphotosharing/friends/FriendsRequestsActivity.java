@@ -126,8 +126,16 @@ public class FriendsRequestsActivity extends NavBarListActivity implements OnDow
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
         
+		HashMap<String,ContentBody> map2 = new HashMap<String,ContentBody>();
+        try {
+			map2.put("sid", new StringBody(hash));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
         String url = String.format(Util.getUrl(this,R.string.friends_http_request),hash);		
-        new FetchJSON(this,CODE_REQUESTS).execute(url);
+
+        PostData pr2 = new PostData(url,map2);
+		new PostRequest(this,CODE_REQUESTS,false).execute(pr2);
 		
 	}
 
