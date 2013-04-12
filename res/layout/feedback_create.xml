@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+    
+    <RelativeLayout 
+        android:id="@+id/header"
+    	android:background="@color/header_bg"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/header_margin">
+    	
+	    <TextView
+	        android:id="@+id/subscription_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/feedback_create_title"
+         	android:layout_centerVertical="true"
+	        style="@style/HeaderText" />
+	    
+	    <ImageView 
+	        android:id="@+id/button_send"
+	        android:src="@drawable/ic_green_menu_send"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:contentDescription="@string/button_send"
+	        android:onClick="onClickSend" />
+    </RelativeLayout>
+      
+    <ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_below="@+id/header" >
+    
+	    <RelativeLayout
+	        android:id="@+id/contents"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content">
+		    	
+	        <TextView android:id="@+id/record_desc"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:text="@string/feedback_create_record_desc" />"
+		    
+		    <Button android:id="@+id/button_record"
+		        android:text="@string/feedback_create_record_start"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/record_desc"
+		        android:onClick="onClickRecord" />
+		    
+			 
+		    <Button android:id="@+id/button_play"
+		        android:text="@string/feedback_create_play_start"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/record_desc"
+		        android:layout_toRightOf="@+id/button_record"
+		        android:onClick="onClickPlay" /> 
+		    
+			 <ImageView 
+			     android:id="@+id/record_ok"
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+		         android:layout_below="@+id/record_desc"
+			     android:layout_toRightOf="@+id/button_play"
+			     android:visibility="invisible"
+			     android:src="@drawable/button_ok"/>
+			 
+		    <EditText android:id="@+id/message"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/button_record"
+		        android:hint="@string/feedback_create_message"
+		        android:inputType="textMultiLine"
+    			android:lines="5"
+    			android:singleLine="false"
+    			android:scrollHorizontally="false" 
+    			android:gravity="top" />	   
+		</RelativeLayout> 
+	</ScrollView>
+
+    
+</RelativeLayout>

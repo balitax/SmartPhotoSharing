@@ -197,6 +197,8 @@
     <!--  Menu -->
     
     <string name="menu_camera">Camera</string>
+    <string name="menu_feedback">Feedback</string>
+    <string name="menu_feedback_add">New Feedback</string>
     <string name="menu_friend_add">Add A Friend</string>
     <string name="menu_friend_search">Search Users</string>
     <string name="menu_group_manage">Manage Group</string>
@@ -243,6 +245,7 @@
     
     <string name="pref_title_not_friends">Friends</string>
     <string name="pref_summary_not_friends">When someone adds me as a friend</string>    
+    
     <!-- Camera -->
     
     <string name="album_name">SPS</string>
@@ -273,4 +276,15 @@
     <string name="wifi_connected">Wi-Fi reconnected.</string>
     <string name="connection_error">Unable to load content. Check your network connection.</string>
     
+	<!--  Feedback -->
+    <string name="feedback_http">cmd=feedback</string>
+    <string name="feedback_http_add">cmd=feedback_add</string>
+    <string name="feedback_http_delete">cmd=feedback_delete</string>
+    <string name="feedback_create_title">Add feedback</string>
+    <string name="feedback_create_record_desc">You can record audio feedback by pressing the buttons below. You can also add a text message.</string>
+    <string name="feedback_create_record_start">Start Recording</string>
+    <string name="feedback_create_record_stop">Stop Recording</string>
+    <string name="feedback_create_play_start">Start Playing</string>
+    <string name="feedback_create_play_stop">Stop Playing</string>
+    <string name="feedback_create_message">Feedback message</string>
 </resources>

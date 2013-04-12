@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent">  
+
+    <!-- HEADER -->
+    
+    <include
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/header_margin"
+        layout="@layout/header" />
+    
+	 
+     <Button 
+         android:id="@+id/btn_requests"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/header"
+         android:visibility="gone"
+         android:onClick="onClickRequests"/>		    
+    <!-- GROUPS LIST -->
+    
+     <ListView 
+         android:id="@id/android:list"
+	     android:layout_width="match_parent"
+	     android:layout_height="wrap_content"
+	     android:drawSelectorOnTop="false"
+         android:layout_below="@+id/btn_requests"
+         android:layout_marginBottom="@dimen/navbar_margin" />
+
+     <TextView android:id="@id/android:empty"
+	     android:layout_width="fill_parent"
+	     android:layout_height="match_parent"
+	     android:layout_below="@+id/btn_requests"
+         android:layout_alignParentLeft="true"
+	     android:gravity="center"
+	     android:text="@string/no_data" />    
+     <include
+         android:id="@+id/navbar"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         layout="@layout/navbar" />
+          
+</RelativeLayout>

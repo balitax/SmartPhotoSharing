@@ -39,6 +39,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.hmi.smartphotosharing.R;
+import com.hmi.smartphotosharing.json.Feedback;
 import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.Photo;
 import com.hmi.smartphotosharing.json.Subscription;
@@ -74,7 +75,8 @@ public class Util {
     public static final String THUMB_URL 		= SERVER + "thumb.php?src=";
     public static final String THUMB_SIZE 		= "100";
     public static final String THUMB_CONFIG 	= "&w=" + THUMB_SIZE + "&h=" + THUMB_SIZE;
-    
+
+    public static final String FEEDBACK_DB		= SERVER + "feedback/";
     public static final String IMG_DB 			= SERVER + "imgdb/";
     public static final String USER_DB 			= SERVER + "profilepicdb/";
     public static final String GROUP_DB 		= SERVER + "logodb/";
@@ -104,6 +106,10 @@ public class Util {
 	
 	public static String getThumbUrl(String db, String file) {
 		return THUMB_URL + db + file + THUMB_CONFIG;
+	}
+	
+	public static String getFeedbackUrl(Feedback f) {
+		return FEEDBACK_DB + f.file;
 	}
 	
 	public static String getThumbUrl(Photo p) {

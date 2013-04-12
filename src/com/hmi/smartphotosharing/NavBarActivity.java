@@ -13,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hmi.smartphotosharing.feedback.FeedbackActivity;
 import com.hmi.smartphotosharing.friends.FriendsActivity;
 import com.hmi.smartphotosharing.util.Util;
 
@@ -73,18 +74,9 @@ public class NavBarActivity extends Activity {
 	            intent = new Intent(a, ProfileActivity.class);
 	            a.startActivity(intent);
 	            return true;
-	        case R.id.logout:
-
-	    		SharedPreferences settings = a.getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
-	    		settings.edit().remove(Login.SESSION_HASH).commit();
-	    		
-	    		intent = new Intent(a, Login.class);
-	    		intent.putExtra("finish", true);
-	    		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
-			                    Intent.FLAG_ACTIVITY_NEW_TASK); 
-	    		
-	    		a.startActivity(intent);
-	    		a.finish();
+	        case R.id.feedback:
+	            intent = new Intent(a, FeedbackActivity.class);
+	            a.startActivity(intent);
 	    		return true;
 	        default:
 	            return false;
