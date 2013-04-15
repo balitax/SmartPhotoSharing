@@ -81,6 +81,7 @@ public class Util {
     public static final String USER_DB 			= SERVER + "profilepicdb/";
     public static final String GROUP_DB 		= SERVER + "logodb/";
     public static final String REGISTER_URL 	= SERVER + "signup.php";
+    public static final String HELP_URL		 	= SERVER + "help.php";
     
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     

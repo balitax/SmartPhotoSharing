@@ -8,6 +8,7 @@ public class User {
 	public String active;
 	public String uname;
 	public String rname;
+	public String fname;
 	public String pword;
 	public String email;
 	public String fb_id;

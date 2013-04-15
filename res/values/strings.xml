@@ -280,6 +280,8 @@
     <string name="feedback_http">cmd=feedback</string>
     <string name="feedback_http_add">cmd=feedback_add</string>
     <string name="feedback_http_delete">cmd=feedback_delete</string>
+    <string name="feedback_intro">Let us know what you think about Picalilly! Try to think about what task you tried to do, what actions you took and whether Picalilly works as 
+        you expect it to do. You can submit as much feedback as you like, you can see your history below. You can delete any message by long-pressing on it.</string>
     <string name="feedback_create_title">Add feedback</string>
     <string name="feedback_create_record_desc">You can record audio feedback by pressing the buttons below. You can also add a text message.</string>
     <string name="feedback_create_record_start">Start Recording</string>
@@ -287,4 +289,5 @@
     <string name="feedback_create_play_start">Start Playing</string>
     <string name="feedback_create_play_stop">Stop Playing</string>
     <string name="feedback_create_message">Feedback message</string>
+    <string name="feedback_no_data">You have not submitted any feedback yet.</string>
 </resources>

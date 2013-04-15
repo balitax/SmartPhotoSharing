@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -74,6 +75,10 @@ public class NavBarActivity extends Activity {
 	            intent = new Intent(a, ProfileActivity.class);
 	            a.startActivity(intent);
 	            return true;
+	        case R.id.help:
+	    		Uri uri = Uri.parse(Util.HELP_URL);
+	            intent = new Intent(Intent.ACTION_VIEW, uri);
+	            a.startActivity(intent);
 	        case R.id.feedback:
 	            intent = new Intent(a, FeedbackActivity.class);
 	            a.startActivity(intent);

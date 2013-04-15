@@ -14,12 +14,22 @@
     
 	 
      <Button 
-         android:id="@+id/btn_requests"
+         android:id="@+id/btn_add"
          android:layout_width="fill_parent"
          android:layout_height="wrap_content"
          android:layout_below="@+id/header"
-         android:visibility="gone"
-         android:onClick="onClickRequests"/>		    
+         android:layout_toLeftOf="@+id/feedback_help"
+         android:text="@string/feedback_create_title"
+         android:onClick="onClickAdd"/>
+     
+     <ImageButton android:id="@+id/feedback_help"
+	     android:layout_width="wrap_content"
+	     android:layout_height="wrap_content"
+         android:layout_alignParentRight="true"
+         android:layout_below="@+id/header"
+         android:padding="0dp"
+	     android:src="@drawable/button_help"
+         android:onClick="onClickHelp" />    
     <!-- GROUPS LIST -->
     
      <ListView 
@@ -27,16 +37,16 @@
 	     android:layout_width="match_parent"
 	     android:layout_height="wrap_content"
 	     android:drawSelectorOnTop="false"
-         android:layout_below="@+id/btn_requests"
+         android:layout_below="@+id/btn_add"
          android:layout_marginBottom="@dimen/navbar_margin" />
 
      <TextView android:id="@id/android:empty"
 	     android:layout_width="fill_parent"
 	     android:layout_height="match_parent"
-	     android:layout_below="@+id/btn_requests"
+         android:layout_below="@+id/btn_add"
          android:layout_alignParentLeft="true"
 	     android:gravity="center"
-	     android:text="@string/no_data" />    
+	     android:text="@string/feedback_no_data" />    
      <include
          android:id="@+id/navbar"
          android:layout_width="fill_parent"

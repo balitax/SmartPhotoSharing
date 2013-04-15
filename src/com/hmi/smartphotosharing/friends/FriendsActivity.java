@@ -133,6 +133,9 @@ public class FriendsActivity extends NavBarListActivity implements OnDownloadLis
 	            PostData pr = new PostData(url,map);
 	    		new PostRequest(this,CODE_INVITE).execute(pr);
 	        }
+	        	
+        	loadData();
+	        
         }
 	}
 	

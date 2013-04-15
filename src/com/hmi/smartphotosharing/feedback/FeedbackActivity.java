@@ -122,7 +122,15 @@ public class FeedbackActivity extends NavBarListActivity implements OnDownloadLi
         }
     }	
 	
-    
+	public void onClickAdd(View view) {
+    	Intent intent = new Intent(this, CreateFeedbackActivity.class);
+    	startActivityForResult(intent, CODE_CREATE);		
+	}
+	
+	public void onClickHelp(View view) {
+    	Util.createSimpleDialog(this, getResources().getString(R.string.feedback_intro));		
+	}   
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         

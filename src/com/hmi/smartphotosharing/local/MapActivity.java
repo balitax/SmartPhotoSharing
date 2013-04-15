@@ -176,17 +176,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
                 // Set the source of location updates to this activity
                 googleMap.setLocationSource(this);
                 
-                Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 
-                if (location != null && firstZoomCamera) {
-                	firstZoomCamera = false;
-                	CameraPosition camPos = new CameraPosition.Builder()
-                	   .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                	   .zoom(MAP_ZOOM_THRESHOLD)
-                	   .build();
-                	googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
-                	loadData();
-                }
             } else {
             	// If the user does not have Play Services installed, show this notice and a download link
             	// The default message by Google is broken, so display our own message
@@ -196,6 +186,35 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
             	Button b = (Button)findViewById(R.id.button_google_play_missing);
             	t.setVisibility(TextView.VISIBLE);
             	b.setVisibility(Button.VISIBLE);
+            }
+        }
+        
+        if (googleMap != null) {
+        	Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (startIid != 0) {
+            	LatLng startPos = new LatLng(startLat, startLon);
+        		
+	        	CameraPosition camPos = new CameraPosition.Builder()
+	        	   .target(startPos)
+	        	   .zoom(MAP_ZOOM_THRESHOLD)
+	        	   .build();
+	        	
+				MarkerOptions markerOptions = new MarkerOptions()
+                	.position(startPos)
+                	.title(startThumb)
+                	.snippet(TYPE_PHOTO + "," + startIid)
+                	.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_photo));
+
+                googleMap.addMarker(markerOptions);
+	        	googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+            } else if (location != null && firstZoomCamera) {
+            	firstZoomCamera = false;
+            	CameraPosition camPos = new CameraPosition.Builder()
+            	   .target(new LatLng(location.getLatitude(), location.getLongitude()))
+            	   .zoom(MAP_ZOOM_THRESHOLD)
+            	   .build();
+            	googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+            	loadData();
             }
         }
     }
@@ -637,24 +656,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	        	
 	        	firstZoomCamera = false;
 	        	
-	        	if (startIid != 0) {
-
-	        		LatLng startPos = new LatLng(startLat, startLon);
-	        		
-		        	CameraPosition camPos = new CameraPosition.Builder()
-		        	   .target(startPos)
-		        	   .zoom(MAP_ZOOM_THRESHOLD)
-		        	   .build();
-		        	
-					MarkerOptions markerOptions = new MarkerOptions()
-	                	.position(startPos)
-	                	.title(startThumb)
-	                	.snippet(TYPE_PHOTO + "," + startIid)
-	                	.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_photo));
-
-	                googleMap.addMarker(markerOptions);
-		        	googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
-		        } else {
+	        	if (startIid == 0) {
 		        	CameraPosition camPos = new CameraPosition.Builder()
 		        	   .target(new LatLng(location.getLatitude(), location.getLongitude()))
 		        	   .zoom(MAP_ZOOM_THRESHOLD)

@@ -24,7 +24,6 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
-import com.hmi.smartphotosharing.groups.FriendsInviteAdapter;
 import com.hmi.smartphotosharing.groups.GroupCreateActivity;
 import com.hmi.smartphotosharing.groups.GroupJoinActivity;
 import com.hmi.smartphotosharing.json.OnDownloadListener;

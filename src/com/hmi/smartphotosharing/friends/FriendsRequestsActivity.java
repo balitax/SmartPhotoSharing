@@ -172,7 +172,7 @@ public class FriendsRequestsActivity extends NavBarListActivity implements OnDow
 		if (response != null) {
 			List<User> user_list = response.getObject();
 			
-			if (user_list != null) {
+			if (user_list != null && user_list.size() > 0) {
 				// Sort the group on newest
 				FriendsRequestAdapter adapter = new FriendsRequestAdapter(
 						this, 
@@ -182,6 +182,8 @@ public class FriendsRequestsActivity extends NavBarListActivity implements OnDow
 					);
 				adapter.sort(Sorter.USER_SORTER);
 				setListAdapter(adapter);	
+			} else {
+				finish();
 			}
 		}
 	}

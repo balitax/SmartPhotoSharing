@@ -91,7 +91,7 @@ public class FriendsRequestAdapter extends ArrayAdapter<User> {
         	holder = (UserHolder)v.getTag();
         }
         
-        holder.txtTitle.setText(user.rname);
+        holder.txtTitle.setText(user.rname + " " + user.fname);
         holder.btnAccept.setOnClickListener(new MyOnClickListener(user.getId(), true));  
         holder.btnDecline.setOnClickListener(new MyOnClickListener(user.getId(), false));      
         

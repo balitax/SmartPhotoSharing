@@ -138,7 +138,7 @@ public class GroupInfoActivity extends NavBarListActivity implements OnDownloadL
 		
 		if (!group.isLocationLocked()) {
 			ImageButton map = (ImageButton)findViewById(R.id.btn_map);
-			map.setVisibility(ImageButton.GONE);
+			map.setVisibility(ImageButton.INVISIBLE);
 		}
 		
 		groupMembers.setText(group.isPrivate() ? "Private group" : "Public group");
