@@ -86,16 +86,19 @@ public class FriendsInviteAdapter extends ArrayAdapter<User>  {
         User user = getItem(position);
         holder.checkBox.setText(user.rname + " " + user.fname);
         
+        
         if(list.isItemChecked(position))
             holder.checkBox.setChecked(true);
         else
             holder.checkBox.setChecked(false);
-
+		
+        
         // Set the icon for this list item
         imageLoader.displayImage(Util.getThumbUrl(user), holder.imgIcon);
                 
         return row;
     }
+	
 	
 	/**
 	 * The Groupholder class is used to cache the ImageView and Textview

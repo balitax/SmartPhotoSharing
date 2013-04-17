@@ -19,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -57,9 +59,18 @@ public class AddFriendsActivity extends ListActivity implements OnDownloadListen
         if (type == TYPE_GROUP)
         	gid = intent.getLongExtra("gid", 0);
         	
-        listView = (ListView) findViewById(android.R.id.list);
+        listView = getListView();
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        listView.setItemsCanFocus(false);
         
+        listView.setOnItemClickListener (new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> adapterview, View view, int position, long id) {
+				listView.invalidateViews();
+			}
+        	
+        });
 	    setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 	    // Get the intent, verify the action and get the query
 	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
@@ -153,7 +164,9 @@ public class AddFriendsActivity extends ListActivity implements OnDownloadListen
     		}
     	}
     	
-    	data.putExtra("friends", sb.toString());
+    	String friends = sb.toString();
+    	Log.d("Friends", friends);
+    	data.putExtra("friends", friends);
     	this.setResult(RESULT_OK, data);
     	this.finish();
     }
