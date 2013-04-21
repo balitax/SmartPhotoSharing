@@ -20,9 +20,18 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_below="@+id/header"
-		android:drawableLeft="@drawable/ic_menu_camera"
+		android:drawableLeft="@drawable/button_camera"
 	    android:onClick="onClickPicture"
 	    android:text="@string/group_change_pic" />
+	
+	<Button 
+	    android:id="@+id/btn_remove"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/btn_camera"
+		android:drawableLeft="@drawable/button_remove"
+	    android:onClick="onClickDelete"
+	    android:text="@string/group_change_delete" />
 	
      <include
          android:id="@+id/navbar"

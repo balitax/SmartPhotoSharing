@@ -1,6 +1,15 @@
 package com.hmi.smartphotosharing.groups;
 
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.StringBody;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,6 +26,9 @@ import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.GroupResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
+import com.hmi.smartphotosharing.json.PostData;
+import com.hmi.smartphotosharing.json.PostRequest;
+import com.hmi.smartphotosharing.json.StringResponse;
 import com.hmi.smartphotosharing.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -24,6 +36,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 public class GroupManageActivity extends NavBarActivity implements OnDownloadListener {
 	
 	private static final int CODE_GROUP_DETAILS = 1;
+	private static final int CODE_GROUP_REMOVE = 2;
     private static final int TAKE_PICTURE = 5;
 
 	public static final String KEY_ID = "id";
@@ -67,9 +80,18 @@ public class GroupManageActivity extends NavBarActivity implements OnDownloadLis
 		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, MODE_PRIVATE);
 		String hash = settings.getString(Login.SESSION_HASH, null);
 		
-    	// Get group info
-		String detailUrl = String.format(Util.getUrl(this,R.string.group_http_detail),hash,id);
-		new FetchJSON(this,CODE_GROUP_DETAILS).execute(detailUrl);
+        HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+        try {
+			map.put("sid", new StringBody(hash));
+			map.put("gid", new StringBody(Long.toString(id)));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		String detailUrl = Util.getUrl(this,R.string.group_http_detail);
+		
+        PostData pr = new PostData(detailUrl,map);
+        new PostRequest(this, CODE_GROUP_DETAILS,false).execute(pr);
 		
 	}
 	
@@ -77,6 +99,10 @@ public class GroupManageActivity extends NavBarActivity implements OnDownloadLis
 		Intent intent = new Intent(this, ChangeGroupPictureActivity.class);
 		intent.putExtra("id", id);
 		startActivityForResult(intent, TAKE_PICTURE);
+	}
+	
+	public void onClickDelete(View view) {
+		confirmDeleteCommentDialog(id);
 	}
 
 	@Override
@@ -86,10 +112,26 @@ public class GroupManageActivity extends NavBarActivity implements OnDownloadLis
 			case CODE_GROUP_DETAILS:
 				parseGroup(json);
 				break;
-				
+			
+			case CODE_GROUP_REMOVE:
+				parseRemove(json);
+				break;
 			default:
 		}
 		
+	}
+
+	private void parseRemove(String json) {
+		Gson gson = new Gson();
+		
+		StringResponse response = gson.fromJson(json, StringResponse.class);
+		
+		Toast.makeText(this, response.getMessage(), Toast.LENGTH_LONG).show();
+		if (response.getStatus() == Util.STATUS_OK) {
+			Intent intent = new Intent(this, GroupsActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+		} 
 	}
 
 	private void parseGroup(String result) {
@@ -127,6 +169,40 @@ public class GroupManageActivity extends NavBarActivity implements OnDownloadLis
 			Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
 			finish();
 		}
+		
+	}
+	
+    private void confirmDeleteCommentDialog(final long gid) {
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Are you sure you want to delete this group? All photos will be removed!")
+		     .setCancelable(false)       
+		     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int bid) {
+
+			       		SharedPreferences settings = getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);
+			       		String hash = settings.getString(Login.SESSION_HASH, null);
+			       		
+			       		String deleteUrl = Util.getUrl(GroupManageActivity.this,R.string.groups_http_remove);
+			       			
+			               HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+			               try {
+			       			map.put("sid", new StringBody(hash));
+			       	        map.put("gid", new StringBody(Long.toString(gid)));
+			       		} catch (UnsupportedEncodingException e) {
+			       			e.printStackTrace();
+			       		}
+		               
+		                PostData pr = new PostData(deleteUrl,map);
+		                new PostRequest(GroupManageActivity.this, CODE_GROUP_REMOVE).execute(pr);
+		           }
+		       })
+		     .setNegativeButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                dialog.cancel();
+		           }
+		       });
+		AlertDialog alert = builder.create();
+		alert.show();
 		
 	}
 }

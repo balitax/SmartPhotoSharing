@@ -8,7 +8,9 @@ import java.util.List;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
@@ -24,6 +26,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.hmi.smartphotosharing.groups.GroupManageActivity;
+import com.hmi.smartphotosharing.groups.GroupsActivity;
 import com.hmi.smartphotosharing.json.FetchJSON;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.Photo;
@@ -48,6 +52,7 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 	public static final int CODE_FRIENDS = 7;
 	public static final int CODE_SPOT = 8;
 	public static final int CODE_USER = 9;
+	public static final int CODE_DELETE = 10;
 	
 	public static final String KEY_ID = "id";
 	public static final String KEY_GID = "gid";
@@ -106,35 +111,6 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         mLocationManager.removeUpdates((MyPagerAdapter)vp.getAdapter());
     } 
 	
-	/*
-	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		super.onSaveInstanceState(savedInstanceState);
-
-		savedInstanceState.putInt("current", currentPage);
-		
-		vp = (ViewPager)findViewById(R.id.viewpager);
-		// Store comment text
-		View currentView = vp.getChildAt(currentPage);
-		if (currentView != null) {
-			EditText edit = (EditText) currentView.findViewById(R.id.edit_message);
-			savedInstanceState.putString("comment", edit.getEditableText().toString());
-		}
-	}
-	
-	@Override
-	public void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		currentPage = savedInstanceState.getInt("current");
-		
-		// Set comment text
-		String commentTxt = savedInstanceState.getString("comment");
-		View currentView = vp.getChildAt(currentPage);
-		EditText edit = (EditText) currentView.findViewById(R.id.edit_message);
-		edit.setText(commentTxt, TextView.BufferType.EDITABLE);
-
-	}*/
-	
     @Override
     protected void onNewIntent(Intent intent) {
         id = intent.getLongExtra(KEY_ID, 0);
@@ -143,18 +119,9 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        	case R.id.share:
+        	case R.id.delete:
 
-        		String uri = getResources().getString(R.string.photo_detail_http);
-        		
-        		Intent intent = new Intent(this,SharePhotoActivity.class);
-				intent.setType("image/jpeg");
-
-				// Add the Uri of the current photo as extra value
-				intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(uri));
-				
-				// Create and start the chooser
-				startActivity(intent);
+	       		confirmDeleteCommentDialog();
 				return true;
 	        default:
 	        	return super.onOptionsItemSelected(item);
@@ -164,8 +131,9 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 	
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
-    	MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.photo_menu, menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.photo_menu, menu);
+		super.onCreateOptionsMenu(menu);
 	    return true;
 	}
 
@@ -252,9 +220,28 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 		case(CODE_USER):
 			parseUser(json);
 			break;
+		case(CODE_DELETE):
+			parseDelete(json);
+			break;
 		default:
 		}
         
+	}
+
+	private void parseDelete(String json) {
+		Gson gson = new Gson();
+		
+		StringResponse response = gson.fromJson(json, StringResponse.class);
+		
+		Toast.makeText(this, response.getMessage(), Toast.LENGTH_LONG).show();
+		if (response.getStatus() == Util.STATUS_OK) {
+			if (vp.getChildCount() == 1) {
+				finish();
+			} else {
+				loadData();
+			}
+		} 
+		
 	}
 
 	private void parseUser(String json) {
@@ -373,6 +360,8 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
 				}
 			}
 
+			if (!found) currentPage = 0;
+			
         	Photo p = photo_list.get(currentPage);
 
 			MyPagerAdapter adapter = new MyPagerAdapter(this,photo_list);
@@ -418,5 +407,24 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         }
         
     }
-    
+
+    private void confirmDeleteCommentDialog() {
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Are you sure you want to delete this photo?")
+		     .setCancelable(false)       
+		     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int bid) {
+		        	   	MyPagerAdapter pager = (MyPagerAdapter) vp.getAdapter();
+			       		pager.deleteCurrent(vp.getCurrentItem());
+		           }
+		       })
+		     .setNegativeButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                dialog.cancel();
+		           }
+		       });
+		AlertDialog alert = builder.create();
+		alert.show();
+		
+	}
 }

@@ -507,6 +507,27 @@ public class MyPagerAdapter extends PagerAdapter implements LocationListener {
 		
 	}
 
+    public void deleteCurrent(int i) {
+    	Photo p = data.get(i);
+    	SharedPreferences settings = context.getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);
+   		String hash = settings.getString(Login.SESSION_HASH, null);
+   		
+   		long iid = p.getId();
+   		
+   		String deleteUrl = Util.getUrl(context,R.string.photo_detail_http_delete);
+   			
+           HashMap<String,ContentBody> map = new HashMap<String,ContentBody>();
+           try {
+   			map.put("sid", new StringBody(hash));
+   	        map.put("iid", new StringBody(Long.toString(iid)));
+   		} catch (UnsupportedEncodingException e) {
+   			e.printStackTrace();
+   		}
+       
+        PostData pr = new PostData(deleteUrl,map);
+        new PostRequest(context, PhotoDetailActivity.CODE_DELETE).execute(pr);
+    }
+    
 	@Override
 	public void onLocationChanged(Location location) {
 

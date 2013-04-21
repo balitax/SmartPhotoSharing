@@ -139,7 +139,6 @@ public class PostRequest extends AsyncTask<PostData,Void,String> {
 		Log.d("sendPost","executing request " + httppost.getRequestLine());
 		HttpResponse response = httpclient.execute(httppost);
 		HttpEntity resEntity = response.getEntity();
-		Log.d("sendPost",""+response.getStatusLine());
 		
 		String res = null;
 		if (resEntity != null) {

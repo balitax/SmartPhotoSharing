@@ -103,11 +103,12 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 		switch (item.getItemId()) {
 
         	case R.id.group_new:
-                intent = new Intent(getApplicationContext(), GroupCreateActivity.class);
+                intent = new Intent(this, GroupCreateActivity.class);
                 startActivity(intent);	
         		return true;
         	case R.id.group_join:
-                intent = new Intent(getApplicationContext(), GroupJoinActivity.class);
+                intent = new Intent(this, SelectGroupActivity.class);
+                intent.putExtra(SelectGroupActivity.KEY_VIEW, true);                
                 startActivity(intent);	
         		return true;
 	        case R.id.refresh:

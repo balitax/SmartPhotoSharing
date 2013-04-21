@@ -45,12 +45,14 @@ public class SelectGroupActivity extends ListActivity implements OnDownloadListe
 	private Location gpsLocation;
 	private MergeAdapter adapter;
 		
+	public static final String KEY_VIEW = "view";
+	
+	public boolean view;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Intent intent = getIntent();
-
+        
 		// GPS
         mLocationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -63,6 +65,14 @@ public class SelectGroupActivity extends ListActivity implements OnDownloadListe
         setupGps();
         loadData();
     }
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+
+        Intent intent = getIntent();
+        view = intent.getBooleanExtra(KEY_VIEW, false);
+	}
 
     @Override
     public void onPause() {
@@ -79,14 +89,24 @@ public class SelectGroupActivity extends ListActivity implements OnDownloadListe
 	
 	@Override
 	protected void onListItemClick (ListView l, View v, int position, long gid) {
-		Group group = (Group) adapter.getItem(position);
-    	String groupName = group.name;
-
 		Intent data = new Intent();
-    	data.putExtra("group", gid);
-    	data.putExtra("groupName", groupName);
-    	this.setResult(RESULT_OK, data);
-    	this.finish();
+		
+		// If the user is should view the group details, start a group detail activity
+		if (view) {
+            data = new Intent(this, GroupDetailActivity.class);
+            data.putExtra(GroupDetailActivity.KEY_ID, gid);
+            startActivity(data);	
+		} 
+		
+		// Otherwise, return the group name and ID as result
+		else {
+			Group group = (Group) adapter.getItem(position);	
+	    	String groupName = group.name;		
+	    	data.putExtra("group", gid);
+	    	data.putExtra("groupName", groupName);
+	    	this.setResult(RESULT_OK, data);
+	    	this.finish();
+		}
 		
 	}
 	
@@ -111,6 +131,10 @@ public class SelectGroupActivity extends ListActivity implements OnDownloadListe
 			map.put("sid", new StringBody(hash));
 	        map.put("lat", new StringBody(Double.toString(lat)));
 	        map.put("lon", new StringBody(Double.toString(lon)));
+	        
+	        if (!view) {
+	        	map.put("member", new StringBody("0"));
+	        }
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}

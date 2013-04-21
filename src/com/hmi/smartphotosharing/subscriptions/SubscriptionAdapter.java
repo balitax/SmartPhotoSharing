@@ -109,7 +109,7 @@ public class SubscriptionAdapter extends ArrayAdapter<Subscription> {
             
         // Delete button
         holder.delete.setImageResource(R.drawable.ic_delete);
-        //holder.delete.setOnClickListener(new DeleteClickListener(subscription.getId()));
+        holder.delete.setOnClickListener(new DeleteClickListener(subscription.getId()));
         
         // Show subscription as a person
     	holder.txtTitle.setText(subscription.name);

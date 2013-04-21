@@ -16,7 +16,7 @@
     <string name="subscriptions">Subscriptions</string>
     <string name="private_group">Private</string>
     <string name="followers">Followers</string>
-    <string name="locations">Locations</string>
+    <string name="locations">Groups near my location</string>
     <string name="other_groups">My Other groups</string>
     <string name="select_group">Select group</string>
     <string name="invite_friends">Invite friends</string>
@@ -76,6 +76,7 @@
     <string name="groups_http_invite">cmd=add2group</string>
     <string name="groups_http_users_invite">cmd=allusers&amp;sid=%1$s&amp;gid=%2$s</string>
     <string name="groups_http_users">cmd=allusers</string>
+    <string name="groups_http_remove">cmd=deletegroup</string>
     
     <string name="group_private">Private Group</string>
     <string name="group_location">Location locked</string>
@@ -90,9 +91,10 @@
     <string name="join_group">Join Group</string> 
     <string name="group_join_title">Join a public group</string>
     <string name="group_change_pic">Change group picture</string>
+    <string name="group_change_delete">Remove group</string>
     <string name="groups_empty">You are not a member of any group, create a new group or join a public group with the buttons above.</string>
     
-    <string name="groups_no_location">You are not in a location based group.</string> 
+    <string name="groups_no_location">You are not near any location based group.</string> 
     <string name="groups_no_other">You are not in any other group.</string> 
     <string name="groups_no_member">You are not a member of this group.</string> 
     
@@ -175,6 +177,7 @@
     <string name="photo_detail_name">By %1$s</string>
     <string name="photo_detail_group">Posted in \"%1$s\"</string>
     <string name="photo_detail_http">cmd=pic&amp;sid=%1$s&amp;iid=%2$s</string>
+    <string name="photo_detail_http_delete">cmd=deletepic</string>
     <string name="photo_detail_addcomment">cmd=addcomment</string>
     <string name="photo_detail_removecomment">cmd=removecomment</string>
     <string name="photo_detail_comments">cmd=comments&amp;sid=%1$s&amp;iid=%2$s</string>
@@ -197,6 +200,7 @@
     <!--  Menu -->
     
     <string name="menu_camera">Camera</string>
+    <string name="menu_delete">Delete</string>
     <string name="menu_feedback">Feedback</string>
     <string name="menu_feedback_add">New Feedback</string>
     <string name="menu_friend_add">Add A Friend</string>

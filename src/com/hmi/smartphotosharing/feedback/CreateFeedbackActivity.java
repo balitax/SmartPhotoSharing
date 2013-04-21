@@ -13,6 +13,7 @@ import org.apache.http.entity.mime.content.StringBody;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -60,6 +61,9 @@ public class CreateFeedbackActivity extends Activity implements OnDownloadListen
         play.setEnabled(false);
         
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        
+        // Volume up/down button controls media instead of ringer volume
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 	
     @Override
