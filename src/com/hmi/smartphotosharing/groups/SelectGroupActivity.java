@@ -190,7 +190,11 @@ public class SelectGroupActivity extends ListActivity implements OnDownloadListe
 			adapter.addView(buildText(R.string.groups_no_location));
 		}
 
-		adapter.addView(buildLabel(R.string.other_groups));
+		if (view) {
+			adapter.addView(buildLabel(R.string.other_public_groups));			
+		} else {
+			adapter.addView(buildLabel(R.string.other_groups));
+		}
 		
 		if (found) {
 			adapter.addAdapter(buildOtherAdapter(list.subList(otherStart, list.size())));		

@@ -71,7 +71,7 @@
          android:layout_below="@+id/header"
 	     android:layout_margin="4dp"
 	     android:gravity="center"
-	     android:text="@string/group_detail_no_data"
+	     android:text="@string/user_no_data"
 	     android:visibility="gone" />    
     <include
         android:id="@+id/navbar"

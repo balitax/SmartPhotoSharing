@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -47,6 +48,9 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
         
         listView = (ListView) findViewById(android.R.id.list);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        
+		Button b = (Button) findViewById(R.id.empty_button);
+		b.setVisibility(Button.GONE);
     }
     	
 	@Override
@@ -144,7 +148,9 @@ public class SelectFriendsActivity extends ListActivity implements OnDownloadLis
 		
 		if (response != null) {
 			List<User> userList = response.getObject();
-			if (userList == null) userList = new ArrayList<User>();
+			if (userList == null) {
+				userList = new ArrayList<User>();
+			}
 			
 			FriendsInviteAdapter adapter = new FriendsInviteAdapter(
 					this, 

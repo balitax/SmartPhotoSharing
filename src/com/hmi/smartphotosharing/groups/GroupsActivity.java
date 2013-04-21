@@ -173,10 +173,10 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 		if (response != null) {
 			List <Group> group_list = response.getObject();
 			
-			if (group_list == null) {
+			if (group_list == null || group_list.isEmpty()) {
 				ListView listView = getListView();
 				TextView emptyView = (TextView) listView.getEmptyView();
-				emptyView.setGravity(Gravity.CENTER_HORIZONTAL);
+				emptyView.setGravity(Gravity.CENTER);
 				emptyView.setText(getResources().getString(R.string.groups_empty));
 			} else {
 

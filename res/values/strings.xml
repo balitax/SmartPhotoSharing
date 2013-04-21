@@ -18,6 +18,7 @@
     <string name="followers">Followers</string>
     <string name="locations">Groups near my location</string>
     <string name="other_groups">My Other groups</string>
+    <string name="other_public_groups">Other public groups</string>
     <string name="select_group">Select group</string>
     <string name="invite_friends">Invite friends</string>
     <string name="invite_friend">Select a friend</string>
@@ -61,6 +62,7 @@
     <string name="url_upload">cmd=upload</string> 
     <string name="profile_http">cmd=userinfo</string>
     <string name="user_private">This user\'s profile is not publicly visible.</string>
+    <string name="user_no_data">This user has not shared any photos yet.</string>
      
     <!--  Groups -->
     
@@ -92,7 +94,7 @@
     <string name="group_join_title">Join a public group</string>
     <string name="group_change_pic">Change group picture</string>
     <string name="group_change_delete">Remove group</string>
-    <string name="groups_empty">You are not a member of any group, create a new group or join a public group with the buttons above.</string>
+    <string name="groups_empty">You are not a member of any group, create a new group or join a public group using the menu button.</string>
     
     <string name="groups_no_location">You are not near any location based group.</string> 
     <string name="groups_no_other">You are not in any other group.</string> 
@@ -118,7 +120,7 @@
     <string name="friends_http_request">cmd=request</string>
     <string name="friends_http_confirm">cmd=friends_confirm&amp;sid=%1$s&amp;friend=%2$s&amp;accept=%3$s</string>
     <string name="friends_header_title">Friends</string>
-    <string name="friends_search_empty">No users found.</string>
+    <string name="friends_search_empty">No users found or you have not added any friends yet.</string>
     <string name="friends_empty">You don\'t have any friends at the moment. Click the button above to add new friends.</string>
     <string name="friends_requests">%1$s request</string>
     
@@ -145,7 +147,7 @@
     <!--  News -->
     
     <string name="news_http">cmd=news</string>
-    <string name="news_empty">You don\'t have any friends yet, or your friends did not post any content.</string>
+    <string name="news_empty">Welcome to Picalilly! \n\n\n This page will show you updates from all your friends. \n\n You don\'t have any friends yet, or your friends did not post any content.</string>
     <string name="news_txt_group">%1$s joined the group %2$s.</string>
     <string name="news_txt_photo">%1$s posted a new photo in group %2$s.</string>
     

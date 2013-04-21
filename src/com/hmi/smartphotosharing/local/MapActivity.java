@@ -83,7 +83,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
     public static final String TYPE_POINT = "POINT";
         
     private static long MAP_TIME_THRESHOLD = 5000;
-    private static int MAP_ZOOM_THRESHOLD = 14;
+    private static int MAP_ZOOM_THRESHOLD = 12;
     private static int MAP_DISTANCE_THRESHOLD = 500;
 
     private static final int CODE_PHOTOS = 0;

@@ -192,7 +192,7 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
 			if (news_list == null || news_list.size() == 0) {
 				ListView listView = getListView();
 				TextView emptyView = (TextView) listView.getEmptyView();
-				emptyView.setGravity(Gravity.CENTER_HORIZONTAL);
+				emptyView.setGravity(Gravity.CENTER);
 				emptyView.setText(getResources().getString(R.string.news_empty));
 			} else {
 

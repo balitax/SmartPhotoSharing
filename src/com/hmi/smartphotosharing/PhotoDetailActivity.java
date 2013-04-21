@@ -101,14 +101,19 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
     @Override
     public void onPause() {
       super.onPause();
-      
-      mLocationManager.removeUpdates((MyPagerAdapter)vp.getAdapter());
+
+      MyPagerAdapter adapter = (MyPagerAdapter)vp.getAdapter();
+      if (mLocationManager != null && adapter != null)
+    	  mLocationManager.removeUpdates(adapter);
     }
     
 	@Override
     protected void onStop() {
         super.onStop();
-        mLocationManager.removeUpdates((MyPagerAdapter)vp.getAdapter());
+        
+        MyPagerAdapter adapter = (MyPagerAdapter)vp.getAdapter();
+        if (mLocationManager != null && adapter != null)
+        	mLocationManager.removeUpdates(adapter);
     } 
 	
     @Override

@@ -242,10 +242,10 @@ public class FriendsActivity extends NavBarListActivity implements OnDownloadLis
 				
 			List<User> user_list = response.getObject();
 			
-			if (user_list == null) {
+			if (user_list == null || user_list.isEmpty()) {
 				ListView listView = getListView();
 				TextView emptyView = (TextView) listView.getEmptyView();
-				emptyView.setGravity(Gravity.CENTER_HORIZONTAL);
+				emptyView.setGravity(Gravity.CENTER);
 				emptyView.setText(getResources().getString(R.string.friends_empty));
 			} else {
 
