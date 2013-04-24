@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -50,8 +51,13 @@ public class ChangeGroupPictureActivity extends Activity implements OnDownloadLi
         id = intent.getLongExtra("id", 0);
         
         if (fileUri == null) {
-		    Intent cameraIntent = new Intent(this,CameraActivity.class);
-		    startActivityForResult(cameraIntent, TAKE_PICTURE); 
+        	Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+	        fileUri = Util.getOutputMediaFileUri(Util.MEDIA_TYPE_IMAGE); // create a file to save the image
+	        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
+	
+	        // start the image capture Intent
+	        startActivityForResult(cameraIntent, TAKE_PICTURE);
         }
 	}
 
@@ -75,7 +81,7 @@ public class ChangeGroupPictureActivity extends Activity implements OnDownloadLi
         
         if (requestCode == TAKE_PICTURE) { 
         	if (resultCode == Activity.RESULT_OK) {
-	        	fileUri = data.getData();
+	        	//fileUri = data.getData();
 	        	
 	        	rotation = Util.getRotationDegrees(fileUri.getPath());
 	        	

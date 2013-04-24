@@ -20,6 +20,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -136,10 +137,14 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
             }
         	
         } else {
-        	if (fileUri == null) {
-        		Intent cameraIntent = new Intent(this,CameraActivity.class);
-        		startActivityForResult(cameraIntent, TAKE_PICTURE);
-        	}
+            // create Intent to take a picture and return control to the calling application
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+            fileUri = Util.getOutputMediaFileUri(Util.MEDIA_TYPE_IMAGE); // create a file to save the image
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
+
+            // start the image capture Intent
+            startActivityForResult(cameraIntent, TAKE_PICTURE);
 	    
         }
         //loadData();
@@ -293,25 +298,30 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         	}
         }
         
-        else if (requestCode == TAKE_PICTURE && resultCode == Activity.RESULT_OK) { 
-                
-        	fileUri = data.getData();
-        	
-        	rotation = Util.getRotationDegrees(fileUri.getPath());
-        	
-
-        	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(fileUri.getPath(), screenWidth, screenWidth, rotation));
-            
-            // Show image with rounded corners
-    		/*DisplayImageOptions roundOptions = new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(8)).build();
-            imageLoader.loadImage(fileUri.toString(), roundOptions, new SimpleImageLoadingListener() {
-        	    @Override
-        	    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-        	    	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(loadedImage, rotation));
-        	    }
-        		
-        	});*/
-            setupGps();
+        else if (requestCode == TAKE_PICTURE) {
+        	if (resultCode == Activity.RESULT_OK) { 
+        
+	        	//fileUri = data.getData();
+	        	
+	        	rotation = Util.getRotationDegrees(fileUri.getPath());
+	        	
+	
+	        	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(fileUri.getPath(), screenWidth, screenWidth, rotation));
+	            
+	            // Show image with rounded corners
+	    		/*DisplayImageOptions roundOptions = new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(8)).build();
+	            imageLoader.loadImage(fileUri.toString(), roundOptions, new SimpleImageLoadingListener() {
+	        	    @Override
+	        	    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+	        	    	imageView.setImageBitmap(Util.decodeSampledBitmapFromFile(loadedImage, rotation));
+	        	    }
+	        		
+	        	});*/
+	            setupGps();
+        	} else {
+        		Toast.makeText(this, "Cancelled taking a photo, returning to Picalilly", Toast.LENGTH_SHORT).show();
+        		finish();
+        	}
 	    } else if (resultCode == RESULT_CANCELED) {
 	        finish();
 	    }
