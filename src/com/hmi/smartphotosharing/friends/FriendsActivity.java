@@ -170,7 +170,9 @@ public class FriendsActivity extends NavBarListActivity implements OnDownloadLis
 
 	@Override
 	public void parseJson(String json, int code) {
-		Log.d("FriendsActivity", json);
+
+		Util.checkLogout(json,this);
+		
 		switch (code) {
 			case CODE_FRIENDS:
 				parseFriends(json);

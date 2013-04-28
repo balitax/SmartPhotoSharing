@@ -236,6 +236,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
 		    	        map.put("rotation", new StringBody(rotate));
 		        		File file = new File(fileUri.getPath());
 		        		ContentBody cbFile = new FileBody(file, "image/jpeg");
+		        		Log.d("Share photo", "File: " + fileUri.getPath());
 		        		map.put("photo", cbFile);
 	
 		    		} catch (UnsupportedEncodingException e) {

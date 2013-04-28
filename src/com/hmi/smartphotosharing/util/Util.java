@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,10 +39,13 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.gson.Gson;
+import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
 import com.hmi.smartphotosharing.json.Feedback;
 import com.hmi.smartphotosharing.json.Group;
 import com.hmi.smartphotosharing.json.Photo;
+import com.hmi.smartphotosharing.json.StringResponse;
 import com.hmi.smartphotosharing.json.Subscription;
 import com.hmi.smartphotosharing.json.User;
 
@@ -452,6 +456,27 @@ public class Util {
         LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.RIGHT_OF, R.id.app_icon);
         title.setLayoutParams(lp);
+		
+	}
+
+	public static void checkLogout(String result, Activity a) {
+		
+		Gson gson = new Gson();
+		StringResponse response = gson.fromJson(result, StringResponse.class);
+
+		if (response.getStatus() == Util.STATUS_LOGIN) {
+			
+			SharedPreferences settings = a.getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);
+			settings.edit().remove(Login.SESSION_HASH).commit();
+			
+			Intent intent = new Intent(a, Login.class);
+			intent.putExtra("finish", true);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+		                    Intent.FLAG_ACTIVITY_NEW_TASK); 
+			
+			a.startActivity(intent);
+			a.finish();
+		}
 		
 	}
 

@@ -502,6 +502,8 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	@Override
 	public void parseJson(String json, int code) {
 
+		Util.checkLogout(json,this);
+		
 		switch (code) {
 			case CODE_GROUPS:
 				parseGroups(json);

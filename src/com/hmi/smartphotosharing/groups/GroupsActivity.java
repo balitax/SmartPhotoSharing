@@ -154,6 +154,8 @@ public class GroupsActivity extends NavBarListActivity implements OnDownloadList
 	 */
 	@Override
 	public void parseJson(String result, int code) {
+
+		Util.checkLogout(result,this);
 		
 		switch (code) {
 		case CODE_GROUPS:

@@ -161,7 +161,9 @@ public class FeedbackActivity extends NavBarListActivity implements OnDownloadLi
 
 	@Override
 	public void parseJson(String json, int code) {
-		Log.d("FriendsActivity", json);
+
+		Util.checkLogout(json,this);
+		
 		switch (code) {
 			case CODE_FEEDBACK:
 				parseFeedback(json);

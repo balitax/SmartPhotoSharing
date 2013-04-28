@@ -145,7 +145,7 @@ public class GCMIntentService extends GCMBaseIntentService implements OnDownload
 		if (notificationIntent != null) {
 			notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 			
-			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 	
 			notification.setLatestEventInfo(mcontext, contentTitle, contentText, contentIntent);
 	        

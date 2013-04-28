@@ -360,6 +360,8 @@ public class GroupDetailActivity extends NavBarActivity implements OnDownloadLis
 	}
 	
 	public void parseJson(String result, int code) {
+
+		Util.checkLogout(result,this);
 		
 		switch (code) {
 			case CODE_GROUP_DETAILS:

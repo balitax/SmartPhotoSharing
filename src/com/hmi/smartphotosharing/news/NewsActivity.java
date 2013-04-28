@@ -29,6 +29,7 @@ import com.hmi.smartphotosharing.json.NewsListResponse;
 import com.hmi.smartphotosharing.json.OnDownloadListener;
 import com.hmi.smartphotosharing.json.PostData;
 import com.hmi.smartphotosharing.json.PostRequest;
+import com.hmi.smartphotosharing.json.StringResponse;
 import com.hmi.smartphotosharing.json.User;
 import com.hmi.smartphotosharing.json.UserResponse;
 import com.hmi.smartphotosharing.util.Sorter;
@@ -150,6 +151,8 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
 	 */
 	@Override
 	public void parseJson(String result, int code) {
+
+		Util.checkLogout(result,this);
 		
 		switch(code) {
 			case CODE_NEWS:
