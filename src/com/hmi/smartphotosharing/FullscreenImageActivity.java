@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.hmi.smartphotosharing.util.Util;
 
 public class FullscreenImageActivity extends Activity {
@@ -29,4 +30,15 @@ public class FullscreenImageActivity extends Activity {
         w.loadUrl(url);
     }
 
+    @Override
+    public void onStart() {
+      super.onStart();
+      EasyTracker.getInstance().activityStart(this);
+    }
+    
+    @Override
+    public void onStop() {
+      super.onStop();
+      EasyTracker.getInstance().activityStop(this); 
+    }
 }

@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
@@ -79,6 +80,12 @@ public class AddFriendsActivity extends ListActivity implements OnDownloadListen
 	    }
     }
     
+    @Override
+    public void onStop() {
+      super.onStop();
+      EasyTracker.getInstance().activityStop(this); 
+    }
+    
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -132,6 +139,8 @@ public class AddFriendsActivity extends ListActivity implements OnDownloadListen
         
         if (type == TYPE_GROUP)
         	Util.createSimpleDialog(this, getResources().getString(R.string.dialog_friends));
+        
+        EasyTracker.getInstance().activityStart(this);
 	}
 	
     @Override

@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gcm.GCMRegistrar;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.json.FetchJSON;
@@ -79,7 +80,19 @@ public class Login extends Activity implements OnDownloadListener{
 		// Load preference defaults on first startup
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 	}
-	
+
+    @Override
+    public void onStart() {
+      super.onStart();
+      EasyTracker.getInstance().activityStart(this);
+    }
+    
+    @Override
+    public void onStop() {
+      super.onStop();
+      EasyTracker.getInstance().activityStop(this); 
+    }
+    
 	@Override
 	public void onDestroy() {
 		

@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.groups.GroupManageActivity;
 import com.hmi.smartphotosharing.groups.GroupsActivity;
@@ -97,6 +98,12 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                         
     }
+
+    @Override
+    public void onStart() {
+      super.onStart();
+      EasyTracker.getInstance().activityStart(this);
+    }
     
     @Override
     public void onPause() {
@@ -114,6 +121,8 @@ public class PhotoDetailActivity extends NavBarActivity implements OnDownloadLis
         MyPagerAdapter adapter = (MyPagerAdapter)vp.getAdapter();
         if (mLocationManager != null && adapter != null)
         	mLocationManager.removeUpdates(adapter);
+
+        EasyTracker.getInstance().activityStop(this); 
     } 
 	
     @Override

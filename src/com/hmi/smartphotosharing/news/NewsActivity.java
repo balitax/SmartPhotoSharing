@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.NavBarListActivity;
@@ -96,7 +97,20 @@ public class NewsActivity extends NavBarListActivity implements OnDownloadListen
         getListView().setOnScrollListener(listener);
         
     }
-    	  
+    
+    @Override
+    public void onStart() {
+      super.onStart();
+      EasyTracker.getInstance().activityStart(this);
+    }
+    
+    @Override
+    public void onStop() {
+      super.onStop();
+      EasyTracker.getInstance().activityStop(this); 
+    }
+
+	  
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
 

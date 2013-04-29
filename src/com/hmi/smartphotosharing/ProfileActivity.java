@@ -1,5 +1,6 @@
 package com.hmi.smartphotosharing;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.hmi.smartphotosharing.util.HelpDialog;
 
 import android.content.Intent;
@@ -22,7 +23,19 @@ public class ProfileActivity extends NavBarActivity {
         ImageView back = (ImageView) findViewById(R.id.back);
         back.setVisibility(ImageView.VISIBLE);
     }
-	 
+
+    @Override
+    public void onStart() {
+      super.onStart();
+      EasyTracker.getInstance().activityStart(this);
+    }
+    
+    @Override
+    public void onStop() {
+      super.onStop();
+      EasyTracker.getInstance().activityStop(this); 
+    }
+    
 	public void onClickPicture(View view) {
 		Intent intent = new Intent(this, ChangePictureActivity.class);
 		startActivityForResult(intent, TAKE_PICTURE);

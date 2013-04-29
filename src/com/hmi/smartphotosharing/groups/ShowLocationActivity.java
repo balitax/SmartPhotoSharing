@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
@@ -35,8 +36,13 @@ public class ShowLocationActivity extends FragmentActivity {
 
         setUpMapIfNeeded();
     }
+        
+    @Override
+    public void onStop() {
+      super.onStop();
+      EasyTracker.getInstance().activityStop(this); 
+    }
     
-
     private void setUpMapIfNeeded() {
         
     	// Do a null check to confirm that we have not already instantiated the map.
@@ -97,6 +103,8 @@ public class ShowLocationActivity extends FragmentActivity {
         if (!gpsEnabled) {
         	Util.createGpsDisabledAlert(this);
         }
+
+        EasyTracker.getInstance().activityStart(this);
                 
     }
     

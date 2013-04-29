@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.Login;
 import com.hmi.smartphotosharing.R;
@@ -65,7 +66,19 @@ public class CreateFeedbackActivity extends Activity implements OnDownloadListen
         // Volume up/down button controls media instead of ringer volume
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
-	
+
+    @Override
+    public void onStart() {
+      super.onStart();
+      EasyTracker.getInstance().activityStart(this);
+    }
+    
+    @Override
+    public void onStop() {
+      super.onStop();
+      EasyTracker.getInstance().activityStop(this); 
+    }
+    
     @Override
     public void onPause() {
         super.onPause();

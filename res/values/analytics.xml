@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<resources xmlns:tools="http://schemas.android.com/tools"
+	tools:ignore="TypographyDashes">
+  <!--Replace placeholder ID with your tracking ID-->
+  <string name="ga_trackingId">UA-40512014-1</string>
+
+  <!--Enable automatic activity tracking-->
+  <bool name="ga_autoActivityTracking">true</bool>
+
+  <!--Enable automatic exception tracking-->
+  <bool name="ga_reportUncaughtExceptions">true</bool>
+  
+  
+	<!-- The screen names that will appear in your reporting -->
+	<string name="com.hmi.smartphotosharing.Login">Login</string>
+	<string name="com.hmi.smartphotosharing.ChangePictureActivity">Change My Photo</string>
+	<string name="com.hmi.smartphotosharing.FullscreenImageActivity">Fullscreen Photo</string>
+	<string name="com.hmi.smartphotosharing.PhotoDetailActivity">Photo Detail</string>
+	<string name="com.hmi.smartphotosharing.ProfileActivity">Settings</string>
+	<string name="com.hmi.smartphotosharing.SharePhotoActivity">Share Photo</string>
+	<string name="com.hmi.smartphotosharing.UserDetailActivity">User Detail</string>
+	
+	<string name="com.hmi.smartphotosharing.feedback.FeedbackActivity">Feedback</string>
+	<string name="com.hmi.smartphotosharing.feedback.CreateFeedbackActivity">Create Feedback</string>
+	
+	<string name="com.hmi.smartphotosharing.friends.FriendsActivity">Friends</string>
+	<string name="com.hmi.smartphotosharing.friends.AddFriendsActivity">Add Friends</string>
+	<string name="com.hmi.smartphotosharing.friends.FriendsRequestsActivity">Friend Requests</string>
+	
+	<string name="com.hmi.smartphotosharing.groups.GroupsActivity">Groups</string>
+	<string name="com.hmi.smartphotosharing.groups.GroupCreateActivity">Create Group</string>
+	<string name="com.hmi.smartphotosharing.groups.GroupDetailActivity">Group Detail</string>
+	<string name="com.hmi.smartphotosharing.groups.GroupInfoActivity">Group Info</string>
+	<string name="com.hmi.smartphotosharing.groups.GroupJoinActivity">Join Group</string>
+	<string name="com.hmi.smartphotosharing.groups.SelectLocationActivity">Select Location</string>
+	<string name="com.hmi.smartphotosharing.groups.ShowLocationActivity">Group Location</string>
+		
+	<string name="com.hmi.smartphotosharing.local.MapActivity">Explore</string>
+	<string name="com.hmi.smartphotosharing.local.MapFilterActivity">Explore Settings</string>
+	
+	<string name="com.hmi.smartphotosharing.subscriptions">Subscriptions</string>
+	
+	<string name="com.hmi.smartphotosharing.news.NewsActivity">News</string>
+  
+</resources>

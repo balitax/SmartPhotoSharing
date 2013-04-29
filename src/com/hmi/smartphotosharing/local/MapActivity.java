@@ -31,6 +31,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.Tracker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
@@ -66,17 +68,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class MapActivity extends NavBarFragmentActivity implements LocationListener, LocationSource, OnCameraChangeListener, OnDownloadListener {
-
-    private GoogleMap googleMap;
-    private Marker lastClicked;
-    
-    private Marker longClickMarker;
-    
-    private long lastChange;
-    private LatLng lastPos;
-    
-    private List<Polygon> polyList;
-    private List<Long> markerIds;
     
     public static final String TYPE_GROUP = "GROUP";
     public static final String TYPE_PHOTO = "PHOTO";
@@ -113,7 +104,18 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	private double startLat, startLon;
 	private String startThumb;
 	private long startIid;
-	
+
+    private GoogleMap googleMap;
+    private Marker lastClicked;
+    private Marker longClickMarker;
+    private List<Polygon> polyList;
+    private List<Long> markerIds;
+    
+    private long lastChange;
+    private LatLng lastPos;
+    
+    private Tracker tracker;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {  
         super.onCreate(savedInstanceState,R.layout.local_map);
@@ -145,6 +147,7 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
         if (!hide)
         	Util.createSimpleDialog(this,s,HelpDialog.DIALOG_LOCAL);
     }
+    
     
 	private void loadPreferences() {
 	
@@ -214,7 +217,6 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
             	   .zoom(MAP_ZOOM_THRESHOLD)
             	   .build();
             	googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
-            	loadData();
             }
         }
     }
@@ -240,6 +242,15 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
             	Util.createGpsDisabledAlert(this);
             }
         }
+
+        EasyTracker.getInstance().activityStart(this);
+		tracker = EasyTracker.getTracker();
+    }
+
+    @Override
+    public void onStop() {
+      super.onStop();
+      EasyTracker.getInstance().activityStop(this); 
     }
     
     @Override
@@ -290,6 +301,9 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
         if (lastChange == 0 || lastPos == null) {
         	lastChange = now;
         	lastPos = pos.target;
+        	
+        	if (startIid == 0)
+        		loadData();
         } else {
         	
         	// If it is at least X milliseconds since the last change and
@@ -337,6 +351,8 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 	
     public void onSearchClick(View view) {
 
+    	tracker.sendEvent("ui_action", "button_press", "search_button", null);
+
         // Getting reference to EditText to get the user input location
         EditText etLocation = (EditText) findViewById(R.id.et_location);
 
@@ -362,17 +378,24 @@ public class MapActivity extends NavBarFragmentActivity implements LocationListe
 			String[] msg = marker.getSnippet().split(",");
 			
 			if (msg[0].equals(TYPE_GROUP)) {
+		    	tracker.sendEvent("ui_action", "infowindow_press", "group_info", null);
+		    	
 		    	Intent intent = new Intent(c,GroupDetailActivity.class);
 		    	intent.putExtra(GroupDetailActivity.KEY_ID, Long.parseLong(msg[1]));
 		    	startActivity(intent);
+
 				
 			} else if (msg[0].equals(TYPE_POINT)) {
+		    	tracker.sendEvent("ui_action", "infowindow_press", "point_info", null);
+		    	
 		    	Intent intent = new Intent(c,LocalGroupsActivity.class);
 		    	intent.putExtra(LocalGroupsActivity.LAT, longClickMarker.getPosition().latitude);
 		    	intent.putExtra(LocalGroupsActivity.LON, longClickMarker.getPosition().longitude);
 		    	startActivity(intent);
 				
 			} else {
+		    	tracker.sendEvent("ui_action", "infowindow_press", "photo_info", null);
+		    	
 		    	Intent intent = new Intent(c,PhotoDetailActivity.class);
 		    	intent.putExtra(PhotoDetailActivity.KEY_ID, Long.parseLong(msg[1]));
 		    	startActivity(intent);

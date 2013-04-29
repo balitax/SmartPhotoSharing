@@ -36,6 +36,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.Tracker;
 import com.hmi.smartphotosharing.groups.GroupDetailActivity;
 import com.hmi.smartphotosharing.json.Comment;
 import com.hmi.smartphotosharing.json.Photo;
@@ -311,6 +313,10 @@ public class MyPagerAdapter extends PagerAdapter implements LocationListener {
         
         @Override
         public void onClick(View arg0) {
+
+			Tracker tracker = EasyTracker.getTracker();
+	    	tracker.sendEvent("ui_action", "button_press", "comment_button", null);
+	    	
     		SharedPreferences settings = context.getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);
     		String hash = settings.getString(Login.SESSION_HASH, null);
     		
@@ -345,6 +351,10 @@ public class MyPagerAdapter extends PagerAdapter implements LocationListener {
         
         @Override
         public void onClick(View arg0) {
+
+			Tracker tracker = EasyTracker.getTracker();
+	    	tracker.sendEvent("ui_action", "button_press", "like_button", null);
+	    	
     		SharedPreferences settings = context.getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);
     		String hash = settings.getString(Login.SESSION_HASH, null);
     		
@@ -380,6 +390,10 @@ public class MyPagerAdapter extends PagerAdapter implements LocationListener {
         
         @Override
         public void onClick(View arg0) {
+
+			Tracker tracker = EasyTracker.getTracker();
+	    	tracker.sendEvent("ui_action", "button_press", "spot_button", null);
+	    	
     		SharedPreferences settings = context.getSharedPreferences(Login.SESSION_PREFS, Context.MODE_PRIVATE);
     		String hash = settings.getString(Login.SESSION_HASH, null);
     		
@@ -413,6 +427,10 @@ public class MyPagerAdapter extends PagerAdapter implements LocationListener {
 
     	@Override
     	public void onClick(View v) {
+
+			Tracker tracker = EasyTracker.getTracker();
+	    	tracker.sendEvent("ui_action", "button_press", "view_location", null);
+	    	
     		Intent intent = new Intent(context, MapActivity.class);
     		intent.putExtra(MapActivity.KEY_LAT, Double.parseDouble(p.latitude));
     		intent.putExtra(MapActivity.KEY_LON, Double.parseDouble(p.longitude));
@@ -466,6 +484,9 @@ public class MyPagerAdapter extends PagerAdapter implements LocationListener {
 
 		@Override
 		public void onClick(View arg0) {
+			Tracker tracker = EasyTracker.getTracker();
+	    	tracker.sendEvent("ui_action", "button_press", "view_photo", null);
+	    	
 			Intent intent = new Intent(c, FullscreenImageActivity.class);
 			intent.putExtra(Util.URL_MESSAGE, url);
 			c.startActivity(intent);

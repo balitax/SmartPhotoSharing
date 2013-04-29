@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.gson.Gson;
 import com.hmi.smartphotosharing.camera.CameraActivity;
 import com.hmi.smartphotosharing.groups.GroupCreateActivity;
@@ -150,7 +151,14 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
         //loadData();
 	}
 	
-	
+
+    @Override
+    public void onStart() {
+      super.onStart();
+      EasyTracker.getInstance().activityStart(this);
+    }
+    
+    
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
@@ -179,6 +187,7 @@ public class SharePhotoActivity extends Activity implements OnDownloadListener {
     protected void onStop() {
         super.onStop();
         mLocationManager.removeUpdates(listener);
+        EasyTracker.getInstance().activityStop(this); 
     }  
 	
 	public void onClickSelectGroup(View view) {

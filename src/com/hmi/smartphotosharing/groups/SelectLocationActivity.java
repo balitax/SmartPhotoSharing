@@ -24,6 +24,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -76,6 +77,12 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapLon
         singleLocation = intent.getBooleanExtra(SINGLE_LOCATION, false);
     }
     
+    @Override
+    public void onStop() {
+      super.onStop();
+      EasyTracker.getInstance().activityStop(this); 
+    }
+    
     private void setUpMapIfNeeded() {
         
     	// Do a null check to confirm that we have not already instantiated the map.
@@ -115,7 +122,8 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapLon
         String s = getResources().getString(R.string.dialog_map);
         if (!hide)
         	Util.createSimpleDialog(this,s,HelpDialog.DIALOG_MAP);
-        
+
+        EasyTracker.getInstance().activityStart(this);
     }
     
 	@Override
